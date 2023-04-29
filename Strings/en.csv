@@ -1,0 +1,61 @@
+;meta[language=en]
+; id      |key(hex)|key(str)| text
+;
+; comment lines use ; as first character
+; all comment lines (except the two line header) will be ignored
+; This file is used to create translations using https://www.nexusmods.com/witcher3/mods/1055 all credits go to rmemr
+;
+2116254000||panel_Mods|Mods
+2116254001||panel_HSC_Name|Herb Scanner
+2116254002||panel_HSC_Page_General|Settings
+;
+2116254003||option_HerbScanner_Mod_Enabled|<font color="#FF7D63">Mod Enabled:</font>
+;
+2116254004||option_HerbScanner_DynamicMode_OnlyNeededQty		|<font color="#479c9d">Dynamic Mode       :   Pin Only Required Quantity</font>
+2116254005||option_HerbScanner_DynamicMode_ShowMiniMap			|<font color="#479c9d">Dynamic Mode       :   Show On Minimap</font>
+2116254006||option_HerbScanner_DynamicMode_ArrowPointers		|<font color="#479c9d">Dynamic Mode       :   Arrow Pointers</font>
+2116254007||option_HerbScanner_DynamicMode_Highlighted			|<font color="#479c9d">Dynamic Mode       :   Highlighted Arrows</font>
+;
+2116254008||option_HerbScanner_DynamicMode_OverrideTarget|<font color="#479c9d">Dynamic Mode       :    Override With Manual Selection</font>
+2116254009||preset_value_OverrideTarget_00|None - Use Dynamic
+2116254010||preset_value_OverrideTarget_01|Allspice
+2116254011||preset_value_OverrideTarget_02|Arenaria
+2116254012||preset_value_OverrideTarget_03|Balisse fruit
+2116254013||preset_value_OverrideTarget_04|Beggartick blossoms
+2116254014||preset_value_OverrideTarget_05|Berbercane fruit
+2116254015||preset_value_OverrideTarget_06|Bloodmoss
+2116254016||preset_value_OverrideTarget_07|Blowball
+2116254017||preset_value_OverrideTarget_08|Bryonia
+2116254018||preset_value_OverrideTarget_09|Buckthorn
+2116254019||preset_value_OverrideTarget_10|Celandine
+2116254020||preset_value_OverrideTarget_11|Cortinarius
+2116254021||preset_value_OverrideTarget_12|Crow's eye
+2116254022||preset_value_OverrideTarget_13|Ergot seeds
+2116254023||preset_value_OverrideTarget_14|Fool's parsley leaves
+2116254024||preset_value_OverrideTarget_15|Ginatia petals
+2116254025||preset_value_OverrideTarget_16|Green mold
+2116254026||preset_value_OverrideTarget_17|Han fiber
+2116254027||preset_value_OverrideTarget_18|Hellebore petals
+2116254028||preset_value_OverrideTarget_19|Honeysuckle
+2116254029||preset_value_OverrideTarget_20|Hop umbels
+2116254030||preset_value_OverrideTarget_21|Hornwort
+2116254031||preset_value_OverrideTarget_22|Longrube
+2116254032||preset_value_OverrideTarget_23|Mandrake root
+2116254033||preset_value_OverrideTarget_24|Mistletoe
+2116254034||preset_value_OverrideTarget_25|Moleyarrow
+2116254035||preset_value_OverrideTarget_26|Nostrix
+2116254036||preset_value_OverrideTarget_27|Puffball
+2116254037||preset_value_OverrideTarget_28|Pringrape
+2116254038||preset_value_OverrideTarget_29|Ranogrin
+2116254039||preset_value_OverrideTarget_30|Ribleaf
+2116254040||preset_value_OverrideTarget_31|Sewant mushrooms
+2116254041||preset_value_OverrideTarget_32|Verbena
+2116254042||preset_value_OverrideTarget_33|White myrtle petals
+2116254043||preset_value_OverrideTarget_34|Wolfsbane
+;
+2116254044||option_HerbScanner_Global_RemoveIfEmpty			|<font color="#F56C77">Global          :   Remove Pin On Loot</font>
+2116254045||option_HerbScanner_Global_SearchRadius			|<font color="#F56C77">Global          :   Max Search Radius</font>
+2116254046||option_HerbScanner_Global_MaximumResults		|<font color="#F56C77">Global          :   Max Number of Pins</font>
+2116254047||option_HerbScanner_Global_MapPinSize			|<font color="#F56C77">Global          :   Map Pin Size</font>
+;
+;Next ID 2116254048
