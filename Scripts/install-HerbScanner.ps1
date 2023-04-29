@@ -62,13 +62,13 @@ $latestversion = $response[0].name
 $latestAssetUrl = "https://github.com/Faen668/Progress-On-The-Path/releases/latest/download/Progress-on-the-Path.zip"
 
 echo ""
-write-host "- Downloading Progress on the Path $($latestversion)"
+write-host "- Downloading Herb Scanner $($latestversion)"
 echo ""
 
-$extractingFolder = "./__install_PotP"
+$extractingFolder = "./__install_HSC"
 
 
-$latestAssetName = "Progress-on-the-Path.zip"
+$latestAssetName = "Herb-Scanner-NG.zip"
 Invoke-WebRequest -Uri $latestAssetUrl -OutFile $latestAssetName
 
 Expand-Archive -Force -LiteralPath $latestAssetName -DestinationPath ./$extractingFolder
@@ -80,19 +80,19 @@ echo ""
 echo $installMessage
 echo ""
 
-if (test-path mods/modProgressOnThePath) 
+if (test-path mods/modHerbScanner) 
 {
-	Remove-Item mods/modProgressOnThePath -force -recurse
+	Remove-Item mods/modHerbScanner -force -recurse
 }
 
-if (test-path dlc/dlcProgressOnThePath) 
+if (test-path dlc/dlcHerbScanner) 
 {
-	Remove-Item dlc/dlcProgressOnThePath -force -recurse
+	Remove-Item dlc/dlcHerbScanner -force -recurse
 }
 
-if (test-path bin/config/r4game/user_config_matrix/pc/modProgressOnThePath.xml) 
+if (test-path bin/config/r4game/user_config_matrix/pc/modHerbScanner.xml) 
 {
-	Remove-Item bin/config/r4game/user_config_matrix/pc/modProgressOnThePath.xml -force
+	Remove-Item bin/config/r4game/user_config_matrix/pc/modHerbScanner.xml -force
 }
 
 $children = Get-ChildItem ./$extractingFolder
@@ -104,7 +104,7 @@ foreach ($child in $children) {
 #Install Scripts
 echo ""
 echo "- Installing Scripts"
-$children = Get-ChildItem mods/modProgressOnThePath -recurse -exclude *.csv, *.w3strings, *.bundle, *.store, *.cache, *.txt, *.bat
+$children = Get-ChildItem mods/modHerbScanner -recurse -exclude *.csv, *.w3strings, *.bundle, *.store, *.cache, *.txt, *.bat
 foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 {
   Write-Host -ForegroundColor green 'Installed' -NoNewline; Write-Host " - $($child.name)"
@@ -113,7 +113,7 @@ foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 #Install Localisation
 echo ""
 echo "- Installing Localisation"
-$children = Get-ChildItem mods/modProgressOnThePath -recurse -exclude *.ws, *.bundle, *.store, *.cache, *.txt, *.bat
+$children = Get-ChildItem mods/modHerbScanner -recurse -exclude *.ws, *.bundle, *.store, *.cache, *.txt, *.bat
 foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 {
   Write-Host -ForegroundColor green 'Installed' -NoNewline; Write-Host " - $($child.name)"
@@ -122,7 +122,7 @@ foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 #Install Bundles
 echo ""
 echo "- Installing Mod Bundle"
-$children = Get-ChildItem mods/modProgressOnThePath -recurse -exclude *.ws, *.csv, *.w3strings, *.txt, *.bat
+$children = Get-ChildItem mods/modHerbScanner -recurse -exclude *.ws, *.csv, *.w3strings, *.txt, *.bat
 foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 {
   Write-Host -ForegroundColor green 'Installed' -NoNewline; Write-Host " - $($child.name)"
@@ -131,7 +131,7 @@ foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 #Install Bundles
 echo ""
 echo "- Installing DLC Bundle"
-$children = Get-ChildItem dlc/dlcProgressOnThePath -recurse -exclude *.ws, *.csv, *.w3strings, *.txt, *.bat
+$children = Get-ChildItem dlc/dlcHerbScanner -recurse -exclude *.ws, *.csv, *.w3strings, *.txt, *.bat
 foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 {
   Write-Host -ForegroundColor green 'Installed' -NoNewline; Write-Host " - $($child.name)"
@@ -141,7 +141,7 @@ if (test-path $extractingFolder) {
   remove-item $extractingFolder -recurse -force
 }
 
-$installedMessage = "=== Progress on the Path {0} installed ===" -f $latestversion
+$installedMessage = "=== Herb Scanner {0} installed ===" -f $latestversion
 
 echo ""
 write-host $installedMessage -ForegroundColor green -BackgroundColor black
@@ -163,48 +163,16 @@ Write-Host -ForegroundColor green '\Documents\The Witcher 3\dx12user.settings'
 echo ""
 echo "- At the top of the files copy and paste the following:"
 echo ""
-write-host -ForegroundColor yellow "[ProgressOnThePath_PreviewSettings]"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_Hide=false"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_Comp=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_Igno=false"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_Iden=false"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_QArea=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_QType=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_IType=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_GArea=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_GType=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_WArea=0"
-write-host -ForegroundColor yellow "ProgressOnThePath_Preview_WType=0"
-echo ""
-write-host -ForegroundColor yellow "[ProgressOnThePath_GeneralSettings]"
-write-host -ForegroundColor yellow "ProgressOnThePath_MeditationUpdate=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_EnableHotKey=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_ShowMapPins=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_MapPinDescription=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_MapPinRadius=30"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_MapPinType=1"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_ShowMiniMap=false"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_ArrowPointers=false"
-write-host -ForegroundColor yellow "ProgressOnThePath_EventMapPins_HighlightedPointers=false"
-echo ""
-write-host -ForegroundColor yellow "[ProgressOnThePath_NotificationSettings]"
-write-host -ForegroundColor yellow "ProgressOnThePath_GlobalNotification_Time=7"
-write-host -ForegroundColor yellow "ProgressOnThePath_GlobalNotification_Size=18"
-write-host -ForegroundColor yellow "ProgressOnThePath_GlobalNotification_Font=1"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_Quest=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_World=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_Items=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_Gwent=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_Event=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_FullNotification_Nulls=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_BackNotification_Quest=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_BackNotification_World=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_BackNotification_Items=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_BackNotification_Gwent=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_BackNotification_Event=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_MiscNotification_Event=true"
-write-host -ForegroundColor yellow "ProgressOnThePath_MiscNotification_Enter=true"
+write-host -ForegroundColor yellow "HerbScanner_Mod_Enabled=true"
+write-host -ForegroundColor yellow "HerbScanner_DynamicMode_OnlyNeededQty=true"
+write-host -ForegroundColor yellow "HerbScanner_DynamicMode_ShowMiniMap=false"
+write-host -ForegroundColor yellow "HerbScanner_DynamicMode_ArrowPointers=false"
+write-host -ForegroundColor yellow "HerbScanner_DynamicMode_Highlighted=false"
+write-host -ForegroundColor yellow "HerbScanner_Global_RemoveIfEmpty=true"
+write-host -ForegroundColor yellow "HerbScanner_Global_SearchRadius=9000"
+write-host -ForegroundColor yellow "HerbScanner_Global_MaximumResults=100"
+write-host -ForegroundColor yellow "HerbScanner_Global_MapPinSize=20"
+write-host -ForegroundColor yellow "HerbScanner_DynamicMode_OverrideTarget=0"
 echo ""
 
 write-host -BackgroundColor darkred "                                           "
@@ -218,26 +186,26 @@ echo ""
 echo "- At the top of the file copy and paste the following:"
 echo ""
 write-host -ForegroundColor yellow "[Exploration]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[Horse]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[Swimming]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[Boat]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[BoatPassenger]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[Combat]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 write-host -ForegroundColor yellow "[Diving]"
-write-host -ForegroundColor yellow "IK_NumPad5=(Action=UpdateProgressOnThePath)"
-write-host -ForegroundColor yellow "IK_NumPad6=(Action=DisplayProgressPreview)"
+write-host -ForegroundColor yellow "IK_NumPad7=(Action=ScanForHerbs)"
+write-host -ForegroundColor yellow "IK_NumPad8=(Action=ClearHerbPins)"
 echo ""
 
 write-Host '- Open the following file:'
@@ -247,10 +215,10 @@ echo ""
 Write-Host '- Copy and paste the following code block into the file just before ' -NoNewline; Write-Host -ForegroundColor green '<!-- [BASE_CharacterMovement] -->'
 echo ""	
 
-write-host -ForegroundColor yellow "<!-- Progress on the Path Begin --> "
-write-host -ForegroundColor yellow "<Var builder=""Input"" id=""UpdateProgressOnThePath"" 		displayName=""UpdateProgressOnThePath"" 	displayType=""INPUTPC"" actions=""UpdateProgressOnThePath""/>"
-write-host -ForegroundColor yellow "<Var builder=""Input"" id=""DisplayProgressPreview"" 		displayName=""DisplayProgressPreview"" 		displayType=""INPUTPC"" actions=""DisplayProgressPreview""/>"
-write-host -ForegroundColor yellow "<!-- Progress on the Path End -->"
+write-host -ForegroundColor yellow "<!-- Herb Scanner on the Path Begin --> "
+write-host -ForegroundColor yellow "<Var builder=""Input"" id=""ScanForHerbs"" 		displayName=""ScanForHerbs"" 	displayType=""INPUTPC"" actions=""ScanForHerbs""/>"
+write-host -ForegroundColor yellow "<Var builder=""Input"" id=""ClearHerbPins"" 	displayName=""ClearHerbPins"" 	displayType=""INPUTPC"" actions=""ClearHerbPins""/>"
+write-host -ForegroundColor yellow "<!-- Herb Scanner End -->"
 write-host -ForegroundColor yellow ""
 
 write-host -BackgroundColor darkred "                             "
