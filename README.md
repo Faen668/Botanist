@@ -3,5 +3,5 @@
 - Please follow all guidance in the **Installation Instructions** file within the archive.
 
 # Uninstallation
-Remove modHerbScanner and dlcHerbScanner from your mods and DLC folder then remove modHerbScanner.xml from
+Remove modBotanist and dlcBotanist from your mods and DLC folder then remove modBotanist.xml from
 The Witcher 3\bin\config\r4game\user_config_matrix\pc
