@@ -163,7 +163,7 @@ class BT_Harvesting_Ground
 			mappin.radius				= this.mappin_rad;
 			mappin.position 			= this.mappin_pos;
 			mappin.description 		    = this.get_mappin_description();
-			mappin.region 				= "prolog_village";
+			mappin.region 				= this.get_herb_region_string();
 			mappin.type 				= "Herbalist";
 			mappin.filtered_type 		= "Herbalist";
 			mappin.is_quest 			= false;
@@ -217,6 +217,22 @@ class BT_Harvesting_Ground
 		description = StrReplace(description, "[COUNT]", this.spot_herbs.Size());
 
 		return description;
+	}
+	
+	//---------------------------------------------------
+
+	function get_herb_region_string() : string
+	{
+		switch( this.spot_region )
+		{
+			case BT_NoMansLand:	 	return "novigrad";
+			case BT_NoMansLand:	 	return "no_mans_land";
+			case BT_Skellige:	 	return "skellige";
+			case BT_KaerMorhen: 	return "kaer_morhen";
+			case BT_WhiteOrchard: 	return "prolog_village";
+			case BT_Toussaint: 		return "bob";
+			default: 				return "";
+		}
 	}
 }
 
