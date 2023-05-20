@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserConfig>	
+	<Group id="Botanist_GeneralSettings" displayName="Mods.BT_Name.BT_Page_General">
+		<VisibleVars>
+			<Var id="Botanist_Mod_Targets" displayName="Botanist_Mod_Targets" displayType="OPTIONS">
+				<OptionsArray>
+					<Option id="00" displayName="BT_OverrideTarget_00">	<Entry varId="Botanist_Mod_Targets" value="00"/></Option>
+					<Option id="01" displayName="BT_OverrideTarget_01">	<Entry varId="Botanist_Mod_Targets" value="01"/></Option>
+					<Option id="02" displayName="BT_OverrideTarget_02">	<Entry varId="Botanist_Mod_Targets" value="02"/></Option>
+					<Option id="03" displayName="BT_OverrideTarget_03">	<Entry varId="Botanist_Mod_Targets" value="03"/></Option>
+					<Option id="04" displayName="BT_OverrideTarget_04">	<Entry varId="Botanist_Mod_Targets" value="04"/></Option>
+					<Option id="05" displayName="BT_OverrideTarget_05">	<Entry varId="Botanist_Mod_Targets" value="05"/></Option>
+					<Option id="06" displayName="BT_OverrideTarget_06">	<Entry varId="Botanist_Mod_Targets" value="06"/></Option>
+					<Option id="07" displayName="BT_OverrideTarget_07">	<Entry varId="Botanist_Mod_Targets" value="07"/></Option>
+					<Option id="08" displayName="BT_OverrideTarget_08">	<Entry varId="Botanist_Mod_Targets" value="08"/></Option>
+					<Option id="09" displayName="BT_OverrideTarget_09">	<Entry varId="Botanist_Mod_Targets" value="09"/></Option>
+					<Option id="10" displayName="BT_OverrideTarget_10">	<Entry varId="Botanist_Mod_Targets" value="10"/></Option>
+					<Option id="11" displayName="BT_OverrideTarget_11">	<Entry varId="Botanist_Mod_Targets" value="11"/></Option>
+					<Option id="12" displayName="BT_OverrideTarget_12">	<Entry varId="Botanist_Mod_Targets" value="12"/></Option>
+					<Option id="13" displayName="BT_OverrideTarget_13">	<Entry varId="Botanist_Mod_Targets" value="13"/></Option>
+					<Option id="14" displayName="BT_OverrideTarget_14">	<Entry varId="Botanist_Mod_Targets" value="14"/></Option>
+					<Option id="15" displayName="BT_OverrideTarget_15">	<Entry varId="Botanist_Mod_Targets" value="15"/></Option>
+					<Option id="16" displayName="BT_OverrideTarget_16">	<Entry varId="Botanist_Mod_Targets" value="16"/></Option>
+					<Option id="17" displayName="BT_OverrideTarget_17">	<Entry varId="Botanist_Mod_Targets" value="17"/></Option>
+					<Option id="18" displayName="BT_OverrideTarget_18">	<Entry varId="Botanist_Mod_Targets" value="18"/></Option>
+					<Option id="19" displayName="BT_OverrideTarget_19">	<Entry varId="Botanist_Mod_Targets" value="19"/></Option>
+					<Option id="20" displayName="BT_OverrideTarget_20">	<Entry varId="Botanist_Mod_Targets" value="20"/></Option>
+					<Option id="21" displayName="BT_OverrideTarget_21">	<Entry varId="Botanist_Mod_Targets" value="21"/></Option>
+					<Option id="22" displayName="BT_OverrideTarget_22">	<Entry varId="Botanist_Mod_Targets" value="22"/></Option>
+					<Option id="23" displayName="BT_OverrideTarget_23">	<Entry varId="Botanist_Mod_Targets" value="23"/></Option>
+					<Option id="24" displayName="BT_OverrideTarget_24">	<Entry varId="Botanist_Mod_Targets" value="24"/></Option>
+					<Option id="25" displayName="BT_OverrideTarget_25">	<Entry varId="Botanist_Mod_Targets" value="25"/></Option>
+					<Option id="26" displayName="BT_OverrideTarget_26">	<Entry varId="Botanist_Mod_Targets" value="26"/></Option>
+					<Option id="27" displayName="BT_OverrideTarget_27">	<Entry varId="Botanist_Mod_Targets" value="27"/></Option>
+					<Option id="28" displayName="BT_OverrideTarget_28">	<Entry varId="Botanist_Mod_Targets" value="28"/></Option>
+					<Option id="29" displayName="BT_OverrideTarget_29">	<Entry varId="Botanist_Mod_Targets" value="29"/></Option>
+					<Option id="30" displayName="BT_OverrideTarget_30">	<Entry varId="Botanist_Mod_Targets" value="30"/></Option>
+					<Option id="31" displayName="BT_OverrideTarget_31">	<Entry varId="Botanist_Mod_Targets" value="31"/></Option>
+					<Option id="32" displayName="BT_OverrideTarget_32">	<Entry varId="Botanist_Mod_Targets" value="32"/></Option>
+					<Option id="33" displayName="BT_OverrideTarget_33">	<Entry varId="Botanist_Mod_Targets" value="33"/></Option>
+					<Option id="34" displayName="BT_OverrideTarget_34">	<Entry varId="Botanist_Mod_Targets" value="34"/></Option>
+				</OptionsArray>
+			</Var>	
+			
+			<Var id="Separator" 			   displayName="" 						  displayType="SUBTLE_SEPARATOR"/>
+			<Var id="Botanist_MapPins_Enabled" displayName="Botanist_MapPins_Enabled" displayType="TOGGLE"/>
+			<Var id="Botanist_MapPins_Radius"  displayName="Botanist_MapPins_Radius"  displayType="SLIDER;5;60;55"/>	
+			
+		</VisibleVars>
+	</Group>
+
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+	<Group id="Botanist_HerbMappins" displayName="Mods.BT_Name.BT_Page_HerbMappins">
+		<VisibleVars>
+		
+
+			
+		</VisibleVars>
+	</Group>
+
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+	<Group id="Botanist_HerbMarkers" displayName="Mods.BT_Name.BT_Page_HerbMarkers">
+		<VisibleVars>
+		
+			<Var id="Botanist_Markers_Enabled" displayName="Botanist_Markers_Enabled" displayType="TOGGLE"/>
+			<Var id="Botanist_Markers_Active" displayName="Botanist_Markers_Active" displayType="OPTIONS">
+				<OptionsArray>	
+					<Option id="00" displayName="BT_Active_00"> <Entry varId="Botanist_Markers_Active" value="00"/></Option>
+					<Option id="01" displayName="BT_Active_01"> <Entry varId="Botanist_Markers_Active" value="01"/></Option>
+					<Option id="02" displayName="BT_Active_02"> <Entry varId="Botanist_Markers_Active" value="02"/></Option>
+					<Option id="03" displayName="BT_Active_03"> <Entry varId="Botanist_Markers_Active" value="03"/></Option>
+				</OptionsArray>
+			</Var>	
+			
+			<Var id="Botanist_Markers_Display" displayName="Botanist_Markers_Display" displayType="OPTIONS">
+				<OptionsArray>	
+					<Option id="00" displayName="BT_Display_00"> <Entry varId="Botanist_Markers_Display" value="00"/></Option>
+					<Option id="01" displayName="BT_Display_01"> <Entry varId="Botanist_Markers_Display" value="01"/></Option>
+					<Option id="02" displayName="BT_Display_02"> <Entry varId="Botanist_Markers_Display" value="02"/></Option>
+				</OptionsArray>
+			</Var>	
+			
+			<Var id="Botanist_Markers_Visible" displayName="Botanist_Markers_Visible" displayType="OPTIONS">
+				<OptionsArray>	
+					<Option id="00" displayName="BT_Visible_00"> <Entry varId="Botanist_Markers_Visible" value="00"/></Option>
+					<Option id="01" displayName="BT_Visible_01"> <Entry varId="Botanist_Markers_Visible" value="01"/></Option>
+					<Option id="02" displayName="BT_Visible_02"> <Entry varId="Botanist_Markers_Visible" value="02"/></Option>
+					<Option id="03" displayName="BT_Visible_03"> <Entry varId="Botanist_Markers_Visible" value="03"/></Option>
+					<Option id="04" displayName="BT_Visible_04"> <Entry varId="Botanist_Markers_Visible" value="04"/></Option>
+				</OptionsArray>
+			</Var>	
+			
+			<Var id="Botanist_Markers_FontSize"	displayName="Botanist_Markers_FontSize" displayType="SLIDER;10;40;30"/>
+			
+		</VisibleVars>
+	</Group>
+
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+	
+	<Group id="Botanist_HarvestingGrounds" displayName="Mods.BT_Name.BT_Page_HaverstingGrounds">
+		<VisibleVars>
+		
+			<Var id="Botanist_Farming_Enabled" displayName="Botanist_Farming_Enabled" displayType="TOGGLE"/>
+			<Var id="Botanist_Farming_MaxGrd"  displayName="Botanist_Farming_MaxGrd"  displayType="SLIDER;1;3;2"/>
+			<Var id="Botanist_Farming_Radius"  displayName="Botanist_Farming_Radius"  displayType="SLIDER;100;600;250"/>
+			<Var id="Botanist_Farming_MinReq"  displayName="Botanist_Farming_MinReq"  displayType="SLIDER;3;10;7"/>
+			<Var id="Botanist_Farming_MaxAll"  displayName="Botanist_Farming_MaxAll"  displayType="SLIDER;3;30;27"/>
+			
+		</VisibleVars>
+	</Group>		
+</UserConfig>

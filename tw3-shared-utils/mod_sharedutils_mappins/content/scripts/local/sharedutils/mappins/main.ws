@@ -5,21 +5,26 @@ function SU_updateCustomMapPins(out flash_array: CScriptedFlashArray, value_stor
   var custom_pins: array<SU_MapPin>;
   var current_pin: SU_MapPin;
   var region, shown_region: String;
+  var journal_area: int;
   var i: int;
 
   custom_pins = SUMP_getCustomPins();
 
   region = SUH_getCurrentRegion();
   shown_region = AreaTypeToName(shown_area);
+  journal_area = theGame.GetCommonMapManager().GetCurrentJournalArea();
 
   for (i = 0; i < custom_pins.Size(); i += 1) {
     current_pin = custom_pins[i];
-  
+	
     // the player is not in the right region or right map view, we skip the pin.
     if (current_pin.region != shown_region) {
+	 // LogChannel('TEST', "Pin: " + current_pin.tag + " " + current_pin.region + " " + region + " " + shown_region + " NODISPLAY");
       continue;
     }
-
+	
+	//LogChannel('TEST', "Pin: " + current_pin.tag + " " + current_pin.region + " " + region + " " + shown_region);
+	
     flash_object = value_storage.CreateTempFlashObject("red.game.witcher3.data.StaticMapPinData");
     flash_object.SetMemberFlashString("type", current_pin.type);
     flash_object.SetMemberFlashString("filteredType", current_pin.filtered_type);
@@ -28,10 +33,12 @@ function SU_updateCustomMapPins(out flash_array: CScriptedFlashArray, value_stor
     flash_object.SetMemberFlashNumber("posX", current_pin.position.X);
     flash_object.SetMemberFlashNumber("posY", current_pin.position.Y);
     flash_object.SetMemberFlashNumber("radius", RoundF(current_pin.radius));
-    flash_object.SetMemberFlashBool("is_quest", current_pin.is_quest);
-      
+    flash_object.SetMemberFlashBool("isQuest", current_pin.is_quest);
+    flash_object.SetMemberFlashBool("isFastTravel", current_pin.is_fast_travel);
+    flash_object.SetMemberFlashUInt("id", NameToFlashUInt(current_pin.pin_tag));
+
     //Constants - Should not be modified from these values for our purposes.
-    flash_object.SetMemberFlashUInt("id", NameToFlashUInt('User'));
+    flash_object.SetMemberFlashInt("journalAreaId", journal_area);
     flash_object.SetMemberFlashNumber("rotation", 0);
     flash_object.SetMemberFlashBool("isPlayer", false);
     flash_object.SetMemberFlashBool("isUserPin", false);
@@ -41,7 +48,6 @@ function SU_updateCustomMapPins(out flash_array: CScriptedFlashArray, value_stor
     flash_array.PushBackFlashObject(flash_object);
   }
 }
-
 
 function SU_updateMinimapPins() {
   var minimapModule : CR4HudModuleMinimap2;
@@ -94,6 +100,26 @@ function SU_updateMinimapPins() {
   }
 }
 
+function SUMP_onPinUsed(pin_tag: name, area_id: int): bool {
+  var custom_pins: array<SU_MapPin>;
+  var current_pin: SU_MapPin;
+  var i: int;
+
+  custom_pins = SUMP_getCustomPins();
+
+  for (i = 0; i < custom_pins.Size(); i += 1) {
+    current_pin = custom_pins[i];
+
+    if (current_pin.pin_tag == pin_tag) {
+      current_pin.onPinUsed();
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function SUMP_addCustomPin(pin: SU_MapPin) {
   var manager: SUMP_Manager;
 
@@ -103,6 +129,19 @@ function SUMP_addCustomPin(pin: SU_MapPin) {
 
 function SUMP_getCustomPins(): array<SU_MapPin> {
   return SUMP_getManager().mappins;
+}
+
+function SUMP_updateCustomPinsLabel(tag: string, label: string) {
+  var custom_pins: array<SU_MapPin> = SUMP_getManager().mappins;
+  var i: int;
+  
+  for (i = 0; i < custom_pins.Size(); i += 1) {
+	if (custom_pins[i].tag == tag) {
+		custom_pins[i].label = label;
+		return;
+	}
+  }
+  SUMP_Logger("Unable to update label for map pin: " + tag);
 }
 
 function SUMP_Logger(message: string, optional informGUI: bool) {

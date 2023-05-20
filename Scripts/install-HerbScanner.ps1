@@ -4,7 +4,7 @@ cls
 
 echo ""
 write-host -BackgroundColor darkred "                                    "
-write-host -ForegroundColor white -BackgroundColor darkred "  Herb Scanner Installer  "
+write-host -ForegroundColor white -BackgroundColor darkred "  Herb Scanner Installer            "
 write-host -BackgroundColor darkred "                                    "
 echo ""
 echo "- This script will automatically install Herb Scanner and its dependencies."
@@ -50,16 +50,16 @@ if (!(test-path mods)) {
 }
 
 write-host -BackgroundColor darkred "                                    "
-write-host -ForegroundColor white -BackgroundColor darkred "  Herb Scanner Installer  "
+write-host -ForegroundColor white -BackgroundColor darkred "  Herb Scanner Installer            "
 write-host -BackgroundColor darkred "                                    "
 
 echo ""
 echo "- Fetching latest release from Github..."
 echo ""
 
-$response = Invoke-RestMethod -Uri "https://api.github.com/repos/Faen668/Progress-On-The-Path/releases"
+$response = Invoke-RestMethod -Uri "https://api.github.com/repos/Faen668/Herb-Scanner-NG/releases"
 $latestversion = $response[0].name
-$latestAssetUrl = "https://github.com/Faen668/Progress-On-The-Path/releases/latest/download/Progress-on-the-Path.zip"
+$latestAssetUrl = "https://github.com/Faen668/Herb-Scanner-NG/releases/download/1.0.0/Herb-Scanner-NG.zip"
 
 echo ""
 write-host "- Downloading Herb Scanner $($latestversion)"

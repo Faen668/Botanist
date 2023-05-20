@@ -6,56 +6,101 @@
 ; This file is used to create translations using https://www.nexusmods.com/witcher3/mods/1055 all credits go to rmemr
 ;
 2116254000||panel_Mods|Mods
-2116254001||panel_HSC_Name|Herb Scanner
-2116254002||panel_HSC_Page_General|Settings
+2116254001||panel_BT_Name|Botanist
+2116254002||panel_BT_Page_General|Settings
+2116254078||panel_BT_Page_HerbMappins|Map Pins
+2116254079||panel_BT_Page_HerbMarkers|3D Markers
+2116254080||panel_BT_Page_HaverstingGrounds|Harvesting Grounds
 ;
-2116254003||option_HerbScanner_Mod_Enabled|<font color="#FF7D63">Mod Enabled:</font>
+2116254003||option_Botanist_Mod_Targets		|<font color="#FF7D63">Main Setting      :   Herb Targetting</font>
 ;
-2116254004||option_HerbScanner_DynamicMode_OnlyNeededQty		|<font color="#479c9d">Dynamic Mode       :   Pin Only Required Quantity</font>
-2116254005||option_HerbScanner_DynamicMode_ShowMiniMap			|<font color="#479c9d">Dynamic Mode       :   Show On Minimap</font>
-2116254006||option_HerbScanner_DynamicMode_ArrowPointers		|<font color="#479c9d">Dynamic Mode       :   Arrow Pointers</font>
-2116254007||option_HerbScanner_DynamicMode_Highlighted			|<font color="#479c9d">Dynamic Mode       :   Highlighted Arrows</font>
+2116254004||option_Botanist_Markers_Enabled		|<font color="#FFF1BA">3D Markers      :   Enabled:</font>
+2116254005||option_Botanist_Markers_Active		|<font color="#FFF1BA">3D Markers      :   Display:</font>
+2116254006||option_Botanist_Markers_Display		|<font color="#FFF1BA">3D Markers      :   Display:</font>
+2116254007||option_Botanist_Markers_Visible		|<font color="#FFF1BA">3D Markers      :   Visibility Range:</font>
+2116254008||option_Botanist_Markers_FontSize	|<font color="#FFF1BA">3D Markers      :   Text & Icon Size:
 ;
-2116254008||option_HerbScanner_DynamicMode_OverrideTarget|<font color="#479c9d">Dynamic Mode       :    Override With Manual Selection</font>
-2116254009||preset_value_OverrideTarget_00|None - Use Dynamic
-2116254010||preset_value_OverrideTarget_01|Allspice
-2116254011||preset_value_OverrideTarget_02|Arenaria
-2116254012||preset_value_OverrideTarget_03|Balisse fruit
-2116254013||preset_value_OverrideTarget_04|Beggartick blossoms
-2116254014||preset_value_OverrideTarget_05|Berbercane fruit
-2116254015||preset_value_OverrideTarget_06|Bloodmoss
-2116254016||preset_value_OverrideTarget_07|Blowball
-2116254017||preset_value_OverrideTarget_08|Bryonia
-2116254018||preset_value_OverrideTarget_09|Buckthorn
-2116254019||preset_value_OverrideTarget_10|Celandine
-2116254020||preset_value_OverrideTarget_11|Cortinarius
-2116254021||preset_value_OverrideTarget_12|Crow's eye
-2116254022||preset_value_OverrideTarget_13|Ergot seeds
-2116254023||preset_value_OverrideTarget_14|Fool's parsley leaves
-2116254024||preset_value_OverrideTarget_15|Ginatia petals
-2116254025||preset_value_OverrideTarget_16|Green mold
-2116254026||preset_value_OverrideTarget_17|Han fiber
-2116254027||preset_value_OverrideTarget_18|Hellebore petals
-2116254028||preset_value_OverrideTarget_19|Honeysuckle
-2116254029||preset_value_OverrideTarget_20|Hop umbels
-2116254030||preset_value_OverrideTarget_21|Hornwort
-2116254031||preset_value_OverrideTarget_22|Longrube
-2116254032||preset_value_OverrideTarget_23|Mandrake root
-2116254033||preset_value_OverrideTarget_24|Mistletoe
-2116254034||preset_value_OverrideTarget_25|Moleyarrow
-2116254035||preset_value_OverrideTarget_26|Nostrix
-2116254036||preset_value_OverrideTarget_27|Puffball
-2116254037||preset_value_OverrideTarget_28|Pringrape
-2116254038||preset_value_OverrideTarget_29|Ranogrin
-2116254039||preset_value_OverrideTarget_30|Ribleaf
-2116254040||preset_value_OverrideTarget_31|Sewant mushrooms
-2116254041||preset_value_OverrideTarget_32|Verbena
-2116254042||preset_value_OverrideTarget_33|White myrtle petals
-2116254043||preset_value_OverrideTarget_34|Wolfsbane
+2116254009||preset_value_BT_Active_00|While Focussing
+2116254010||preset_value_BT_Active_01|While Not Focussing
+2116254011||preset_value_BT_Active_02|Always
+2116254012||preset_value_BT_Active_03|Never (Disabled)
 ;
-2116254044||option_HerbScanner_Global_RemoveIfEmpty			|<font color="#F56C77">Global          :   Remove Pin On Loot</font>
-2116254045||option_HerbScanner_Global_SearchRadius			|<font color="#F56C77">Global          :   Max Search Radius</font>
-2116254046||option_HerbScanner_Global_MaximumResults		|<font color="#F56C77">Global          :   Max Number of Pins</font>
-2116254047||option_HerbScanner_Global_MapPinSize			|<font color="#F56C77">Global          :   Map Pin Size</font>
+2116254013||preset_value_BT_Display_00|Icons & Text
+2116254014||preset_value_BT_Display_01|Text Only
+2116254015||preset_value_BT_Display_02|Icon Only
 ;
-;Next ID 2116254048
+2116254016||preset_value_BT_Visible_00|Extra Short
+2116254017||preset_value_BT_Visible_01|Short
+2116254018||preset_value_BT_Visible_02|Normal
+2116254019||preset_value_BT_Visible_03|Long
+2116254020||preset_value_BT_Visible_04|Extra Long
+;
+2116254021||option_Botanist_MapPins_Enabled		|<font color="#8EA4C8">Map Pins       :    Enabled</font>
+2116254022||option_Botanist_MapPins_Radius		|<font color="#8EA4C8">Map Pind       :    Map Pin Size</font>
+;
+2116254023||preset_value_BT_OverrideTarget_00|None - Recipe Based
+2116254024||preset_value_BT_OverrideTarget_01|Allspice
+2116254025||preset_value_BT_OverrideTarget_02|Arenaria
+2116254026||preset_value_BT_OverrideTarget_03|Balisse fruit
+2116254027||preset_value_BT_OverrideTarget_04|Beggartick blossoms
+2116254028||preset_value_BT_OverrideTarget_05|Berbercane fruit
+2116254029||preset_value_BT_OverrideTarget_06|Bloodmoss
+2116254030||preset_value_BT_OverrideTarget_07|Blowball
+2116254031||preset_value_BT_OverrideTarget_08|Bryonia
+2116254032||preset_value_BT_OverrideTarget_09|Buckthorn
+2116254033||preset_value_BT_OverrideTarget_10|Celandine
+2116254034||preset_value_BT_OverrideTarget_11|Cortinarius
+2116254035||preset_value_BT_OverrideTarget_12|Crow's eye
+2116254036||preset_value_BT_OverrideTarget_13|Ergot seeds
+2116254037||preset_value_BT_OverrideTarget_14|Fool's parsley leaves
+2116254038||preset_value_BT_OverrideTarget_15|Ginatia petals
+2116254039||preset_value_BT_OverrideTarget_16|Green mold
+2116254040||preset_value_BT_OverrideTarget_17|Han fiber
+2116254041||preset_value_BT_OverrideTarget_18|Hellebore petals
+2116254042||preset_value_BT_OverrideTarget_19|Honeysuckle
+2116254043||preset_value_BT_OverrideTarget_20|Hop umbels
+2116254044||preset_value_BT_OverrideTarget_21|Hornwort
+2116254045||preset_value_BT_OverrideTarget_22|Longrube
+2116254046||preset_value_BT_OverrideTarget_23|Mandrake root
+2116254047||preset_value_BT_OverrideTarget_24|Mistletoe
+2116254048||preset_value_BT_OverrideTarget_25|Moleyarrow
+2116254049||preset_value_BT_OverrideTarget_26|Nostrix
+2116254050||preset_value_BT_OverrideTarget_27|Puffball
+2116254051||preset_value_BT_OverrideTarget_28|Pringrape
+2116254052||preset_value_BT_OverrideTarget_29|Ranogrin
+2116254053||preset_value_BT_OverrideTarget_30|Ribleaf
+2116254054||preset_value_BT_OverrideTarget_31|Sewant mushrooms
+2116254055||preset_value_BT_OverrideTarget_32|Verbena
+2116254056||preset_value_BT_OverrideTarget_33|White myrtle petals
+2116254057||preset_value_BT_OverrideTarget_34|Wolfsbane
+;
+2116254058||BT_Message_BootStrap|Bootstrapped successfully with Magic, prayers and wishful thinking...
+2116254059||BT_Message_NoHerbsFound|Herb Scanner: No Herbs Known...
+2116254060||BT_Message_AddedMapPins|Herb Scanner: Added Map Pins for [REPLACE] Herbs.
+;
+2116254061||BT_HerbLootable|: <font color="#A1EF7A">Harvest-Ready</font>
+;
+2116254062||BT_DialogueMenu_Scan_Accept|Add To Existing Pins
+2116254063||BT_DialogueMenu_Scan_Decline|Start fresh Scan
+;
+2116254064||BT_DialogueMenu_Clear_Accept|Clear
+2116254065||BT_DialogueMenu_Clear_Decline|Cancel
+;
+2116254066||BT_ScanDialogueMessage|Do you wish to add to the existing map pins or start a fresh scan? <br/> <br/> Starting a fresh scan will remove all old 3D Markers & Map Pins.
+2116254067||BT_ClearDialogueMessage|Do you wish to clear all 3D Markers & Map Pins?
+;
+2116254068||BT_Message_Updated|Botanist: Updated To Version [REPLACE]
+2116254069||BT_Message_Install|Botanist: Version [REPLACE] Installed & Ready
+;
+2116254070||BT_HarvestingGrounds| <font color="#9BAADD">[NAME]</font> Harvesting Ground
+2116254071||BT_HarvestingGrounds_Description|A Dedicated [NAME] Harvesting Ground With [COUNT] Plants To Be Harvested.
+;
+2116254072||option_Botanist_Farming_Enabled		|<font color="#F4B183">Harvesting Grounds       :    Grounds Enabled</font>
+2116254073||option_Botanist_Farming_MaxGrd		|<font color="#F4B183">Harvesting Grounds       :    Maximum Grounds of The Same Type</font>
+2116254074||option_Botanist_Farming_Radius		|<font color="#F4B183">Harvesting Grounds       :    Maximum Grounds Radius</font>
+2116254075||option_Botanist_Farming_MinReq		|<font color="#F4B183">Harvesting Grounds       :    Minimum Herbs Required</font>
+2116254076||option_Botanist_Farming_MaxAll		|<font color="#F4B183">Harvesting Grounds       :    Maximum Herbs In Grounds</font>
+;
+2116254077||BT_HerbLootable_HG|: <font color="#9BAADD">Harvesting Grounds</font>
+;
+;Next ID 2116254081

@@ -5,5 +5,5 @@ set gamePath=F:\Steam\steamapps\common\The Witcher 3
 
 REM do not update anything below this line
 set modPath=%cd%\..
-set modName=HerbScanner
+set modName=Botanist
 set modKitPath=D:\Games\Modding\Modding - Witcher 3\Mod Kit\bin\x64
