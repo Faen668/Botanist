@@ -5,6 +5,7 @@
 
 class BT_Harvesting_Ground
 {
+	var event_manager   : Botanist_EventHandler; 
 	var user_settings	: Botanist_UserSettings;
 	var entity_storage  : Botanist_KnownEntityStorage;
 	var config          : Botanist_Config;
@@ -38,8 +39,7 @@ class BT_Harvesting_Ground
 	
 	function create(Harvest_Grounds_Results  : Botanist_HarvestGroundResults, region : BT_Herb_Region, type : BT_Herb_Enum, mappin_rad	: float, mappin_pos	: Vector, master : Botanist, user_settings : Botanist_UserSettings) : BT_Harvesting_Ground
 	{
-		var Idx : int;
-		
+		this.event_manager   = master.BT_PersistentStorage.BT_EventHandler;
 		this.entity_storage  = master.BT_PersistentStorage.BT_HerbStorage;
 		this.config          = master.BT_ConfigSettings;
 		
@@ -57,7 +57,12 @@ class BT_Harvesting_Ground
 		this.mappin_name     = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName( botanist_get_herb_name_from_enum( this.spot_type ) ));
 		this.apply_random_boon();
 		
-		this.GotoState('monitor');
+		this.display_farming_spot();
+		this.print_info();
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
+		
+		this.GotoState('update');
 		return this;
 	}
 
@@ -86,51 +91,56 @@ class BT_Harvesting_Ground
 			this.spot_herbs[Idx].herb.reset( true );
 			this.spot_herbs.EraseFast(Idx);
 		}
-
-		this.GotoState('monitor');
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
+		this.display_farming_spot();
+		this.update_mappin_description();
 	}
 
 	//---------------------------------------------------
 	
 	function update(user_settings : Botanist_UserSettings)
-	{
-		var Idx : int;
-		
+	{	
 		this.user_settings = user_settings;
-		
-		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
-		{
-			this.spot_herbs[Idx].herb.set_displayed_in_grounds(this.user_settings);
-		}
+		this.GotoState('update');
 	}
 	
 	//---------------------------------------------------
 	
-	function validate_harvesting_ground() : void
+	function update_mappin_description() : void
+	{
+		var Idx : int = this.mappin_manager.mappins.FindFirst(this.mappin);
+
+		if ( Idx != -1 )
+		{
+			this.mappin_manager.mappins[Idx].description = this.get_mappin_description();
+		}
+	}
+
+	//---------------------------------------------------
+	
+	event On_herb_looted(hash : int) : void
 	{
 		var Idx : int;
 		
 		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
-			if ( this.spot_herbs[Idx].herb.is_looted() )
+			if ( this.spot_herbs[Idx].herb.herb_guidhash == hash )
 			{
 				this.spot_herbs[Idx].herb.reset( true );
 				this.spot_herbs.EraseFast(Idx);
+				break;
 			}
 		}
-
-		Idx = this.mappin_manager.mappins.FindFirst(this.mappin);
-		if ( Idx != -1 )
-		{
-			this.mappin_manager.mappins[Idx].description = this.get_mappin_description();
-		}
-			
+		
 		if ( this.spot_herbs.Size() <= 0 )
 		{
 			this.remove_farming_spot();
 		}
+		
+		this.update_mappin_description();
 	}
-
+	
 	//---------------------------------------------------
 	
 	function apply_random_boon() : void
@@ -187,6 +197,8 @@ class BT_Harvesting_Ground
 	function remove_farming_spot() : void
 	{
 		var Idx : int;
+		
+		this.event_manager.unregister_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
 		
 		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
@@ -253,76 +265,33 @@ state disabled in BT_Harvesting_Ground
 //-- Botanist Main Harvesting Grounds States --------
 //---------------------------------------------------
 
-state monitor in BT_Harvesting_Ground 
+state waiting in BT_Harvesting_Ground 
 {
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger(parent.spot_hash + "Entered state [monitor]");
-
-		parent.display_farming_spot();
-		parent.print_info();	
-		
-		this.monitor();
+		BT_Logger(parent.spot_hash + "Entered state [waiting]");
 	}
-	
-	//-----------------------------------------------
-	
-	entry function monitor() : void
-	{
-		var Idx, Edx : int;
+}
 
+//---------------------------------------------------
+//-- Botanist Main Harvesting Grounds States --------
+//---------------------------------------------------
+
+state update in BT_Harvesting_Ground 
+{
+	event OnEnterState(previous_state_name: name) 
+	{	
+		var Idx : int;
+		
+		super.OnEnterState(previous_state_name);
+		BT_Logger(parent.spot_hash + "Entered state [update]");
+		
 		for( Idx = parent.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
 			parent.spot_herbs[Idx].herb.set_displayed_in_grounds(parent.user_settings);
-		}		
-		this.loop();
-	}
-	
-	//-----------------------------------------------
-	
-	latent function loop() : void
-	{
-		var new_usersettings : Botanist_UserSettings;
-		var old_usersettings : Botanist_UserSettings;
-		
-		while (true)
-		{
-			new_usersettings = parent.config.get_user_settings();
-
-			if ( this.settings_have_changed(old_usersettings, new_usersettings) )
-			{
-				parent.update(new_usersettings);
-			}
-			
-			old_usersettings = new_usersettings;
-			parent.validate_harvesting_ground();			
-			Sleep(3);
-		}
-	}
-
-	//---------------------------------------------------
-
-	private function settings_have_changed(old_data, new_data : Botanist_UserSettings) : bool
-	{
-		var Idx, Edx : int;
-		
-		for( Idx = 0; Idx < new_data.bools.Size(); Idx += 1 )
-		{
-			if ( new_data.bools[Idx] != old_data.bools[Idx] )
-			{
-				return true;
-			}
 		}
 
-		for( Idx = 0; Idx < new_data.ints.Size(); Idx += 1 )
-		{
-			if ( new_data.ints[Idx] != old_data.ints[Idx] )
-			{
-				return true;
-			}
-		}
-
-		return false;
+		parent.GotoState('waiting');
 	}
 }

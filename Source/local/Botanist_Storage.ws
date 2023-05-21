@@ -5,7 +5,8 @@
 
 class Botanist_Storage
 {
-	var BT_HerbStorage : Botanist_KnownEntityStorage;
+	var BT_HerbStorage  : Botanist_KnownEntityStorage;
+	var BT_EventHandler : Botanist_EventHandler;
 }
 	
 //---------------------------------------------------
@@ -36,6 +37,18 @@ function BT_LoadStorageCollection(master: Botanist)
 	{
 		master.BT_PersistentStorage.BT_HerbStorage.inititalise(master);
 		BT_Logger("Existing Herb Storage Instance Loaded With A Size Of: " + master.BT_PersistentStorage.BT_HerbStorage.get_known_herbs_count());
+	}
+
+//---------------------------------------------------
+
+	if (!master.BT_PersistentStorage.BT_EventHandler)
+	{
+		master.BT_PersistentStorage.BT_EventHandler = new Botanist_EventHandler in master.BT_PersistentStorage;
+		BT_Logger("New Event Handler Instance Created.");
+	}
+	else
+	{
+		BT_Logger("Existing Event Handler Instance Loaded With: " + master.BT_PersistentStorage.BT_EventHandler.get_registration_count() + " registrations");
 	}
 }
 

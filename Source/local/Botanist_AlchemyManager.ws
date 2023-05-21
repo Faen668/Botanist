@@ -1,16 +1,5 @@
 
 //---------------------------------------------------
-//-- Botanist Required Herbs Struct -----------------
-//---------------------------------------------------
-
-struct Botanist_RequiredHerbs
-{
-	var names		: array<name>;
-	var quantities	: array<int>;
-	var cookeditems	: array<array<name>>;
-}
-
-//---------------------------------------------------
 //--Botanist Alchemy Manager Class ------------------
 //---------------------------------------------------
 

@@ -52,6 +52,8 @@ state on_tick in Botanist_UIRenderLoop
 		var stt              : float;
 		var target_herb		 : name;
 		
+		var changed_req, changed_set : bool;
+		
 		while(true)
 		{
 			stt = theGame.GetLocalTimeAsMilliseconds();
@@ -67,9 +69,18 @@ state on_tick in Botanist_UIRenderLoop
 			
 			//Obtain the base item name of the targetted herb if selected in the mod menu.
 			target_herb = BT_GetOverrideItemName( new_usersettings.ints[BT_Config_Mod_Targets] );
-
+			
+			changed_req = requirements_have_changed(old_requirements, new_requirements);
+			changed_set = settings_have_changed(old_usersettings, new_usersettings);
+			
+			//If the user has changed any mod settings then update the existing harvesting grounds as the 3D markers are no longer held in temp display storage.
+			if ( changed_set )
+			{
+				this.update_harvesting_grounds_with_new_settings(new_usersettings, current_region);
+			}
+			
 			//If any changes are detected in the required ingredients or if the user has changed any mod settings then update the UI.
-			if ( requirements_have_changed(old_requirements, new_requirements) || settings_have_changed(old_usersettings, new_usersettings) )
+			if ( changed_req || changed_set )
 			{
 				//Clear all existing UI data such as map pins and 3D Markers for the current region.
 				this.clear_existing_ui_data(current_region);
@@ -100,6 +111,22 @@ state on_tick in Botanist_UIRenderLoop
 			Sleep(2);
 		}
 	}
+
+	//---------------------------------------------------
+	
+	private function update_harvesting_grounds_with_new_settings(new_usersettings: Botanist_UserSettings, current_region : BT_Herb_Region) : void
+	{
+		var Idx, Edx: int;
+
+		for( Idx = 0; Idx < parent.storage.botanist_displayed_harvesting_grounds[current_region].Size(); Idx += 1 )
+		{
+			for( Edx = 0; Edx < parent.storage.botanist_displayed_harvesting_grounds[current_region][Idx].Size(); Edx += 1 )
+			{
+				parent.storage.botanist_displayed_harvesting_grounds[current_region][Idx][Edx].update( new_usersettings );
+			}
+		}
+		
+	}
 	
 	//---------------------------------------------------
 	
@@ -128,7 +155,6 @@ state on_tick in Botanist_UIRenderLoop
 
 		if ( new_data.names.Size() != old_data.names.Size() )
 		{
-			BT_Logger("CHANGE: Names Sizes");
 			return true;
 		}
 		
@@ -138,19 +164,16 @@ state on_tick in Botanist_UIRenderLoop
 			
 			if ( (new_data.quantities[Idx] - Edx) > 0 && parent.storage.has_harvestable_plants_in_region(new_data.names[Idx]) )
 			{
-				BT_Logger("CHANGE: Quantities Sizes");
 				return true;
 			}	
 		
 			if ( new_data.names[Idx] != old_data.names[Idx] )
 			{
-				BT_Logger("CHANGE: Name");
 				return true;
 			}
 
 			if ( new_data.quantities[Idx] != old_data.quantities[Idx] )
 			{
-				BT_Logger("CHANGE: Quantity");
 				return true;
 			}
 		}
@@ -168,7 +191,6 @@ state on_tick in Botanist_UIRenderLoop
 		{
 			if ( new_data.bools[Idx] != old_data.bools[Idx] )
 			{
-				BT_Logger("CHANGE: Bools");
 				return true;
 			}
 		}
@@ -177,7 +199,6 @@ state on_tick in Botanist_UIRenderLoop
 		{
 			if ( new_data.ints[Idx] != old_data.ints[Idx] )
 			{
-				BT_Logger("CHANGE: Ints");
 				return true;
 			}
 		}

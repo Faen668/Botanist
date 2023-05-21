@@ -40,6 +40,7 @@ class BT_MapPin extends SU_MapPin
 class BT_Herb
 {
 	var user_settings	: Botanist_UserSettings;
+	var event_manager   : Botanist_EventHandler; 
 	
 	// Creation Data
 	var herb_entity		: W3Herb;
@@ -100,7 +101,8 @@ class BT_Herb
 	{
 		var Idx : int;
 		var hrb : BT_Herb;
-
+		
+		this.event_manager  = master.BT_PersistentStorage.BT_EventHandler;
 		this.entity_storage = master.BT_PersistentStorage.BT_HerbStorage;
 		
 		this.herb_entity 	= herb_entity;
@@ -119,7 +121,9 @@ class BT_Herb
 		this.icon_path		= thePlayer.GetInventory().GetItemIconPathByName(herb_tag);
 		this.localised_name = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName(herb_tag));
 	
-		this.add_herb_to_storage();	
+		this.add_herb_to_storage();
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , this) );
 		return this;
 	}
 	
@@ -241,17 +245,20 @@ class BT_Herb
 	//---------------------------------------------------
 	//-- Loot Functions ---------------------------------
 	//---------------------------------------------------
-	
-	function set_herb_looted() : void
-	{		
-		if ( this.herb_has_boon && this.is_in_harvesting_grounds() )
-		{			
-			GetWitcherPlayer().DisplayHudMessage("Harvesting Grounds: This plant yielded an extra " + this.boon_total + " herbs.");
-			thePlayer.inv.AddAnItem(this.herb_tag, boon_total, false, false, true);
+
+	event On_herb_looted(hash : int) : void
+	{
+		if ( this.herb_guidhash == hash )
+		{
+			if ( this.herb_has_boon && this.is_in_harvesting_grounds() )
+			{			
+				GetWitcherPlayer().DisplayHudMessage("Harvesting Grounds: This plant yielded an extra " + this.boon_total + " herbs.");
+				thePlayer.inv.AddAnItem(this.herb_tag, boon_total, false, false, true);
+			}
+			
+			this.remove_boon();		
+			this.reset( true );		
 		}
-		
-		this.remove_boon();		
-		this.reset( true );
 	}
 
 	//---------------------------------------------------

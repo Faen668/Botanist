@@ -42,3 +42,31 @@ struct Botanist_NodePairing
 	var node : CNode;
 	var herb : BT_Herb;
 }
+
+//---------------------------------------------------
+//-- Botanist Event Data Struct ---------------------
+//---------------------------------------------------
+
+struct botanist_event_data
+{
+	//Event Type
+	var type : BT_Event_Type;
+	
+	//For event sending
+	var hash : int;
+	
+	//For new registrations
+	var herb : BT_Herb;
+	var harvesting_ground : BT_Harvesting_Ground;
+}
+
+//---------------------------------------------------
+//-- Botanist Required Herbs Struct -----------------
+//---------------------------------------------------
+
+struct Botanist_RequiredHerbs
+{
+	var names		: array<name>;
+	var quantities	: array<int>;
+	var cookeditems	: array<array<name>>;
+}

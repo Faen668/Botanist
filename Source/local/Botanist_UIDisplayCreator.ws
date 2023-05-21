@@ -128,9 +128,6 @@ state Processing in Botanist_UIDisplayCreator
 		var hg_maxground		: int = user_settings.ints[BT_Config_Hgr_MaxGrd];
 		var hg_displayed		: int = parent.storage.botanist_displayed_harvesting_grounds[region][type].Size();
 		
-		//Run a check on any existing harvesting grounds for this type to determine there status.
-		this.check_existing_grounds_validity(region, type, user_settings);
-		
 		//Generate an array of nodes and their matching botanist herb classes.		
 		hg_all_nodes = parent.storage.generate_herb_node_pairing_for_harvesting_grounds(region, type);
 		
@@ -150,18 +147,6 @@ state Processing in Botanist_UIDisplayCreator
 				hg_result_03 = this.findHarvestingGround("3", user_settings, hg_result_02.filtered_nodes);
 				this.create_harvesting_grounds(region, type, user_settings, hg_result_03);			
 			}
-		}
-	}
-
-	//---------------------------------------------------
-	
-	private function check_existing_grounds_validity(region : BT_Herb_Region, type : BT_Herb_Enum, user_settings : Botanist_UserSettings) : void
-	{	
-		var Idx : int;
-
-		for( Idx = 0; Idx < parent.storage.botanist_displayed_harvesting_grounds[region][type].Size(); Idx += 1 )
-		{	
-			parent.storage.botanist_displayed_harvesting_grounds[region][type][Idx].validate_harvesting_ground();
 		}
 	}
 	

@@ -8,6 +8,7 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	public var BT_ConfigSettings			: Botanist_Config;
 	public var BT_RenderingLoop				: Botanist_UIRenderLoop;
 	public var BT_AlchemyManager			: Botanist_AlchemyManager;
+	
 	default tag 							= 'Botanist_BootStrapper';
 
 	//-----------------------------------------------
@@ -17,7 +18,7 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		this.BT_ConfigSettings = new Botanist_Config in this;
 		this.BT_RenderingLoop  = new Botanist_UIRenderLoop in this;
 		this.BT_AlchemyManager = new Botanist_AlchemyManager in this;
-		
+
 		this.GotoState('Initialising');
 	}
 	
@@ -44,20 +45,7 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	
 	public function SetEntityLooted(potential_herb: W3RefillableContainer) : void
 	{	
-		var herb_entity    : W3Herb;
-		var hash, Idx      : int;
-
-		herb_entity = (W3Herb)potential_herb;
-		hash = herb_entity.GetGuidHash();
-		
-		if ( herb_entity && this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(hash) )
-		{
-			Idx = this.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.FindFirst(hash);
-			if ( Idx != -1 )
-			{
-				this.BT_PersistentStorage.BT_HerbStorage.botanist_master_herbs[Idx].set_herb_looted();
-			}
-		}
+		BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Looted, potential_herb.GetGuidHash() ) );
 	}
 }
 
@@ -135,16 +123,11 @@ state Initialising in Botanist
 		}
 		
 		this.SetModVersion();
-		BT_Logger("1");
 		BT_LoadStorageCollection(parent);
-		BT_Logger("2");
 		
 		parent.BT_AlchemyManager	.initialise(parent);
-		BT_Logger("3");
 		parent.BT_ConfigSettings 	.initialise(parent);
-		BT_Logger("4");
 		parent.BT_RenderingLoop		.initialise(parent);
-		BT_Logger("5");
 		parent.GotoState('Idle');
 	}
 	

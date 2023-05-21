@@ -91,3 +91,12 @@ enum BT_Herb_Display_Status
 	BT_Herb_HarvestReady = 2,
 	BT_Herb_In_Grounds = 3,
 }
+
+//---------------------------------------------------
+//-- Botanist Events Enum ---------------------------
+//---------------------------------------------------
+
+enum BT_Event_Type
+{
+	BT_Herb_Looted = 0,
+}
