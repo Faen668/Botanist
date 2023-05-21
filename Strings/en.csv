@@ -8,9 +8,8 @@
 2116254000||panel_Mods|Mods
 2116254001||panel_BT_Name|Botanist
 2116254002||panel_BT_Page_General|Settings
-2116254078||panel_BT_Page_HerbMappins|Map Pins
-2116254079||panel_BT_Page_HerbMarkers|3D Markers
-2116254080||panel_BT_Page_HaverstingGrounds|Harvesting Grounds
+2116254078||panel_BT_Page_HerbMarkers|3D Markers
+2116254079||panel_BT_Page_HaverstingGrounds|Harvesting Grounds
 ;
 2116254003||option_Botanist_Mod_Targets		|<font color="#FF7D63">Main Setting      :   Herb Targetting</font>
 ;
@@ -103,4 +102,4 @@
 ;
 2116254077||BT_HerbLootable_HG|: <font color="#9BAADD">Harvesting Grounds</font>
 ;
-;Next ID 2116254081
+;Next ID 2116254080
