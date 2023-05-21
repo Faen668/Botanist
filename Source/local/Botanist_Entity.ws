@@ -174,6 +174,7 @@ class BT_Herb
 	
 	function reset_entity( herb_entity : W3Herb ) : bool
 	{
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , this) );
 		this.herb_entity = herb_entity;
 		return (herb_entity);
 	}	

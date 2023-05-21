@@ -87,10 +87,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.0";
+		default curVersionStr = "1.0.1";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 100;
+		default curVersionInt = 101;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -158,7 +158,7 @@ state Initialising in Botanist
 	{
 		if (FactsQuerySum(VersStr) < curVersionInt) 
 		{
-			if (FactsQuerySum(VersStr) < 100) { FactsSet(VersStr, 100); hasUpdated = true; }
+			if (FactsQuerySum(VersStr) < 101) { FactsSet(VersStr, 101); hasUpdated = true; }
 		}
 	}
 }
@@ -535,6 +535,7 @@ class BT_Herb
 	
 	function reset_entity( herb_entity : W3Herb ) : bool
 	{
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , this) );
 		this.herb_entity = herb_entity;
 		return (herb_entity);
 	}	
@@ -999,11 +1000,11 @@ class Botanist_EventHandler
 		{
 			case BT_Herb_Looted : 
 			{
-				if ( data.harvesting_ground ) {
+				if ( data.harvesting_ground && !this.on_herb_looted_registrations_hg.Contains(data.harvesting_ground) ) {
 					this.on_herb_looted_registrations_hg.PushBack( data.harvesting_ground );
 				}
 
-				if ( data.herb ) {
+				if ( data.herb && !this.on_herb_looted_registrations.Contains(data.herb) ) {
 					this.on_herb_looted_registrations.PushBack( data.herb );
 				}				
 			}

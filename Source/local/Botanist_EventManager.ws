@@ -49,11 +49,11 @@ class Botanist_EventHandler
 		{
 			case BT_Herb_Looted : 
 			{
-				if ( data.harvesting_ground ) {
+				if ( data.harvesting_ground && !this.on_herb_looted_registrations_hg.Contains(data.harvesting_ground) ) {
 					this.on_herb_looted_registrations_hg.PushBack( data.harvesting_ground );
 				}
 
-				if ( data.herb ) {
+				if ( data.herb && !this.on_herb_looted_registrations.Contains(data.herb) ) {
 					this.on_herb_looted_registrations.PushBack( data.herb );
 				}				
 			}
