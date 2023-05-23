@@ -46,7 +46,7 @@ Botanist_Farming_Radius=150
 
 -Copy and paste the following:
 
-modHerbScanner.xml;
+modBotanist.xml;
 
 - Into These 2 Files:
 
