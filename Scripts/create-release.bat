@@ -37,9 +37,3 @@ XCOPY "%modpath%\tw3-shared-utils\mod_sharedutils_storage\" "%modpath%\release\m
 
 ::Create zip file for the release.
 powershell Compress-Archive -Path "%modpath%\release\bin", "%modpath%\release\mods", "%modpath%\release\dlc" -DestinationPath "%modpath%\release\Botanist.zip"
-
-::if "%1"=="-github" (
-::  echo "creating github release"
-::  
-::  node create-gh-release %2
-::)

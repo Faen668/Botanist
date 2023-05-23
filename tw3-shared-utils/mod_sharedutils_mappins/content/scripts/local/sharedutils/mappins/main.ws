@@ -11,7 +11,7 @@ function SU_updateCustomMapPins(out flash_array: CScriptedFlashArray, value_stor
   custom_pins = SUMP_getCustomPins();
 
   region = SUH_getCurrentRegion();
-  shown_region = AreaTypeToName(shown_area);
+  shown_region = SUH_normalizeRegion(AreaTypeToName(shown_area));
   journal_area = theGame.GetCommonMapManager().GetCurrentJournalArea();
 
   for (i = 0; i < custom_pins.Size(); i += 1) {
@@ -19,11 +19,8 @@ function SU_updateCustomMapPins(out flash_array: CScriptedFlashArray, value_stor
 	
     // the player is not in the right region or right map view, we skip the pin.
     if (current_pin.region != shown_region) {
-	 // LogChannel('TEST', "Pin: " + current_pin.tag + " " + current_pin.region + " " + region + " " + shown_region + " NODISPLAY");
       continue;
     }
-	
-	//LogChannel('TEST', "Pin: " + current_pin.tag + " " + current_pin.region + " " + region + " " + shown_region);
 	
     flash_object = value_storage.CreateTempFlashObject("red.game.witcher3.data.StaticMapPinData");
     flash_object.SetMemberFlashString("type", current_pin.type);

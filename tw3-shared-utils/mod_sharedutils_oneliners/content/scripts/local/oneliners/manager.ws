@@ -81,5 +81,55 @@ statemachine class SUOL_Manager extends SU_StorageItem {
     this.oneliners_garbage.PushBack(oneliner.id);
     this.fxRemoveOnelinerSFF.InvokeSelfOneArg(FlashArgInt(oneliner.id));
   }
+
+  public function findByTag(tag: string): array<SU_Oneliner> {
+    var output: array<SU_Oneliner>;
+    var i: int;
+
+    for (i = 0; i < this.oneliners.Size(); i += 1) {
+      if (this.oneliners[i].tag == tag) {
+        output.PushBack(this.oneliners[i]);
+      }
+    }
+
+    return output;
+  }
+
+  public function findByTagPrefix(tag: string): array<SU_Oneliner> {
+    var output: array<SU_Oneliner>;
+    var i: int;
+
+    for (i = 0; i < this.oneliners.Size(); i += 1) {
+      if (StrStartsWith(this.oneliners[i].tag, tag)) {
+        output.PushBack(this.oneliners[i]);
+      }
+    }
+
+    return output;
+  }
+
+  public function deleteByTag(tag: string): array<SU_Oneliner> {
+    var output: array<SU_Oneliner>;
+    var i: int;
+
+    output = this.findByTag(tag);
+    for (i = 0; i < output.Size(); i += 1) {
+      this.deleteOneliner(output[i]);
+    }
+
+    return output;
+  }
+
+  public function deleteByTagPrefix(tag: string): array<SU_Oneliner> {
+    var output: array<SU_Oneliner>;
+    var i: int;
+
+    output = this.findByTagPrefix(tag);
+    for (i = 0; i < output.Size(); i += 1) {
+      this.deleteOneliner(output[i]);
+    }
+
+    return output;
+  }
 }
 
