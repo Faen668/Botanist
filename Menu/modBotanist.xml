@@ -41,6 +41,7 @@
 					<Option id="34" displayName="BT_OverrideTarget_34">	<Entry varId="Botanist_Mod_Targets" value="34"/></Option>
 				</OptionsArray>
 			</Var>	
+			<Var id="Botanist_Mod_Quantity"  displayName="Botanist_Mod_Quantity"  displayType="SLIDER;1;100;99"/>	
 			
 			<Var id="Separator" 			   displayName="" 						  displayType="SUBTLE_SEPARATOR"/>
 			<Var id="Botanist_MapPins_Enabled" displayName="Botanist_MapPins_Enabled" displayType="TOGGLE"/>

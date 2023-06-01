@@ -21,6 +21,7 @@ enum Botanist_UserSettings_Enum_Ints
 	BT_Config_Hgr_MinReq    = 7,
 	BT_Config_Hgr_MaxAll    = 8,
 	BT_Config_Hgr_MaxGrd    = 9,
+	BT_Config_Mod_Quantity  = 10,
 }
 
 //---------------------------------------------------
@@ -99,4 +100,5 @@ enum BT_Herb_Display_Status
 enum BT_Event_Type
 {
 	BT_Herb_Looted = 0,
+	BT_Herb_Reset = 1,
 }

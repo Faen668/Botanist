@@ -5,6 +5,11 @@
 
 function Get_Botanist(out master: Botanist, optional caller: string): bool 
 {
+	if (BT_Mod_Not_Ready())
+	{
+		return false;
+	}
+	
 	BT_Logger("Get_Botanist Called by [" + caller + "]");
 	master = (Botanist)SUTB_getModByTag('Botanist_BootStrapper');
 	
@@ -12,6 +17,7 @@ function Get_Botanist(out master: Botanist, optional caller: string): bool
 	{
 		return true;
 	}
+	
 	return false;
 }
 
@@ -22,12 +28,9 @@ function Get_Botanist(out master: Botanist, optional caller: string): bool
 function BT_SetEntityKnown(ent: W3RefillableContainer) : void
 {
 	var master : Botanist;
-
-	if (!Get_Botanist(master, 'BT_SetEntityKnown'))
-	{
-		return;
-	}
-	master.SetEntityKnown(ent);
+	
+	if (Get_Botanist(master, 'BT_SetEntityKnown'))
+		master.SetEntityKnown(ent);
 }
 	
 //---------------------------------------------------
@@ -37,12 +40,9 @@ function BT_SetEntityKnown(ent: W3RefillableContainer) : void
 function BT_SetEntityLooted(ent: W3RefillableContainer) : void
 {
 	var master : Botanist;
-	
-	if (!Get_Botanist(master, 'BT_SetEntityLooted'))
-	{
-		return;
-	}
-	master.SetEntityLooted(ent);
+
+	if (Get_Botanist(master, 'BT_SetEntityLooted'))
+		master.SetEntityLooted(ent);
 }
 
 //---------------------------------------------------
@@ -63,7 +63,7 @@ function BT_Logger(message: string, optional ShowInGUI: bool) : void
 //-- Functions --------------------------------------
 //---------------------------------------------------
 
-function BT_IsPlayerBusy(): bool 
+function BT_Mod_Not_Ready(): bool 
 {
 	return thePlayer.IsInNonGameplayCutscene()
 		|| theGame.IsLoadingScreenVideoPlaying()
@@ -74,7 +74,6 @@ function BT_IsPlayerBusy(): bool
 		|| theGame.IsFading()
 		|| theGame.IsBlackscreen()
 		|| thePlayer.IsInFistFightMiniGame()
-		|| thePlayer.IsInCombat()
 		|| !thePlayer.IsAlive();
 }
 
@@ -305,9 +304,20 @@ exec function bt_reset()
 {
 	var master : Botanist;
 	
-	if (!Get_Botanist(master, 'BT_SetEntityLooted'))
+	if (!Get_Botanist(master, 'bt_reset'))
 	{
 		return;
 	}
 	master.BT_PersistentStorage.BT_HerbStorage.reset_and_clerar();
+}
+
+exec function bt_verify_su()
+{
+	var master : Botanist;
+	
+	if (!Get_Botanist(master, 'bt_reset'))
+	{
+		return;
+	}
+	master.BT_PersistentStorage.BT_HerbStorage.verify_su_pointers();
 }

@@ -12,6 +12,7 @@
 2116254079||panel_BT_Page_HaverstingGrounds|Harvesting Grounds
 ;
 2116254003||option_Botanist_Mod_Targets		|<font color="#FF7D63">Main Setting      :   Herb Targetting</font>
+2116254081||option_Botanist_Mod_Quantity	|<font color="#FF7D63">Main Setting      :   Herb Quantities</font>
 ;
 2116254004||option_Botanist_Markers_Enabled		|<font color="#FFF1BA">3D Markers      :   Enabled:</font>
 2116254005||option_Botanist_Markers_Active		|<font color="#FFF1BA">3D Markers      :   Display:</font>
@@ -37,7 +38,7 @@
 2116254021||option_Botanist_MapPins_Enabled		|<font color="#8EA4C8">Map Pins       :    Enabled</font>
 2116254022||option_Botanist_MapPins_Radius		|<font color="#8EA4C8">Map Pind       :    Map Pin Size</font>
 ;
-2116254023||preset_value_BT_OverrideTarget_00|None - Recipe Based
+2116254023||preset_value_BT_OverrideTarget_00|All Discovered Herbs
 2116254024||preset_value_BT_OverrideTarget_01|Allspice
 2116254025||preset_value_BT_OverrideTarget_02|Arenaria
 2116254026||preset_value_BT_OverrideTarget_03|Balisse fruit

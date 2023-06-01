@@ -7,7 +7,6 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	public saved var BT_PersistentStorage 	: Botanist_Storage;
 	public var BT_ConfigSettings			: Botanist_Config;
 	public var BT_RenderingLoop				: Botanist_UIRenderLoop;
-	public var BT_AlchemyManager			: Botanist_AlchemyManager;
 	
 	default tag 							= 'Botanist_BootStrapper';
 
@@ -17,7 +16,6 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	{					
 		this.BT_ConfigSettings = new Botanist_Config in this;
 		this.BT_RenderingLoop  = new Botanist_UIRenderLoop in this;
-		this.BT_AlchemyManager = new Botanist_AlchemyManager in this;
 
 		this.GotoState('Initialising');
 	}
@@ -33,9 +31,9 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		
 		herb_entity = (W3Herb)potential_herb;
 		herb_guid = herb_entity.GetGuidHash();
-		herb_entity.GetStaticMapPinTag(herb_tag);
+		herb_tag  = herb_entity.get_herb_name();
 		
-		if ( herb_entity && BT_IsValidHerb(herb_tag) && !this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(herb_guid) )
+		if ( herb_entity && !this.BT_PersistentStorage.BT_HerbStorage.is_herb_excluded(herb_guid) && BT_IsValidHerb(herb_tag) && !this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(herb_guid) )
 		{
 			created_herb = (new BT_Herb in this).create_new_herb(herb_entity, herb_entity.GetWorldPosition(), herb_tag, herb_guid, theGame.GetCommonMapManager().GetCurrentArea(), this);
 		}
@@ -58,25 +56,6 @@ state Idle in Botanist
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger("Main Class Entered state [Idle]");
-		
-		//this.test_entities();
-	}
-	
-	//-----------------------------------------------
-	
-	entry function test_entities() : void // Only For Testing
-	{
-		var ents : array<CGameplayEntity>;
-		var Idx : int;
-		
-		FindGameplayEntitiesCloseToPoint(ents, GetWitcherPlayer().GetWorldPosition(), 100000000, 100000000, , , ,'W3Container');
-		
-		for( Idx = 0; Idx < ents.Size(); Idx += 1 )
-		{
-			parent.SetEntityKnown( (W3Herb)ents[Idx] );
-		}
-		GetWitcherPlayer().DisplayHudMessage(ents.Size());
 	}
 }
 
@@ -87,10 +66,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.1";
+		default curVersionStr = "1.0.2";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 101;
+		default curVersionInt = 102;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -106,7 +85,6 @@ state Initialising in Botanist
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger("Main Class Entered state [Initialising]");
 		
 		this.Initialising_Main();
 	}
@@ -122,10 +100,10 @@ state Initialising in Botanist
 		  Sleep(1);
 		}
 		
-		this.SetModVersion();
 		BT_LoadStorageCollection(parent);
 		
-		parent.BT_AlchemyManager	.initialise(parent);
+		this.SetModVersion();
+		
 		parent.BT_ConfigSettings 	.initialise(parent);
 		parent.BT_RenderingLoop		.initialise(parent);
 		parent.GotoState('Idle');
@@ -156,9 +134,59 @@ state Initialising in Botanist
 	
 	latent function UpdateMod() : void
 	{
+		var Idx, Edx, Rdx, Pdx, Sdx, Ldx, Qdx : int;
+		
 		if (FactsQuerySum(VersStr) < curVersionInt) 
 		{
+			//-----------------------------------------------
+			
 			if (FactsQuerySum(VersStr) < 101) { FactsSet(VersStr, 101); hasUpdated = true; }
+			
+			//-----------------------------------------------
+			
+			if (FactsQuerySum(VersStr) < 102) 
+			{ 
+				FactsSet(VersStr, 102);
+
+				for (Idx = 0; Idx < parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs.Size(); Idx += 1) 
+				{
+					Pdx = parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs[Idx];
+
+					for (Sdx = 0; Sdx < parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs.Size(); Sdx += 1) 
+					{
+						for (Ldx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx].Size(); Ldx >= 0 ; Ldx -= 1) 
+						{
+							for (Qdx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].Size(); Qdx >= 0 ; Qdx -= 1) 
+							{
+								if ( parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx][Qdx].herb_guidhash == Pdx )
+								{
+									parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].EraseFast(Qdx);
+									BT_Logger("Erased Excluded Herb From Known Herbs: " + Pdx);
+								}
+							}
+						}
+					}
+					
+					Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.FindFirst( Pdx );
+					if ( Edx != -1 )
+					{
+						parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Erase( Edx );
+						BT_Logger("Erased Excluded Herb From Known Hashs: " + Pdx);
+					}					
+					
+					Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.FindFirst( Pdx );
+					
+					if ( Edx != -1 )
+					{
+						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_herbs.Erase( Edx );
+						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.Erase( Edx );
+						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_names.Erase( Edx );
+						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_world.Erase( Edx );
+						BT_Logger("Erased Excluded Herb From Master Hashs: " + Pdx);
+					}
+				}
+				hasUpdated = true;
+			}
 		}
 	}
 }

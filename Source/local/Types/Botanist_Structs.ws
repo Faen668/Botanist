@@ -19,7 +19,6 @@ struct Botanist_DataTransferStruct
 	var type           : BT_Herb_Enum;
 	var quantity       : int;
 	var user_settings  : Botanist_UserSettings;
-	var recipes        : array<name>;
 	var storage        : Botanist_KnownEntityStorage;
 }
 
@@ -64,9 +63,8 @@ struct botanist_event_data
 //-- Botanist Required Herbs Struct -----------------
 //---------------------------------------------------
 
-struct Botanist_RequiredHerbs
+struct Botanist_HerbRequirements
 {
 	var names		: array<name>;
 	var quantities	: array<int>;
-	var cookeditems	: array<array<name>>;
 }

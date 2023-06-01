@@ -51,7 +51,7 @@ class BT_Harvesting_Ground
 		this.spot_hash		 = spot_herbs[0].herb.herb_guidhash + 6558;
 		this.spot_total		 = spot_herbs.Size();
 		
-		this.mappin_manager  = this.entity_storage.mappin_manager;
+		this.mappin_manager  = SUMP_getManager();
 		this.mappin_pos      = mappin_pos;
 		this.mappin_rad      = mappin_rad;
 		this.mappin_name     = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName( botanist_get_herb_name_from_enum( this.spot_type ) ));
@@ -82,7 +82,7 @@ class BT_Harvesting_Ground
 		
 		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
-			if ( !this.spot_herbs[Idx].herb.is_looted() )
+			if ( !this.spot_herbs[Idx].herb.is_looted() && !this.entity_storage.is_herb_excluded( this.spot_herbs[Idx].herb.herb_guidhash ) )
 			{
 				this.spot_herbs[Idx].herb.set_displayed_in_grounds(this.user_settings);
 				continue;
@@ -109,7 +109,7 @@ class BT_Harvesting_Ground
 	
 	function update_mappin_description() : void
 	{
-		var Idx : int = this.mappin_manager.mappins.FindFirst(this.mappin);
+		var Idx : int = this.mappin_manager.mappins.FindFirst( this.mappin );
 
 		if ( Idx != -1 )
 		{
@@ -161,34 +161,42 @@ class BT_Harvesting_Ground
 
 	function display_farming_spot() : void
 	{
+		var Idx : int;
+
 		if ( !this.is_displayed() )
 		{
-			if ( !mappin )
-			{
-				mappin				    = new BT_MapPin in this;
-			}
-
-			mappin.tag 				    = "Botanist_Harvesting_Ground_" + this.spot_hash;		
-			mappin.label 			    = this.get_mappin_label();
-			mappin.radius				= this.mappin_rad;
-			mappin.position 			= this.mappin_pos;
-			mappin.description 		    = this.get_mappin_description();
-			mappin.region 				= this.get_herb_region_string();
-			mappin.type 				= "Herbalist";
-			mappin.filtered_type 		= "Herbalist";
-			mappin.is_quest 			= false;
-			mappin.appears_on_minimap 	= false;
-			mappin.pointed_by_arrow 	= false;
-			mappin.highlighted 		    = false;
-			mappin.is_fast_travel		= true;	
-
-			if ( !this.mappin_manager.mappins.Contains( this.mappin ) )
-			{
-				 this.mappin_manager.mappins.PushBack( this.mappin );
-			}
-
 			this.entity_storage.botanist_displayed_harvesting_grounds[spot_region][spot_type].PushBack( this );
 			this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.PushBack( this.spot_hash );
+		}
+		
+		if ( !this.mappin )
+		{
+			this.mappin = new BT_MapPin in this;
+		}	
+
+		mappin.tag 				    = "Botanist_Harvesting_Ground_" + this.spot_hash;		
+		mappin.label 			    = this.get_mappin_label();
+		mappin.radius				= this.mappin_rad;
+		mappin.position 			= this.mappin_pos;
+		mappin.description 		    = this.get_mappin_description();
+		mappin.region 				= this.get_herb_region_string();
+		mappin.type 				= "Herbalist";
+		mappin.filtered_type 		= "Herbalist";
+		mappin.is_quest 			= false;
+		mappin.appears_on_minimap 	= false;
+		mappin.pointed_by_arrow 	= false;
+		mappin.highlighted 		    = false;
+		mappin.is_fast_travel		= false;		
+		
+		Idx = this.mappin_manager.mappins.FindFirst( this.mappin );
+		
+		if ( Idx != -1 )
+		{
+			this.mappin_manager.mappins[Idx] = this.mappin;
+		}
+		else
+		{
+			this.mappin_manager.mappins.PushBack( this.mappin );
 		}
 	}
 	
@@ -237,12 +245,11 @@ class BT_Harvesting_Ground
 	{
 		switch( this.spot_region )
 		{
-			case BT_NoMansLand:	 	return "novigrad";
-			case BT_NoMansLand:	 	return "no_mans_land";
-			case BT_Skellige:	 	return "skellige";
-			case BT_KaerMorhen: 	return "kaer_morhen";
-			case BT_WhiteOrchard: 	return "prolog_village";
-			case BT_Toussaint: 		return "bob";
+			case BT_NoMansLand:	 	return SUH_normalizeRegion("no_mans_land");
+			case BT_Skellige:	 	return SUH_normalizeRegion("skellige");
+			case BT_KaerMorhen: 	return SUH_normalizeRegion("kaer_morhen");
+			case BT_WhiteOrchard: 	return SUH_normalizeRegion("prolog_village");
+			case BT_Toussaint: 		return SUH_normalizeRegion("bob");
 			default: 				return "";
 		}
 	}
@@ -257,7 +264,6 @@ state disabled in BT_Harvesting_Ground
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger(parent.spot_hash + "Entered state [disabled]");
 	}
 }
 
@@ -270,7 +276,6 @@ state waiting in BT_Harvesting_Ground
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger(parent.spot_hash + "Entered state [waiting]");
 	}
 }
 
@@ -285,7 +290,6 @@ state update in BT_Harvesting_Ground
 		var Idx : int;
 		
 		super.OnEnterState(previous_state_name);
-		BT_Logger(parent.spot_hash + "Entered state [update]");
 		
 		for( Idx = parent.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{

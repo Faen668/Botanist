@@ -1,4 +1,11 @@
 
+class Botanist_RemoveAllMapPins extends SU_PredicateInterfaceRemovePin 
+{
+	function predicate(pin: SU_MapPin): bool {
+		return StrStartsWith(pin.tag, "Botanist_");
+	}
+}
+
 //---------------------------------------------------
 //-- Botanist Persistent Storage Class --------------
 //---------------------------------------------------
@@ -58,10 +65,7 @@ function BT_LoadStorageCollection(master: Botanist)
 
 class Botanist_KnownEntityStorage
 {
-	var master: Botanist;
-	var marker_manager : SUOL_Manager;
-	var mappin_manager : SUMP_Manager;
-		
+	var master: Botanist;		
 	var botanist_master_herbs: array<BT_Herb>;
 	var botanist_master_hashs: array<int>;
 	var botanist_master_names: array<name>;
@@ -78,24 +82,45 @@ class Botanist_KnownEntityStorage
 	var botanist_displayed_harvesting_grounds_guid_hashes : array<int>;
 	var botanist_displayed_harvesting_grounds_initialised : bool;
 	
+	var excluded_herbs : array<int>;
+	
+	var predicate: Botanist_RemoveAllMapPins;
+
 	//---------------------------------------------------
 	//-- Entity Storage Functions -----------------------
 	//---------------------------------------------------
-
+	
 	function inititalise(master: Botanist) : void
 	{	
-		this.master = master;
-		this.marker_manager = SUOL_getManager();
-		this.mappin_manager = SUMP_getManager();
-	
+		this.master = master;	
+		this.init_exclussion_list();
 		this.attach_herb_pointers();
 		this.attach_shared_util_pointers();
 		
 		this.initialise_storage_arrays();
 		this.initialise_displayed_harvesting_grounds_arrays();
-		
+
+		predicate = new Botanist_RemoveAllMapPins in thePlayer;
+		SU_removeCustomPinByPredicate(predicate);
+			
 		this.initialise_temporary_displayed_arrays();
 		this.initialise_saved_harvesting_grounds();
+	}
+	
+	function init_exclussion_list() : void
+	{
+		// Keira's Hideout
+		this.excluded_herbs.PushBack( 1338875484 );
+		this.excluded_herbs.PushBack( 549522696 );
+		this.excluded_herbs.PushBack( -541392408 );
+		this.excluded_herbs.PushBack( -1078211475 );
+		this.excluded_herbs.PushBack( -559926266 );
+		this.excluded_herbs.PushBack( -1791854638 );
+		this.excluded_herbs.PushBack( -2006234737 );
+		this.excluded_herbs.PushBack( -484491973 );
+		this.excluded_herbs.PushBack( 963451185 );
+		this.excluded_herbs.PushBack( 1270212183 );
+		this.excluded_herbs.PushBack( -1606184739 );
 	}
 	
 	function reset_and_clerar() : void
@@ -118,6 +143,11 @@ class Botanist_KnownEntityStorage
 		
 		this.initialise_storage_arrays();
 		this.initialise_temporary_displayed_arrays();
+	}
+	
+	function is_herb_excluded(hash : int) : bool
+	{
+		return excluded_herbs.Contains(hash);
 	}
 	
 	//---------------------------------------------------
@@ -339,6 +369,17 @@ class Botanist_KnownEntityStorage
 		BT_Logger("Re-attached Entity Pointers On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");
 		theGame.BT_ClearArray();		
 	}
+	
+	function list_known_herbs() : void
+	{
+		var Idx : int;
+		
+		BT_Logger("Processing Known Herbs List With A Size Of: " + get_known_herbs_count());
+		for( Idx = 0; Idx < botanist_master_herbs.Size(); Idx += 1 )
+		{
+			botanist_master_herbs[Idx].print_info();
+		}	
+	}
 
 	//---------------------------------------------------
 	//-- Shared Utils Re-Point Function -----------------
@@ -347,23 +388,42 @@ class Botanist_KnownEntityStorage
 	function attach_shared_util_pointers() : void
 	{
 		var Idx, Edx, Pdx, Rdx : int;
-		var region   : BT_Herb_Region = botanist_get_herb_enum_region();
-		var settings : Botanist_UserSettings = this.master.BT_ConfigSettings.get_user_settings();
+		var marker_manager : SUOL_Manager = SUOL_getManager();
+		var mappin_manager : SUMP_Manager = SUMP_getManager();
 		
-		for (Idx = 0; Idx < this.botanist_known_herbs[region].Size(); Idx += 1) 
-		{
-			for (Edx = 0; Edx < this.botanist_known_herbs[region][Idx].Size(); Edx += 1) 
-			{			
-				if ( this.botanist_known_herbs[region][Idx][Edx].attach_shared_util_pointers(this.mappin_manager, this.marker_manager) )
-				{
-					Rdx += 1;
-					continue;
-				}
-
-				Pdx += 1;
+		for (Idx = 0; Idx < this.botanist_master_herbs.Size(); Idx += 1) 
+		{	
+			if ( this.botanist_master_herbs[Idx].attach_shared_util_pointers( marker_manager, mappin_manager ) )
+			{
+				Rdx += 1;
+				continue;
 			}
+
+			Pdx += 1;
 		}
 		
 		BT_Logger("Re-attached Shared Util Pointers On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");		
+	}
+
+	//---------------------------------------------------
+	//-- Shared Utils Verification Function -------------
+	//---------------------------------------------------
+	
+	function verify_su_pointers() : void
+	{
+		var Idx, Edx, Pdx, Rdx : int;
+		
+		for (Idx = 0; Idx < this.botanist_master_herbs.Size(); Idx += 1) 
+		{	
+			if ( this.botanist_master_herbs[Idx].are_shared_util_pointers_attached() )
+			{
+				Rdx += 1;
+				continue;
+			}
+
+			Pdx += 1;
+		}
+		
+		GetWitcherPlayer().DisplayHudMessage("Shared Util Pointers Verified On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");	
 	}
 }

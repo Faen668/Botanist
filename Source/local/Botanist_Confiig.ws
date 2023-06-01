@@ -42,6 +42,7 @@ class Botanist_Config
 		 case 7: return 'Botanist_Farming_MinReq';
 		 case 8: return 'Botanist_Farming_MaxAll';
 		 case 9: return 'Botanist_Farming_MaxGrd';
+		 case 9: return 'Botanist_Mod_Quantity';
 		}
 	}
 	
@@ -66,6 +67,7 @@ class Botanist_Config
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HarvestingGrounds', 'Botanist_Farming_MinReq')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HarvestingGrounds', 'Botanist_Farming_MaxAll')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HarvestingGrounds', 'Botanist_Farming_MaxGrd')));
+		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Mod_Quantity')));
 		
 		return output_data;
 	}

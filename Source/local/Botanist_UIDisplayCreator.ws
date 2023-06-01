@@ -9,7 +9,6 @@ statemachine class Botanist_UIDisplayCreator
 	public var type           : BT_Herb_Enum;
 	public var quantity       : int;
 	public var user_settings  : Botanist_UserSettings;
-	public var recipes        : array<name>;
 	public var storage        : Botanist_KnownEntityStorage;
 	
 	public function create_and_set_variables(data : Botanist_DataTransferStruct) : Botanist_UIDisplayCreator
@@ -18,7 +17,6 @@ statemachine class Botanist_UIDisplayCreator
 		this.type          = data.type;
 		this.quantity      = data.quantity;
 		this.user_settings = data.user_settings;
-		this.recipes       = data.recipes;
 		this.storage       = data.storage;
 
 		this.GotoState('Processing');
@@ -35,7 +33,6 @@ state idle in Botanist_UIDisplayCreator
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
-		BT_Logger("Botanist_UIDisplayCreator Entered state [idle]");
 	}
 }
 
@@ -47,9 +44,7 @@ state Processing in Botanist_UIDisplayCreator
 {	
 	event OnEnterState(previous_state_name: name) 
 	{
-		super.OnEnterState(previous_state_name);
-		BT_Logger("Botanist_UIDisplayCreator Entered state [Processing]");
-		
+		super.OnEnterState(previous_state_name);		
 		this.Processing();
 	}
 
@@ -63,12 +58,12 @@ state Processing in Botanist_UIDisplayCreator
 		
 		var Pos  		 : Vector = thePlayer.GetWorldPosition();
 		var Idx, Edx	 : int;
-
+	
 		if ( parent.storage.get_currently_displayed_count(parent.region, parent.type) >= parent.quantity )
 		{
 			return;
 		}
-
+		
 		for( Idx = 0; Idx < parent.storage.botanist_known_herbs[parent.region][parent.type].Size(); Idx += 1 )
 		{
 			if ( parent.storage.botanist_known_herbs[parent.region][parent.type][Idx].is_eligible_for_normal_display() )
@@ -86,7 +81,7 @@ state Processing in Botanist_UIDisplayCreator
 			
 			if ( this.get_closest_herb(node, current_herb) != -1 && !current_herb.is_displayed() )
 			{
-				current_herb.set_displayed(parent.user_settings, parent.recipes[RandRange(parent.recipes.Size(), 0)]);
+				current_herb.set_displayed( parent.user_settings );
 			}
 			herb_nodes.Remove(node);
 		}
@@ -164,12 +159,10 @@ state Processing in Botanist_UIDisplayCreator
 		{				
 			if ( output.harvesting_nodes.Size() < Pdx && VecDistanceSquared2D(node_pairings[Edx].node.GetWorldPosition(), node_pairings[Idx].node.GetWorldPosition()) <= (Rdx * Rdx) )
 			{
-				//BT_Logger("Added Herb [" + node_pairings[Idx].herb.herb_guidhash + "] To Harvesting Grounds [" + id + "]");
 				output.harvesting_nodes.PushBack( Botanist_NodePairing(node_pairings[Idx].node, node_pairings[Idx].herb) );
 			}
 			else
 			{
-				//BT_Logger("Filtered Herb [" + node_pairings[Idx].herb.herb_guidhash + "] From Harvesting Grounds [" + id + "]");
 				output.filtered_nodes.PushBack( Botanist_NodePairing(node_pairings[Idx].node, node_pairings[Idx].herb) );
 			}
 		}
@@ -204,8 +197,6 @@ state Processing in Botanist_UIDisplayCreator
 				}
 			}
 		}
-		
-		//BT_Logger("Furthermost Herb Distances Finished with [Closest] = " + BT_VectorToString(first) + "[Furthest] = " +  BT_VectorToString(last));
 		return (first + last) / 2;
 	}
 	
@@ -226,10 +217,7 @@ state Processing in Botanist_UIDisplayCreator
 			{
 				current_distance = new_distance;
 			}
-		}
-		
-		//BT_Logger("Herb Furthest From Map Pin Centre = " +  hg_result.harvesting_nodes[Idx].herb.herb_guidhash);
-		
+		}		
 		return SqrtF(current_distance) + 10;
 	}
 
