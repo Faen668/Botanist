@@ -4,11 +4,10 @@
 
 statemachine class Botanist extends SU_BaseBootstrappedMod 
 {
-	public saved var BT_PersistentStorage 	: Botanist_Storage;
-	public var BT_ConfigSettings			: Botanist_Config;
-	public var BT_RenderingLoop				: Botanist_UIRenderLoop;
-	
-	default tag 							= 'Botanist_BootStrapper';
+	public saved var BT_PersistentStorage : Botanist_Storage;
+	public var BT_ConfigSettings          : Botanist_Config;
+	public var BT_RenderingLoop           : Botanist_UIRenderLoop;
+	default tag                           = 'Botanist_BootStrapper';
 
 	//-----------------------------------------------
 	
@@ -24,14 +23,14 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	
 	public function SetEntityKnown(potential_herb: W3RefillableContainer) : void
 	{	
-		var herb_entity		: W3Herb;
-		var herb_tag		: name;
-		var herb_guid		: int;
-		var created_herb  	: BT_Herb;
+		var herb_entity     : W3Herb;
+		var herb_tag        : name;
+		var herb_guid       : int;
+		var created_herb    : BT_Herb;
 		
 		herb_entity = (W3Herb)potential_herb;
-		herb_guid = herb_entity.GetGuidHash();
-		herb_tag  = herb_entity.get_herb_name();
+		herb_guid   = herb_entity.GetGuidHash();
+		herb_tag    = herb_entity.get_herb_name();
 		
 		if ( herb_entity && !this.BT_PersistentStorage.BT_HerbStorage.is_herb_excluded(herb_guid) && BT_IsValidHerb(herb_tag) && !this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(herb_guid) )
 		{
@@ -66,10 +65,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.2";
+		default curVersionStr = "1.0.3";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 102;
+		default curVersionInt = 103;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -140,13 +139,13 @@ state Initialising in Botanist
 		{
 			//-----------------------------------------------
 			
-			if (FactsQuerySum(VersStr) < 101) { FactsSet(VersStr, 101); hasUpdated = true; }
+			if (FactsQuerySum(VersStr) < 102) { FactsSet(VersStr, 102); hasUpdated = true; }
 			
 			//-----------------------------------------------
 			
-			if (FactsQuerySum(VersStr) < 102) 
+			if (FactsQuerySum(VersStr) < 103) 
 			{ 
-				FactsSet(VersStr, 102);
+				FactsSet(VersStr, 103);
 
 				for (Idx = 0; Idx < parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs.Size(); Idx += 1) 
 				{
