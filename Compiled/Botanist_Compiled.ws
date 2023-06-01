@@ -33,11 +33,6 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		herb_guid = herb_entity.GetGuidHash();
 		herb_tag  = herb_entity.get_herb_name();
 		
-		if ( thePlayer.IsCiri() )
-		{
-			return;
-		}
-		
 		if ( herb_entity && !this.BT_PersistentStorage.BT_HerbStorage.is_herb_excluded(herb_guid) && BT_IsValidHerb(herb_tag) && !this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(herb_guid) )
 		{
 			created_herb = (new BT_Herb in this).create_new_herb(herb_entity, herb_entity.GetWorldPosition(), herb_tag, herb_guid, theGame.GetCommonMapManager().GetCurrentArea(), this);
@@ -1641,17 +1636,6 @@ exec function bt_verify_su()
 	}
 	master.BT_PersistentStorage.BT_HerbStorage.verify_su_pointers();
 }
-
-exec function bt_list(region : int)
-{
-	var master : Botanist;
-	
-	if (!Get_Botanist(master, 'bt_list'))
-	{
-		return;
-	}
-	master.BT_PersistentStorage.BT_HerbStorage.list_active_status(region);
-}
 class Botanist_RemoveAllMapPins extends SU_PredicateInterfaceRemovePin 
 {
 	function predicate(pin: SU_MapPin): bool {
@@ -2078,26 +2062,6 @@ class Botanist_KnownEntityStorage
 		}
 		
 		GetWitcherPlayer().DisplayHudMessage("Shared Util Pointers Verified On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");	
-	}
-	
-	//---------------------------------------------------
-	//-- List Current Status ----------------------------
-	//---------------------------------------------------
-	
-	function list_active_status(region: int) : void
-	{
-		var message : string;
-		var Idx, Edx : int;
-
-		for( Idx = 0; Idx < this.botanist_known_herbs[region].Size(); Idx += 1 )
-		{
-			for( Edx = 0; Edx < this.botanist_known_herbs[region][Idx].Size(); Edx += 1 )
-			{
-				message += botanist_get_herb_name_from_enum( Edx ) + ": " + this.botanist_known_herbs[region][Idx].Size();
-			}
-		}
-		
-		theGame.GetGuiManager().ShowNotification(message, 5, true);
 	}
 }
 //---------------------------------------------------
