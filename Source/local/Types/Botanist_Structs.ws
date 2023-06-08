@@ -10,6 +10,17 @@ struct Botanist_UserSettings
 }
 
 //---------------------------------------------------
+//-- Botanist Tutorial Data Struct ------------------
+//---------------------------------------------------
+
+struct Botanist_Tutorial_Data
+{
+	var title    : string;
+	var body     : string;
+	var variable : name;
+}
+
+//---------------------------------------------------
 //-- Botanist Harvesting Grounds Data Transfer-------
 //---------------------------------------------------
 
@@ -52,7 +63,8 @@ struct botanist_event_data
 	var type : BT_Event_Type;
 	
 	//For event sending
-	var hash : int;
+	var _int : int;
+	var _name : name;
 	
 	//For new registrations
 	var herb : BT_Herb;
@@ -67,4 +79,16 @@ struct Botanist_HerbRequirements
 {
 	var names		: array<name>;
 	var quantities	: array<int>;
+}
+
+//---------------------------------------------------
+//-- Botanist Lookup Mappin Struct ------------------
+//---------------------------------------------------
+
+struct Botanist_MapPinLookupData
+{
+	var hash	: int;
+	var type	: BT_Herb_Enum;
+	var region	: BT_Herb_Region;
+	var grounds : bool;
 }

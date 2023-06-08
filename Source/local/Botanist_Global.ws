@@ -182,6 +182,52 @@ function botanist_get_herb_name_from_enum(value : int) : name
 //-- Enum Return Functions --------------------------
 //---------------------------------------------------
 
+function botanist_get_herb_int_from_enum(value : BT_Herb_Enum) : int
+{
+	switch(value)
+	{
+	case BT_Allspiceroot:        return 0;
+	case BT_Arenaria:            return 1;
+	case BT_Balissefruit:        return 2;
+	case BT_Beggartickblossoms:  return 3;
+	case BT_Berbercanefruit:     return 4;
+	case BT_Bloodmoss:           return 5;
+	case BT_Blowbill:            return 6;
+	case BT_Bryonia:             return 7;
+	case BT_Buckthorn:           return 8;
+	case BT_Celandine:           return 9;
+	case BT_Cortinarius:         return 10;
+	case BT_Crowseye:            return 11;
+	case BT_Ergotseeds:          return 12;
+	case BT_Foolsparsleyleaves:  return 13;
+	case BT_Ginatiapetals:       return 14;
+	case BT_Greenmold:           return 15;
+	case BT_Han:                 return 16;
+	case BT_Helleborepetals:     return 17;
+	case BT_Honeysuckle:         return 18;
+	case BT_Hopumbels:           return 19;
+	case BT_Hornwort:            return 20;
+	case BT_Longrube:            return 21;
+	case BT_Mandrakeroot:        return 22;
+	case BT_Mistletoe:           return 23;
+	case BT_Moleyarrow:          return 24;
+	case BT_Nostrix:             return 25;
+	case BT_Pigskinpuffball:     return 26;
+	case BT_Pringrape:           return 27;
+	case BT_Ranogrin:            return 28;
+	case BT_Ribleaf:             return 29;
+	case BT_Sewantmushrooms:     return 30;
+	case BT_Verbena:             return 31;
+	case BT_Whitemyrtle:         return 32;
+	case BT_Wolfsbane:           return 33;
+	default : return -1;               
+	}
+}
+
+//---------------------------------------------------
+//-- Enum Return Functions --------------------------
+//---------------------------------------------------
+
 function botanist_get_herb_enum_region() : BT_Herb_Region
 {
 	switch( AreaTypeToName(theGame.GetCommonMapManager().GetCurrentArea()) )

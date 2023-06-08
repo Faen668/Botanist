@@ -45,6 +45,17 @@ class Botanist_Config
 		 case 9: return 'Botanist_Mod_Quantity';
 		}
 	}
+
+	//-----------------------------------------------
+
+	public function get_config_tutorial_name(Idx : int) : name
+	{
+		switch (Idx)
+		{
+			case 0: return 'Botanist_Tutorial_Installation';
+			case 1: return 'Botanist_Tutorial_Discovery';
+		}
+	}
 	
 	//-----------------------------------------------
 
@@ -69,6 +80,18 @@ class Botanist_Config
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HarvestingGrounds', 'Botanist_Farming_MaxGrd')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Mod_Quantity')));
 		
+		return output_data;
+	}
+
+	//-----------------------------------------------
+
+	public function get_tutorial_settings() : Botanist_UserSettings
+	{
+		var output_data    : Botanist_UserSettings;
+		var config_wrapper : CInGameConfigWrapper = theGame.GetInGameConfigWrapper();
+		
+		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Installation'));
+		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Discovery'));
 		return output_data;
 	}
 }

@@ -7,15 +7,23 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	public saved var BT_PersistentStorage : Botanist_Storage;
 	public var BT_ConfigSettings          : Botanist_Config;
 	public var BT_RenderingLoop           : Botanist_UIRenderLoop;
+	public var BT_TutorialsSystem         : Botanist_TutorialsSystem;
+	
 	default tag                           = 'Botanist_BootStrapper';
 
 	//-----------------------------------------------
 	
 	public function start() : void
-	{					
-		this.BT_ConfigSettings = new Botanist_Config in this;
-		this.BT_RenderingLoop  = new Botanist_UIRenderLoop in this;
-
+	{				
+		if ( thePlayer.IsCiri() )
+		{
+			BT_Logger("Unable to start as Ciri");
+			return;
+		}
+		
+		this.BT_ConfigSettings  = new Botanist_Config in this;
+		this.BT_RenderingLoop   = new Botanist_UIRenderLoop in this;
+		this.BT_TutorialsSystem = new Botanist_TutorialsSystem in this;
 		this.GotoState('Initialising');
 	}
 	
@@ -34,15 +42,19 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		
 		if ( herb_entity && !this.BT_PersistentStorage.BT_HerbStorage.is_herb_excluded(herb_guid) && BT_IsValidHerb(herb_tag) && !this.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Contains(herb_guid) )
 		{
-			created_herb = (new BT_Herb in this).create_new_herb(herb_entity, herb_entity.GetWorldPosition(), herb_tag, herb_guid, theGame.GetCommonMapManager().GetCurrentArea(), this);
+			created_herb = new BT_Herb in this;
+			
+			if ( created_herb.create_new_herb(herb_entity, herb_entity.GetWorldPosition(), herb_tag, herb_guid, theGame.GetCommonMapManager().GetCurrentArea(), this) )
+				this.BT_TutorialsSystem.show_tutorial( Botanist_Tutorial_Discovery );
 		}
 	}
 
 	//-----------------------------------------------
 	
 	public function SetEntityLooted(potential_herb: W3RefillableContainer) : void
-	{	
+	{
 		BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Looted, potential_herb.GetGuidHash() ) );
+		BT_Logger("LOOTED: [HASH = " + potential_herb.GetGuidHash() + "] [POSITION = " + BT_VectorToString(potential_herb.GetWorldPosition()) + "]");
 	}
 }
 
@@ -55,6 +67,8 @@ state Idle in Botanist
 	event OnEnterState(previous_state_name: name) 
 	{
 		super.OnEnterState(previous_state_name);
+		
+		parent.BT_TutorialsSystem.show_tutorial( Botanist_Tutorial_Installation );
 	}
 }
 
@@ -65,10 +79,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.3";
+		default curVersionStr = "1.0.4";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 103;
+		default curVersionInt = 104;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -105,6 +119,7 @@ state Initialising in Botanist
 		
 		parent.BT_ConfigSettings 	.initialise(parent);
 		parent.BT_RenderingLoop		.initialise(parent);
+		parent.BT_TutorialsSystem   .initialise(parent, parent.BT_ConfigSettings);
 		parent.GotoState('Idle');
 	}
 	
@@ -133,60 +148,55 @@ state Initialising in Botanist
 	
 	latent function UpdateMod() : void
 	{
-		var Idx, Edx, Rdx, Pdx, Sdx, Ldx, Qdx : int;
-		
 		if (FactsQuerySum(VersStr) < curVersionInt) 
 		{
-			//-----------------------------------------------
-			
-			if (FactsQuerySum(VersStr) < 102) { FactsSet(VersStr, 102); hasUpdated = true; }
-			
-			//-----------------------------------------------
-			
-			if (FactsQuerySum(VersStr) < 103) 
-			{ 
-				FactsSet(VersStr, 103);
+			if (FactsQuerySum(VersStr) < 104) { FactsSet(VersStr, 104); this.remove_excluded_herbs(); hasUpdated = true; }
+		}
+	}
+	
+	//-----------------------------------------------
+	
+	latent function remove_excluded_herbs() : void
+	{
+		var Idx, Edx, Rdx, Pdx, Sdx, Ldx, Qdx : int;
+		
+		for (Idx = 0; Idx < parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs.Size(); Idx += 1) 
+		{
+			Pdx = parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs[Idx];
 
-				for (Idx = 0; Idx < parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs.Size(); Idx += 1) 
+			for (Sdx = 0; Sdx < parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs.Size(); Sdx += 1) 
+			{
+				for (Ldx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx].Size(); Ldx >= 0 ; Ldx -= 1) 
 				{
-					Pdx = parent.BT_PersistentStorage.BT_HerbStorage.excluded_herbs[Idx];
-
-					for (Sdx = 0; Sdx < parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs.Size(); Sdx += 1) 
+					for (Qdx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].Size(); Qdx >= 0 ; Qdx -= 1) 
 					{
-						for (Ldx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx].Size(); Ldx >= 0 ; Ldx -= 1) 
+						if ( parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx][Qdx].herb_guidhash == Pdx )
 						{
-							for (Qdx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].Size(); Qdx >= 0 ; Qdx -= 1) 
-							{
-								if ( parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx][Qdx].herb_guidhash == Pdx )
-								{
-									parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].EraseFast(Qdx);
-									BT_Logger("Erased Excluded Herb From Known Herbs: " + Pdx);
-								}
-							}
+							parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs[Sdx][Ldx].EraseFast(Qdx);
+							BT_Logger("Erased Excluded Herb From Known Herbs: " + Pdx);
 						}
 					}
-					
-					Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.FindFirst( Pdx );
-					if ( Edx != -1 )
-					{
-						parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Erase( Edx );
-						BT_Logger("Erased Excluded Herb From Known Hashs: " + Pdx);
-					}					
-					
-					Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.FindFirst( Pdx );
-					
-					if ( Edx != -1 )
-					{
-						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_herbs.Erase( Edx );
-						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.Erase( Edx );
-						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_names.Erase( Edx );
-						parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_world.Erase( Edx );
-						BT_Logger("Erased Excluded Herb From Master Hashs: " + Pdx);
-					}
 				}
-				hasUpdated = true;
 			}
-		}
+			
+			Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.FindFirst( Pdx );
+			if ( Edx != -1 )
+			{
+				parent.BT_PersistentStorage.BT_HerbStorage.botanist_known_herbs_guid_hashes.Erase( Edx );
+				BT_Logger("Erased Excluded Herb From Known Hashs: " + Pdx);
+			}					
+			
+			Edx = parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.FindFirst( Pdx );
+			
+			if ( Edx != -1 )
+			{
+				parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_herbs.Erase( Edx );
+				parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_hashs.Erase( Edx );
+				parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_names.Erase( Edx );
+				parent.BT_PersistentStorage.BT_HerbStorage.botanist_master_world.Erase( Edx );
+				BT_Logger("Erased Excluded Herb From Master Hashs: " + Pdx);
+			}
+		}	
 	}
 }
 
@@ -255,6 +265,17 @@ class Botanist_Config
 		 case 9: return 'Botanist_Mod_Quantity';
 		}
 	}
+
+	//-----------------------------------------------
+
+	public function get_config_tutorial_name(Idx : int) : name
+	{
+		switch (Idx)
+		{
+			case 0: return 'Botanist_Tutorial_Installation';
+			case 1: return 'Botanist_Tutorial_Discovery';
+		}
+	}
 	
 	//-----------------------------------------------
 
@@ -281,621 +302,17 @@ class Botanist_Config
 		
 		return output_data;
 	}
-}
 
-//---------------------------------------------------
-//-- Botanist Oneliner Extension Class --------------
-//---------------------------------------------------
+	//-----------------------------------------------
 
-class BT_OneLiner extends SU_Oneliner
-{
-	var active_status : int;
-	
-	function getVisible(player_position: Vector): bool 
+	public function get_tutorial_settings() : Botanist_UserSettings
 	{
-		var fcs : bool = theGame.IsFocusModeActive();
+		var output_data    : Botanist_UserSettings;
+		var config_wrapper : CInGameConfigWrapper = theGame.GetInGameConfigWrapper();
 		
-		switch ( active_status )
-		{
-			case 0 : { return super.getVisible(player_position) && fcs; }
-			case 1 : { return super.getVisible(player_position) && !fcs; }
-			case 2 : { return super.getVisible(player_position); }
-			case 3 : { return false; }
-		}
-	}
-}
-
-//---------------------------------------------------
-//-- Botanist Map Pin Extension Class ---------------
-//---------------------------------------------------
-
-class BT_MapPin extends SU_MapPin
-{
-	function onPinUsed()
-	{
-		return;
-	}
-}
-
-//---------------------------------------------------
-//-- Botanist Main Herb Class -----------------------
-//---------------------------------------------------
-
-class BT_Herb
-{
-	var user_settings	: Botanist_UserSettings;
-	var event_manager   : Botanist_EventHandler; 
-	
-	// Creation Data
-	var herb_entity		: W3Herb;
-	var herb_areaname	: BT_Herb_Region;
-	var entity_storage  : Botanist_KnownEntityStorage;
-	var world_position 	: Vector;
-	var herb_tag		: name;
-	
-	var herb_guidhash	: int;
-	var icon_guidhash	: int;
-	
-	// Dynamic Boon Data
-	var herb_has_boon	: bool;
-	var boon_total      : int;
-	
-	// 3D Marker Data
-	var marker_status	: BT_Herb_Display_Status;
-	
-	var marker_manager	: SUOL_Manager;
-	var mappin_manager  : SUMP_Manager;
-	
-	var herb_enum_type	: BT_Herb_Enum;
-	var herb_marker		: BT_OneLiner;
-	var icon_marker		: BT_OneLiner;
-	var icon_path		: string;
-	var localised_name	: string;
-	
-	// Map Pin Data
-	var herb_mappin		: BT_MapPin;
-	
-	default marker_status = BT_Herb_Hidden;
-
-	//---------------------------------------------------
-	//-- Logging Functions ------------------------------
-	//---------------------------------------------------
-
-	function get_info() : string
-	{
-		return "Herb Details: [HASH: " + this.herb_guidhash + "] [TYPE: " + this.herb_enum_type + "] [AREA: " + this.herb_areaname + "] [NAME: " + this.herb_tag + "] [CAN HARVEST: " + !this.is_looted() + "] [POSITION: " + this.world_position.X + ", " + this.world_position.Y + ", " + this.world_position.Z + ", " + this.world_position.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), world_position))), 0) + "]";
-	}
-	
-	//---------------------------------------------------
-	
-	function print_info() : void
-	{
-		BT_Logger("Herb Details: [TYPE: " + this.herb_enum_type + "] [AREA: " + this.herb_areaname + "] [NAME: " + this.herb_tag + "] [ATTACHED: " + (bool) this.herb_entity + "] [HASH: " + this.herb_guidhash + "] [CAN HARVEST: " + !this.is_looted() + "] [POSITION: " + this.world_position.X + ", " + this.world_position.Y + ", " + this.world_position.Z + ", " + this.world_position.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), world_position))), 0) + "]");
-	}
-	
-	//---------------------------------------------------
-	//-- Creation Functions -----------------------------
-	//---------------------------------------------------
-	
-	function create_new_herb(herb_entity: W3Herb, world_position: Vector, herb_tag: name, herb_guidhash: int, herb_areaname: EAreaName, master : Botanist) : BT_Herb
-	{		
-		this.event_manager  = master.BT_PersistentStorage.BT_EventHandler;
-		this.entity_storage = master.BT_PersistentStorage.BT_HerbStorage;
-		
-		this.herb_entity 	= herb_entity;
-		
-		this.herb_areaname 	= set_herb_region(herb_areaname);
-		this.world_position = world_position;
-		this.herb_tag 		= herb_tag;
-		this.herb_guidhash 	= herb_guidhash;
-		this.icon_guidhash	= herb_guidhash + 9854;
-		this.herb_enum_type = botanist_get_herb_enum_from_name( this.herb_tag );
-		this.marker_status  = BT_Herb_Ready;
-		
-		this.marker_manager = SUOL_getManager();
-		this.mappin_manager = SUMP_getManager();
-		
-		this.icon_path		= thePlayer.GetInventory().GetItemIconPathByName(herb_tag);
-		this.localised_name = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName(herb_tag));
-	
-		this.add_herb_to_storage();
-		
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , this) );
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Reset, , this) );
-		
-		FactsSet("Botanist_Refresh_UI", 1);
-		return this;
-	}
-	
-	//---------------------------------------------------
-	
-	function add_herb_to_storage() : void
-	{
-		this.entity_storage.botanist_known_herbs[herb_areaname][herb_enum_type].PushBack(this);
-		this.entity_storage.botanist_known_herbs_guid_hashes.PushBack(herb_guidhash);
-
-		this.entity_storage.botanist_master_herbs.PushBack(this);
-		this.entity_storage.botanist_master_hashs.PushBack(herb_guidhash);
-		this.entity_storage.botanist_master_names.PushBack(herb_tag);
-		this.entity_storage.botanist_master_world.PushBack(world_position);
-		
-		this.print_info();
-	}
-
-	//---------------------------------------------------
-	
-	function attach_shared_util_pointers(marker_manager : SUOL_Manager, mappin_manager : SUMP_Manager) : bool
-	{
-		this.marker_manager = marker_manager;
-		this.mappin_manager = mappin_manager;
-		
-		if (this.marker_manager && this.mappin_manager)
-			return true;
-			
-		return false;
-	}
-
-	//---------------------------------------------------
-	
-	function are_shared_util_pointers_attached() : bool
-	{
-		if (this.marker_manager && this.mappin_manager)
-			return true;
-			
-		return false;
-	}
-	
-	//---------------------------------------------------
-	//-- Reset Functions --------------------------------
-	//---------------------------------------------------
-	
-	function reset(remove_from_list : bool) : void
-	{
-		this.remove_markers(remove_from_list);
-		
-		if ( this.is_looted() )
-		{
-			this.marker_status = BT_Herb_Hidden;
-		}
-		else 
-		{
-			this.marker_status = BT_Herb_Ready;
-		}	
-	}
-	
-	//---------------------------------------------------
-	
-	function reset_entity( herb_entity : W3Herb ) : bool
-	{
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , this) );
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Reset, , this) );
-		this.herb_entity = herb_entity;
-		
-		if ( this.herb_entity )
-			return true;
-		
-		return false;
-	}	
-	
-	//---------------------------------------------------
-	
-	function apply_boon(total : int) : void
-	{
-		this.herb_has_boon = true;
-		this.boon_total = total;
-	}
-
-	//---------------------------------------------------
-	
-	function remove_boon() : void
-	{
-		this.herb_has_boon = false;
-		this.boon_total = 0;
-	}
-
-	//---------------------------------------------------
-	
-	function set_in_harvesting_grounds() : void
-	{
-		this.marker_status = BT_Herb_In_Grounds;
-	}
-
-	//---------------------------------------------------
-	
-	function is_in_harvesting_grounds() : bool
-	{
-		return this.marker_status == BT_Herb_In_Grounds;
-	}
-	
-	//---------------------------------------------------
-	//-- Region Functions -------------------------------
-	//---------------------------------------------------
-
-	function set_herb_region(areaname : EAreaName) : BT_Herb_Region
-	{
-		switch( AreaTypeToName( areaname ) )
-		{
-			case "novigrad"			: return BT_NoMansLand;
-			case "no_mans_land"		: return BT_NoMansLand;
-			case "skellige"			: return BT_Skellige;
-			case "kaer_morhen"		: return BT_KaerMorhen;
-			case "prolog_village"	: return BT_WhiteOrchard;
-			case "bob"				: return BT_Toussaint;
-			default 				: return BT_Invalid_Location;
-		}
-	}
-
-	//---------------------------------------------------
-
-	function get_herb_region_string() : string
-	{
-		switch( this.herb_areaname )
-		{
-			case BT_NoMansLand:	 	return SUH_normalizeRegion("novigrad");
-			case BT_NoMansLand:	 	return SUH_normalizeRegion("no_mans_land");
-			case BT_Skellige:	 	return SUH_normalizeRegion("skellige");
-			case BT_KaerMorhen: 	return SUH_normalizeRegion("kaer_morhen");
-			case BT_WhiteOrchard: 	return SUH_normalizeRegion("prolog_village");
-			case BT_Toussaint: 		return SUH_normalizeRegion("bob");
-			default: 				return "";
-		}
-	}
-
-	//---------------------------------------------------
-	//-- Loot Functions ---------------------------------
-	//---------------------------------------------------
-
-	event On_herb_looted(hash : int) : void
-	{
-		if ( this.herb_guidhash == hash )
-		{
-			if ( this.herb_has_boon && this.is_in_harvesting_grounds() )
-			{
-				GetWitcherPlayer().DisplayHudMessage("Harvesting Grounds: This plant yielded an extra " + this.boon_total + " herbs.");
-				thePlayer.inv.AddAnItem(this.herb_tag, boon_total, false, false, true);
-			}
-			
-			this.remove_boon();	
-			this.reset( true );
-		}
-	}
-
-	//---------------------------------------------------
-	
-	event On_herb_reset() : void
-	{
-		if ( !this.is_in_harvesting_grounds() )
-			this.reset( true );
-	}
-
-	//---------------------------------------------------
-	
-	function is_looted() : bool
-	{
-		return this.herb_entity.is_empty();
-	}
-
-	//---------------------------------------------------
-	
-	function is_eligible_for_harvesting_grounds() : bool
-	{		
-		return !this.is_looted() && this.is_displayed() && !this.is_in_harvesting_grounds();
-	}
-
-	//---------------------------------------------------
-	
-	function is_eligible_for_normal_display() : bool
-	{		
-		return !this.is_looted() && !this.is_displayed() && !this.is_in_harvesting_grounds();
-	}
-	
-	//---------------------------------------------------
-	//-- 3D Markers & Map Pin Functions -----------------
-	//---------------------------------------------------
-	
-	function set_displayed(user_settings : Botanist_UserSettings) : void
-	{
-		this.user_settings = user_settings;
-		
-		if ( this.is_displayed() )
-		{
-			return;
-		}
-
-		this.marker_status 	= BT_Herb_HarvestReady;
-		
-		this.display_markers();	
-	}
-
-	//---------------------------------------------------
-	
-	function is_displayed() : bool
-	{
-		return this.entity_storage.botanist_displayed_herbs_guid_hashes.Contains(this.herb_guidhash);
-	}
-	
-	//---------------------------------------------------
-	
-	function set_displayed_in_grounds(user_settings : Botanist_UserSettings) : void
-	{
-		this.reset( true );
-		this.set_in_harvesting_grounds();
-		this.user_settings = user_settings;		
-		this.display_markers_for_harvesting_grounds();	
-	}
-	
-	//---------------------------------------------------
-
-	function update_markers() : void
-	{
-		if ( !herb_marker )
-		{
-			herb_marker					= new BT_OneLiner in this;
-		}
-		
-		herb_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
-		herb_marker.text 				= this.get_marker_label();
-		herb_marker.position 			= this.world_position;
-		herb_marker.render_distance 	= this.get_marker_visibility_range();
-
-		if ( !icon_marker )
-		{
-			icon_marker					= new BT_OneLiner in this;
-		}
-		
-		icon_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
-		icon_marker.text 				= this.get_marker_iconpath();
-		icon_marker.position 			= this.world_position;
-		icon_marker.render_distance 	= this.get_marker_visibility_range();
-
-		if ( !herb_mappin )
-		{
-			herb_mappin					= new BT_MapPin in this;
-		}
-		
-		herb_mappin.tag 				= "Botanist_" + this.herb_guidhash;
-		herb_mappin.label 				= get_mappin_label();
-		herb_mappin.description 		= get_mappin_description();
-		herb_mappin.radius				= get_mappin_radius();
-		herb_mappin.position 			= Vector(world_position.X, world_position.Y);
-		herb_mappin.region 				= get_herb_region_string();
-		herb_mappin.type 				= "Herb";
-		herb_mappin.is_quest 			= false;
-		herb_mappin.appears_on_minimap 	= false;
-		herb_mappin.pointed_by_arrow 	= false;
-		herb_mappin.highlighted 		= false;
-		herb_mappin.is_fast_travel		= false;
-	}
-
-	//---------------------------------------------------
-
-	function update_markers_for_harvesting_grounds() : void
-	{
-	
-		if ( !herb_marker )
-		{
-			herb_marker					= new BT_OneLiner in this;
-		}
-		
-		herb_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
-		herb_marker.text 				= this.get_marker_label_for_harvesting_grounds();
-		herb_marker.position 			= this.world_position;
-		herb_marker.render_distance 	= this.get_marker_visibility_range();
-
-		if ( !icon_marker )
-		{
-			icon_marker					= new BT_OneLiner in this;
-		}
-		
-		icon_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
-		icon_marker.text 				= this.get_marker_iconpath();
-		icon_marker.position 			= this.world_position;
-		icon_marker.render_distance 	= this.get_marker_visibility_range();
-
-		if ( !herb_mappin )
-		{
-			herb_mappin					= new BT_MapPin in this;
-		}
-		
-		herb_mappin.tag 				= "Botanist_" + this.herb_guidhash;
-		herb_mappin.label 				= get_mappin_label_for_harvesting_grounds();
-		herb_mappin.description 		= get_mappin_description_for_harvesting_grounds();
-		herb_mappin.radius				= get_mappin_radius();
-		herb_mappin.position 			= Vector(world_position.X, world_position.Y);
-		herb_mappin.region 				= get_herb_region_string();
-		herb_mappin.type 				= "Herb";
-		herb_mappin.is_quest 			= false;
-		herb_mappin.appears_on_minimap 	= false;
-		herb_mappin.pointed_by_arrow 	= false;
-		herb_mappin.highlighted 		= false;
-		herb_mappin.is_fast_travel		= false;
-	}
-	
-	//---------------------------------------------------
-
-	function display_markers() : void
-	{
-		var Idx : int;
-		
-		this.update_markers();
-		
-		if (this.user_settings.bools[BT_Config_Ols_Enabled]  )
-		{
-			switch( this.user_settings.ints[BT_Config_Ols_Display] )
-			{
-				case 0: 
-				{
-					this.marker_manager.createOneliner( this.herb_marker ); 
-					this.marker_manager.createOneliner( this.icon_marker );
-					break;
-				}
-
-				case 1: 
-				{
-					this.marker_manager.createOneliner( this.herb_marker ); 
-					break;
-				}
-				
-				case 2: 
-				{
-					this.marker_manager.createOneliner( this.icon_marker );
-					break;
-				}
-			}
-		}
-		
-		this.entity_storage.botanist_displayed_herbs[herb_areaname][herb_enum_type].PushBack( this );
-		this.entity_storage.botanist_displayed_herbs_guid_hashes.PushBack( this.herb_guidhash );
-
-		if ( this.user_settings.bools[BT_Config_Pin_Enabled] )
-		{
-			Idx = this.mappin_manager.mappins.FindFirst( this.herb_mappin );
-			
-			if ( Idx != -1 )
-			{
-				this.mappin_manager.mappins[Idx] = this.herb_mappin;
-			}
-			else
-			{
-				this.mappin_manager.mappins.PushBack( this.herb_mappin );
-			}
-		}
-	}
-
-	//---------------------------------------------------
-
-	function display_markers_for_harvesting_grounds() : void
-	{
-		var Idx : int;
-		
-		this.update_markers_for_harvesting_grounds();
-		
-		if (this.user_settings.bools[BT_Config_Ols_Enabled]  )
-		{
-			switch( this.user_settings.ints[BT_Config_Ols_Display] )
-			{
-				case 0: 
-				{
-					this.marker_manager.createOneliner( this.herb_marker ); 
-					this.marker_manager.createOneliner( this.icon_marker );
-					break;
-				}
-
-				case 1: 
-				{
-					this.marker_manager.createOneliner( this.herb_marker ); 
-					break;
-				}
-				
-				case 2: 
-				{
-					this.marker_manager.createOneliner( this.icon_marker );
-					break;
-				}
-			}
-		}
-		
-		if ( this.user_settings.bools[BT_Config_Pin_Enabled] )
-		{
-			Idx = this.mappin_manager.mappins.FindFirst( this.herb_mappin );
-			
-			if ( Idx != -1 )
-			{
-				this.mappin_manager.mappins[Idx] = this.herb_mappin;
-			}
-			else
-			{
-				this.mappin_manager.mappins.PushBack( this.herb_mappin );
-			}
-		}
-	}
-	
-	//---------------------------------------------------
-
-	function remove_markers(remove_from_list : bool) : void
-	{
-		if ( remove_from_list )
-		{
-			this.entity_storage.botanist_displayed_herbs[herb_areaname][herb_enum_type].Remove( this );
-			this.entity_storage.botanist_displayed_herbs_guid_hashes.Remove( this.herb_guidhash );
-		}
-		
-		this.marker_manager.deleteOneliner( (SU_Oneliner)this.herb_marker );
-		this.marker_manager.deleteOneliner( (SU_Oneliner)this.icon_marker );
-		this.mappin_manager.mappins.Remove( this.herb_mappin );
-	}
-	
-	//---------------------------------------------------
-	
-	function get_marker_visibility_range() : int
-	{
-		switch( this.user_settings.ints[BT_Config_Ols_Visible] )
-		{
-			case 0: return 10;
-			case 1: return 25;
-			case 2: return 75;
-			case 3: return 115;
-			case 4: return 150;
-		}
-	}
-	
-	//---------------------------------------------------
-
-	function get_marker_label() : string
-	{
-		//return this.herb_guidhash;
-		return "<font size='" + this.user_settings.ints[BT_Config_Ols_Fontsize] + "'>" + this.localised_name + GetLocStringByKeyExt("BT_HerbLootable") + "</font>";
-	}
-
-	//---------------------------------------------------
-
-	function get_marker_label_for_harvesting_grounds() : string
-	{
-		//return this.herb_guidhash;
-		return "<font size='" + this.user_settings.ints[BT_Config_Ols_Fontsize] + "'>" + this.localised_name + GetLocStringByKeyExt("BT_HerbLootable_HG") + "</font>";
-	}
-	
-	//---------------------------------------------------
-
-	function get_mappin_label() : string
-	{
-		return this.localised_name + GetLocStringByKeyExt("BT_HerbLootable");
-	}
-
-	//---------------------------------------------------
-
-	function get_mappin_label_for_harvesting_grounds() : string
-	{
-		return this.localised_name + GetLocStringByKeyExt("BT_HerbLootable_HG");
-	}
-	
-	//---------------------------------------------------
-
-	function get_marker_iconpath() : string
-	{
-		var fontSize : int = this.user_settings.ints[BT_Config_Ols_Fontsize];
-		return "<img src='img://" + icon_path + "' height='" + (fontSize + 30) + "' width='" + (fontSize + 30) + "' vspace='" + (fontSize) + "' />&nbsp;";
-	}
-
-	//---------------------------------------------------
-	
-	function get_mappin_description() : string
-	{
-		return "A common herb used to create a variety of useful recipes";
-	}
-
-	//---------------------------------------------------
-	
-	function get_mappin_description_for_harvesting_grounds() : string
-	{
-		return "Harvest this plant for a chance to recieve bonus herbs!";
-	}
-
-	//---------------------------------------------------
-	
-	function get_mappin_radius() : int
-	{
-		return this.user_settings.ints[BT_Config_Pin_Radius] ;
+		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Installation'));
+		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Discovery'));
+		return output_data;
 	}
 }
 
@@ -908,12 +325,17 @@ class Botanist_EventHandler
 	private var on_herb_reset_registrations  : array< BT_Herb >;
 	private var on_herb_looted_registrations : array< BT_Herb >;
 	private var on_herb_looted_registrations_hg : array< BT_Harvesting_Ground >;
+	private var on_herb_clear_except_registrations_hg : array< BT_Harvesting_Ground >;
 	
 	//-----------------------------------------------
 	
 	public function get_registration_count() : int
 	{
-		return on_herb_looted_registrations.Size() + on_herb_looted_registrations_hg.Size() + on_herb_reset_registrations.Size();
+		return 
+			  on_herb_looted_registrations.Size() 
+			+ on_herb_looted_registrations_hg.Size() 
+			+ on_herb_reset_registrations.Size()
+			+ on_herb_clear_except_registrations_hg.Size();
 	}
 	
 	//-----------------------------------------------
@@ -922,18 +344,21 @@ class Botanist_EventHandler
 	{
 		var Idx : int;
 		
+		var temp : array< BT_Herb >;
+		var temp_hg : array< BT_Harvesting_Ground >;
+		
 		switch ( data.type )
 		{
 			case BT_Herb_Looted : 
 			{
 				for (Idx = 0; Idx < this.on_herb_looted_registrations.Size(); Idx += 1) 
 				{
-					this.on_herb_looted_registrations[Idx].On_herb_looted( data.hash );
+					this.on_herb_looted_registrations[Idx].On_herb_looted( data._int );
 				}	
 				
 				for (Idx = 0; Idx < this.on_herb_looted_registrations_hg.Size(); Idx += 1) 
 				{
-					this.on_herb_looted_registrations_hg[Idx].On_herb_looted( data.hash );
+					this.on_herb_looted_registrations_hg[Idx].On_herb_looted( data._int );
 				}
 				break;
 			}
@@ -946,7 +371,18 @@ class Botanist_EventHandler
 				}
 				break;				
 			}
-			
+
+			case BT_Herb_Clear_Except : 
+			{
+				temp_hg = on_herb_clear_except_registrations_hg;
+				
+				for (Idx = 0; Idx < temp_hg.Size(); Idx += 1) 
+				{
+					temp_hg[Idx].On_clear_except( data._name );
+				}
+				break;				
+			}			
+
 			default : 
 				break;
 		}
@@ -976,6 +412,14 @@ class Botanist_EventHandler
 					this.on_herb_reset_registrations.PushBack( data.herb );
 				}
 				break;
+			}
+
+			case BT_Herb_Clear_Except : 
+			{
+				if ( data.harvesting_ground && !this.on_herb_clear_except_registrations_hg.Contains(data.harvesting_ground) ) {
+					this.on_herb_clear_except_registrations_hg.PushBack( data.harvesting_ground );
+				}
+				break;				
 			}
 			
 			default : break;
@@ -1007,312 +451,20 @@ class Botanist_EventHandler
 				}
 				break;
 			}
+
+			case BT_Herb_Clear_Except : 
+			{
+				if ( data.harvesting_ground ) {
+					this.on_herb_clear_except_registrations_hg.Remove( data.harvesting_ground );
+				}
+				break;				
+			}
 			
 			default : break;
 		}
 	}
 }
 
-//---------------------------------------------------
-//-- Botanist Main Harvesting Grounds Class ---------
-//---------------------------------------------------
-
-class BT_Harvesting_Ground
-{
-	var event_manager   : Botanist_EventHandler; 
-	var user_settings	: Botanist_UserSettings;
-	var entity_storage  : Botanist_KnownEntityStorage;
-	var config          : Botanist_Config;
-	
-	// Creation Data
-	var spot_herbs	: array<Botanist_NodePairing>;
-	var spot_region	: BT_Herb_Region;
-	var spot_type	: BT_Herb_Enum;
-	var spot_hash	: int;
-	var spot_total  : int;
-
-	// Map Pin Data
-	var mappin_manager	: SUMP_Manager;
-	var mappin		    : BT_MapPin;
-	var mappin_pos	    : Vector;
-	var mappin_rad	    : float;
-	var mappin_name  	: string;
-	
-	//---------------------------------------------------
-	//-- Logging Functions ------------------------------
-	//---------------------------------------------------
-
-	function print_info() : void
-	{
-		BT_Logger("Harvesting Ground Details: [HASH: " + this.spot_hash + "] [AREA: " + this.spot_region + "] [TYPE: " + this.spot_type + "] [POSITION: " + this.mappin_pos.X + ", " + this.mappin_pos.Y + ", " + this.mappin_pos.Z + ", " + this.mappin_pos.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), this.mappin_pos))), 0) + "]");
-	}
-	
-	//---------------------------------------------------
-	//-- Creation Functions -----------------------------
-	//---------------------------------------------------
-	
-	function create(Harvest_Grounds_Results  : Botanist_HarvestGroundResults, region : BT_Herb_Region, type : BT_Herb_Enum, mappin_rad	: float, mappin_pos	: Vector, master : Botanist, user_settings : Botanist_UserSettings) : BT_Harvesting_Ground
-	{
-		this.event_manager   = master.BT_PersistentStorage.BT_EventHandler;
-		this.entity_storage  = master.BT_PersistentStorage.BT_HerbStorage;
-		this.config          = master.BT_ConfigSettings;
-		
-		this.user_settings   = user_settings;
-		
-		this.spot_herbs      = Harvest_Grounds_Results.harvesting_nodes;
-		this.spot_region     = region;
-		this.spot_type       = type;
-		this.spot_hash		 = spot_herbs[0].herb.herb_guidhash + 6558;
-		this.spot_total		 = spot_herbs.Size();
-		
-		this.mappin_manager  = SUMP_getManager();
-		this.mappin_pos      = mappin_pos;
-		this.mappin_rad      = mappin_rad;
-		this.mappin_name     = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName( botanist_get_herb_name_from_enum( this.spot_type ) ));
-		this.apply_random_boon();
-		
-		this.display_farming_spot();
-		this.print_info();
-		
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
-		
-		this.GotoState('update');
-		return this;
-	}
-
-	//---------------------------------------------------
-	
-	function load(user_settings : Botanist_UserSettings)
-	{
-		var Idx : int;
-		
-		this.user_settings = user_settings;
-		
-		if ( !user_settings.bools[BT_Config_Hgr_Enabled] )
-		{
-			this.remove_farming_spot();
-			return;			
-		}
-		
-		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
-		{
-			if ( !this.spot_herbs[Idx].herb.is_looted() && !this.entity_storage.is_herb_excluded( this.spot_herbs[Idx].herb.herb_guidhash ) )
-			{
-				this.spot_herbs[Idx].herb.set_displayed_in_grounds(this.user_settings);
-				continue;
-			}
-
-			this.spot_herbs[Idx].herb.reset( true );
-			this.spot_herbs.EraseFast(Idx);
-		}
-		
-		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
-		this.display_farming_spot();
-		this.update_mappin_description();
-	}
-
-	//---------------------------------------------------
-	
-	function update(user_settings : Botanist_UserSettings)
-	{	
-		this.user_settings = user_settings;
-		this.GotoState('update');
-	}
-	
-	//---------------------------------------------------
-	
-	function update_mappin_description() : void
-	{
-		var Idx : int = this.mappin_manager.mappins.FindFirst( this.mappin );
-
-		if ( Idx != -1 )
-		{
-			this.mappin_manager.mappins[Idx].description = this.get_mappin_description();
-		}
-	}
-
-	//---------------------------------------------------
-	
-	event On_herb_looted(hash : int) : void
-	{
-		var Idx : int;
-		
-		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
-		{
-			if ( this.spot_herbs[Idx].herb.herb_guidhash == hash )
-			{
-				this.spot_herbs[Idx].herb.reset( true );
-				this.spot_herbs.EraseFast(Idx);
-				break;
-			}
-		}
-		
-		if ( this.spot_herbs.Size() <= 0 )
-		{
-			this.remove_farming_spot();
-		}
-		
-		this.update_mappin_description();
-	}
-	
-	//---------------------------------------------------
-	
-	function apply_random_boon() : void
-	{
-		this.spot_herbs[RandRange(this.spot_herbs.Size(), 0)].herb.apply_boon(this.spot_total);
-	}
-	
-	//---------------------------------------------------
-	//-- Display Functions ------------------------------
-	//---------------------------------------------------
-	
-	function is_displayed() : bool
-	{
-		return this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.Contains( this.spot_hash );
-	}
-
-	//---------------------------------------------------
-
-	function display_farming_spot() : void
-	{
-		var Idx : int;
-
-		if ( !this.is_displayed() )
-		{
-			this.entity_storage.botanist_displayed_harvesting_grounds[spot_region][spot_type].PushBack( this );
-			this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.PushBack( this.spot_hash );
-		}
-		
-		if ( !this.mappin )
-		{
-			this.mappin = new BT_MapPin in this;
-		}	
-
-		mappin.tag 				    = "Botanist_Harvesting_Ground_" + this.spot_hash;		
-		mappin.label 			    = this.get_mappin_label();
-		mappin.radius				= this.mappin_rad;
-		mappin.position 			= this.mappin_pos;
-		mappin.description 		    = this.get_mappin_description();
-		mappin.region 				= this.get_herb_region_string();
-		mappin.type 				= "Herbalist";
-		mappin.filtered_type 		= "Herbalist";
-		mappin.is_quest 			= false;
-		mappin.appears_on_minimap 	= false;
-		mappin.pointed_by_arrow 	= false;
-		mappin.highlighted 		    = false;
-		mappin.is_fast_travel		= false;		
-		
-		Idx = this.mappin_manager.mappins.FindFirst( this.mappin );
-		
-		if ( Idx != -1 )
-		{
-			this.mappin_manager.mappins[Idx] = this.mappin;
-		}
-		else
-		{
-			this.mappin_manager.mappins.PushBack( this.mappin );
-		}
-	}
-	
-	//---------------------------------------------------
-
-	function remove_farming_spot() : void
-	{
-		var Idx : int;
-		
-		this.event_manager.unregister_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
-		
-		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
-		{
-			this.spot_herbs[Idx].herb.reset( true );
-		}
-		this.spot_herbs.Clear();
-			
-		SU_removeCustomPinByTag( "Botanist_Harvesting_Ground_" + this.spot_hash );
-		this.entity_storage.botanist_displayed_harvesting_grounds[spot_region][spot_type].Remove( this );
-		this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.Remove( this.spot_hash );
-		this.GotoState('disabled');
-	}
-
-	//---------------------------------------------------
-
-	function get_mappin_label() : string
-	{
-		return StrReplace(GetLocStringByKeyExt("BT_HarvestingGrounds"), "[NAME]", this.mappin_name);
-	}
-	
-	//---------------------------------------------------
-	
-	function get_mappin_description() : string
-	{
-		var description : string = GetLocStringByKeyExt("BT_HarvestingGrounds_Description");
-		
-		description = StrReplace(description, "[NAME]", this.mappin_name);
-		description = StrReplace(description, "[COUNT]", this.spot_herbs.Size());
-
-		return description;
-	}
-	
-	//---------------------------------------------------
-
-	function get_herb_region_string() : string
-	{
-		switch( this.spot_region )
-		{
-			case BT_NoMansLand:	 	return SUH_normalizeRegion("no_mans_land");
-			case BT_Skellige:	 	return SUH_normalizeRegion("skellige");
-			case BT_KaerMorhen: 	return SUH_normalizeRegion("kaer_morhen");
-			case BT_WhiteOrchard: 	return SUH_normalizeRegion("prolog_village");
-			case BT_Toussaint: 		return SUH_normalizeRegion("bob");
-			default: 				return "";
-		}
-	}
-}
-
-//---------------------------------------------------
-//-- Botanist Main Harvesting Grounds States --------
-//---------------------------------------------------
-
-state disabled in BT_Harvesting_Ground 
-{
-	event OnEnterState(previous_state_name: name) 
-	{
-		super.OnEnterState(previous_state_name);
-	}
-}
-
-//---------------------------------------------------
-//-- Botanist Main Harvesting Grounds States --------
-//---------------------------------------------------
-
-state waiting in BT_Harvesting_Ground 
-{
-	event OnEnterState(previous_state_name: name) 
-	{
-		super.OnEnterState(previous_state_name);
-	}
-}
-
-//---------------------------------------------------
-//-- Botanist Main Harvesting Grounds States --------
-//---------------------------------------------------
-
-state update in BT_Harvesting_Ground 
-{
-	event OnEnterState(previous_state_name: name) 
-	{	
-		var Idx : int;
-		
-		super.OnEnterState(previous_state_name);
-		
-		for( Idx = parent.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
-		{
-			parent.spot_herbs[Idx].herb.set_displayed_in_grounds(parent.user_settings);
-		}
-
-		parent.GotoState('waiting');
-	}
-}
 //---------------------------------------------------
 //-- Functions --------------------------------------
 //---------------------------------------------------
@@ -1496,6 +648,52 @@ function botanist_get_herb_name_from_enum(value : int) : name
 //-- Enum Return Functions --------------------------
 //---------------------------------------------------
 
+function botanist_get_herb_int_from_enum(value : BT_Herb_Enum) : int
+{
+	switch(value)
+	{
+	case BT_Allspiceroot:        return 0;
+	case BT_Arenaria:            return 1;
+	case BT_Balissefruit:        return 2;
+	case BT_Beggartickblossoms:  return 3;
+	case BT_Berbercanefruit:     return 4;
+	case BT_Bloodmoss:           return 5;
+	case BT_Blowbill:            return 6;
+	case BT_Bryonia:             return 7;
+	case BT_Buckthorn:           return 8;
+	case BT_Celandine:           return 9;
+	case BT_Cortinarius:         return 10;
+	case BT_Crowseye:            return 11;
+	case BT_Ergotseeds:          return 12;
+	case BT_Foolsparsleyleaves:  return 13;
+	case BT_Ginatiapetals:       return 14;
+	case BT_Greenmold:           return 15;
+	case BT_Han:                 return 16;
+	case BT_Helleborepetals:     return 17;
+	case BT_Honeysuckle:         return 18;
+	case BT_Hopumbels:           return 19;
+	case BT_Hornwort:            return 20;
+	case BT_Longrube:            return 21;
+	case BT_Mandrakeroot:        return 22;
+	case BT_Mistletoe:           return 23;
+	case BT_Moleyarrow:          return 24;
+	case BT_Nostrix:             return 25;
+	case BT_Pigskinpuffball:     return 26;
+	case BT_Pringrape:           return 27;
+	case BT_Ranogrin:            return 28;
+	case BT_Ribleaf:             return 29;
+	case BT_Sewantmushrooms:     return 30;
+	case BT_Verbena:             return 31;
+	case BT_Whitemyrtle:         return 32;
+	case BT_Wolfsbane:           return 33;
+	default : return -1;               
+	}
+}
+
+//---------------------------------------------------
+//-- Enum Return Functions --------------------------
+//---------------------------------------------------
+
 function botanist_get_herb_enum_region() : BT_Herb_Region
 {
 	switch( AreaTypeToName(theGame.GetCommonMapManager().GetCurrentArea()) )
@@ -1635,6 +833,939 @@ exec function bt_verify_su()
 	}
 	master.BT_PersistentStorage.BT_HerbStorage.verify_su_pointers();
 }
+//---------------------------------------------------
+//-- Botanist Main Harvesting Grounds Class ---------
+//---------------------------------------------------
+
+class BT_Harvesting_Ground
+{
+	var event_manager   : Botanist_EventHandler; 
+	var user_settings	: Botanist_UserSettings;
+	var entity_storage  : Botanist_KnownEntityStorage;
+	var config          : Botanist_Config;
+	
+	// Creation Data
+	var spot_herbs	: array<Botanist_NodePairing>;
+	var spot_region	: BT_Herb_Region;
+	var spot_type	: BT_Herb_Enum;
+	var spot_hash	: int;
+	var spot_total  : int;
+
+	// Map Pin Data
+	var mappin_manager	: SUMP_Manager;
+	var mappin		    : BT_MapPin;
+	var mappin_pos	    : Vector;
+	var mappin_rad	    : float;
+	var mappin_name  	: string;
+	
+	//---------------------------------------------------
+	//-- Logging Functions ------------------------------
+	//---------------------------------------------------
+
+	function print_info() : void
+	{
+		BT_Logger("Harvesting Ground Details: [HASH: " + this.spot_hash + "] [AREA: " + this.spot_region + "] [TYPE: " + this.spot_type + "] [POSITION: " + this.mappin_pos.X + ", " + this.mappin_pos.Y + ", " + this.mappin_pos.Z + ", " + this.mappin_pos.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), this.mappin_pos))), 0) + "]");
+	}
+	
+	//---------------------------------------------------
+	//-- Creation Functions -----------------------------
+	//---------------------------------------------------
+	
+	function create(Harvest_Grounds_Results  : Botanist_HarvestGroundResults, region : BT_Herb_Region, type : BT_Herb_Enum, mappin_rad	: float, mappin_pos	: Vector, master : Botanist, user_settings : Botanist_UserSettings) : BT_Harvesting_Ground
+	{
+		this.event_manager   = master.BT_PersistentStorage.BT_EventHandler;
+		this.entity_storage  = master.BT_PersistentStorage.BT_HerbStorage;
+		this.config          = master.BT_ConfigSettings;
+		
+		this.user_settings   = user_settings;
+		
+		this.spot_herbs      = Harvest_Grounds_Results.harvesting_nodes;
+		this.spot_region     = region;
+		this.spot_type       = type;
+		this.spot_hash		 = spot_herbs[0].herb.herb_guidhash + 6558;
+		this.spot_total		 = spot_herbs.Size();
+		
+		this.mappin_manager  = SUMP_getManager();
+		this.mappin_pos      = mappin_pos;
+		this.mappin_rad      = mappin_rad;
+		this.mappin_name     = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName( botanist_get_herb_name_from_enum( this.spot_type ) ));
+		this.apply_random_boon();
+		
+		this.display_farming_spot();
+		this.print_info();
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , , this) );
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Clear_Except, , , , this) );
+		
+		this.GotoState('update');
+		return this;
+	}
+
+	//---------------------------------------------------
+	
+	function load(user_settings : Botanist_UserSettings)
+	{
+		var Idx : int;
+		
+		this.user_settings = user_settings;
+		
+		if ( !user_settings.bools[BT_Config_Hgr_Enabled] || this.spot_herbs.Size() < 1 )
+		{
+			this.remove_farming_spot();
+			return;			
+		}
+		
+		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
+		{
+			if ( !this.spot_herbs[Idx].herb.is_looted() && !this.entity_storage.is_herb_excluded( this.spot_herbs[Idx].herb.herb_guidhash ) )
+			{
+				this.spot_herbs[Idx].herb.set_displayed_in_grounds(this.user_settings);
+				continue;
+			}
+
+			this.spot_herbs[Idx].herb.reset( true );
+			this.spot_herbs.EraseFast(Idx);
+		}
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , , this) );
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Clear_Except, , , , this) );
+		
+		this.display_farming_spot();
+		this.update_mappin_description();
+	}
+
+	//---------------------------------------------------
+	
+	function update(user_settings : Botanist_UserSettings)
+	{	
+		this.user_settings = user_settings;
+		this.GotoState('update');
+	}
+	
+	//---------------------------------------------------
+	
+	function update_mappin_description() : void
+	{
+		var Idx : int = this.mappin_manager.mappins.FindFirst( this.mappin );
+
+		if ( Idx != -1 )
+		{
+			this.mappin_manager.mappins[Idx].description = this.get_mappin_description();
+		}
+	}
+
+	//---------------------------------------------------
+	
+	event On_herb_looted(hash : int) : void
+	{
+		var Idx : int;
+		
+		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
+		{
+			if ( this.spot_herbs[Idx].herb.herb_guidhash == hash )
+			{
+				this.spot_herbs.EraseFast(Idx);
+				break;
+			}
+		}
+		
+		if ( this.spot_herbs.Size() <= 0 )
+		{
+			this.remove_farming_spot();
+		}
+		
+		this.update_mappin_description();
+	}
+
+	//---------------------------------------------------
+	
+	event On_clear_except( _name : name )
+	{
+	 if ( _name != botanist_get_herb_name_from_enum( this.spot_type ) )
+		this.remove_farming_spot();
+	}
+	
+	//---------------------------------------------------
+	
+	function apply_random_boon() : void
+	{
+		this.spot_herbs[RandRange(this.spot_herbs.Size(), 0)].herb.apply_boon(this.spot_total);
+	}
+	
+	//---------------------------------------------------
+	//-- Display Functions ------------------------------
+	//---------------------------------------------------
+	
+	function is_displayed() : bool
+	{
+		return this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.Contains( this.spot_hash );
+	}
+
+	//---------------------------------------------------
+
+	function display_farming_spot() : void
+	{
+		var Idx : int;
+		
+		if ( !this.mappin )
+		{
+			this.mappin = new BT_MapPin in this;
+		}	
+		
+		mappin.tag 				    = "Botanist_Harvesting_Ground_" + this.spot_hash;
+		mappin.label 			    = this.get_mappin_label();
+		mappin.radius				= this.mappin_rad;
+		mappin.position 			= this.mappin_pos;
+		mappin.description 		    = this.get_mappin_description();
+		mappin.region 				= this.get_herb_region_string();
+		mappin.type 				= "BotanistHG";
+		mappin.filtered_type 		= "BotanistHG";
+		mappin.is_quest 			= false;
+		mappin.appears_on_minimap 	= false;
+		mappin.pointed_by_arrow 	= false;
+		mappin.highlighted 		    = false;
+		mappin.is_fast_travel		= false;		
+		
+		mappin.l_data               = Botanist_MapPinLookupData(this.spot_hash, this.spot_type, this.spot_region, true);
+
+		if ( !this.is_displayed() )
+		{
+			this.entity_storage.botanist_displayed_harvesting_grounds[spot_region][spot_type].PushBack( this );
+			this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.PushBack( this.spot_hash );		
+		}
+		
+		Idx = this.mappin_manager.mappins.FindFirst( this.mappin );
+		
+		if ( Idx != -1 )
+		{
+			this.mappin_manager.mappins[Idx] = this.mappin;
+		}
+		else
+		{
+			this.mappin_manager.mappins.PushBack( this.mappin );
+		}
+	}
+	
+	//---------------------------------------------------
+
+	function remove_farming_spot() : void
+	{
+		var Idx : int;
+		
+		this.event_manager.unregister_for_event( botanist_event_data(BT_Herb_Looted, , , , this) );
+		this.event_manager.unregister_for_event( botanist_event_data(BT_Herb_Clear_Except, , , , this) );
+		
+		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
+		{
+			this.spot_herbs[Idx].herb.reset( true );
+		}
+		this.spot_herbs.Clear();
+			
+		SU_removeCustomPinByTag( "Botanist_Harvesting_Ground_" + this.spot_hash );
+		
+		this.entity_storage.botanist_displayed_harvesting_grounds[spot_region][spot_type].Remove( this );
+		this.entity_storage.botanist_displayed_harvesting_grounds_guid_hashes.Remove( this.spot_hash );
+		
+		this.GotoState('disabled');
+	}
+
+	//---------------------------------------------------
+
+	function get_mappin_label() : string
+	{
+		return GetLocStringByKeyExt("BT_HarvestingGrounds");
+	}
+	
+	//---------------------------------------------------
+	
+	function get_mappin_description() : string
+	{
+		var description : string = GetLocStringByKeyExt("BT_HarvestingGrounds_Description");
+		
+		description = StrReplace(description, "[NAME]", this.mappin_name);
+		description = StrReplace(description, "[COUNT]", this.spot_herbs.Size());
+
+		return description;
+	}
+	
+	//---------------------------------------------------
+
+	function get_herb_region_string() : string
+	{
+		switch( this.spot_region )
+		{
+			case BT_NoMansLand:	 	return SUH_normalizeRegion("no_mans_land");
+			case BT_Skellige:	 	return SUH_normalizeRegion("skellige");
+			case BT_KaerMorhen: 	return SUH_normalizeRegion("kaer_morhen");
+			case BT_WhiteOrchard: 	return SUH_normalizeRegion("prolog_village");
+			case BT_Toussaint: 		return SUH_normalizeRegion("bob");
+			default: 				return "";
+		}
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Main Harvesting Grounds States --------
+//---------------------------------------------------
+
+state disabled in BT_Harvesting_Ground 
+{
+	event OnEnterState(previous_state_name: name) 
+	{
+		super.OnEnterState(previous_state_name);
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Main Harvesting Grounds States --------
+//---------------------------------------------------
+
+state waiting in BT_Harvesting_Ground 
+{
+	event OnEnterState(previous_state_name: name) 
+	{
+		super.OnEnterState(previous_state_name);
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Main Harvesting Grounds States --------
+//---------------------------------------------------
+
+state update in BT_Harvesting_Ground 
+{
+	event OnEnterState(previous_state_name: name) 
+	{	
+		var Idx : int;
+		
+		super.OnEnterState(previous_state_name);
+		
+		for( Idx = parent.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
+		{
+			parent.spot_herbs[Idx].herb.set_displayed_in_grounds(parent.user_settings);
+		}
+
+		parent.GotoState('waiting');
+	}
+}
+//---------------------------------------------------
+//-- Botanist Oneliner Extension Class --------------
+//---------------------------------------------------
+
+class BT_OneLiner extends SU_Oneliner
+{
+	var active_status : int;
+	
+	function getVisible(player_position: Vector): bool 
+	{
+		var fcs : bool = theGame.IsFocusModeActive();
+		
+		switch ( active_status )
+		{
+			case 0 : { return super.getVisible(player_position) && fcs; }
+			case 1 : { return super.getVisible(player_position) && !fcs; }
+			case 2 : { return super.getVisible(player_position); }
+			case 3 : { return false; }
+		}
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Map Pin Extension Class ---------------
+//---------------------------------------------------
+
+class Botanist_Remove_Harvesting_Grounds extends ConfirmationPopupData 
+{
+	var l_data : Botanist_MapPinLookupData;
+	
+	function set_data(data : Botanist_MapPinLookupData) : Botanist_Remove_Harvesting_Grounds
+	{
+		this.l_data = data;
+		return this;
+	}
+	
+	protected function OnUserAccept() 
+	{
+		var master : Botanist;
+
+		if (Get_Botanist(master, 'Botanist_Remove_Harvesting_Grounds')) 
+		{
+		}
+	}
+  
+	protected function OnUserDecline() 
+	{
+	}
+  
+	protected function GetAcceptText(): string 
+	{
+		return "panel_button_common_accept";
+	}
+	
+	protected function GetDeclineText(): string 
+	{
+		return "panel_button_common_exit";
+	}
+}
+
+class BT_MapPin extends SU_MapPin
+{
+	var l_data : Botanist_MapPinLookupData;
+	
+	function onPinUsed()
+	{
+		BT_Logger("DATA = " + l_data.hash + " || " + l_data.type + " || " + l_data.region + " || " + l_data.grounds);
+		
+		//open_popup_data( (new Botanist_Remove_Harvesting_Grounds in thePlayer).set_data(l_data), "Botanist", "Do you wish to remove this harvesting ground?");
+	}
+
+	function open_popup_data(data: ConfirmationPopupData, title: string, text: string) 
+	{
+	  data.SetMessageTitle(title);
+	  data.SetMessageText(text);
+	  data.BlurBackground = true;
+	  data.PauseGame = true;
+	  theGame.RequestMenu('PopupMenu', data);
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Main Herb Class -----------------------
+//---------------------------------------------------
+
+class BT_Herb
+{
+	var user_settings	: Botanist_UserSettings;
+	var event_manager   : Botanist_EventHandler; 
+	
+	// Creation Data
+	var herb_entity		: W3Herb;
+	var herb_areaname	: BT_Herb_Region;
+	var entity_storage  : Botanist_KnownEntityStorage;
+	var world_position 	: Vector;
+	var herb_tag		: name;
+	
+	var herb_guidhash	: int;
+	var icon_guidhash	: int;
+	
+	// Dynamic Boon Data
+	var herb_has_boon	: bool;
+	var boon_total      : int;
+	
+	// 3D Marker Data
+	var marker_status	: BT_Herb_Display_Status;
+	
+	var marker_manager	: SUOL_Manager;
+	var mappin_manager  : SUMP_Manager;
+	
+	var herb_enum_type	: BT_Herb_Enum;
+	var herb_marker		: BT_OneLiner;
+	var icon_marker		: BT_OneLiner;
+	var icon_path		: string;
+	var localised_name	: string;
+	
+	// Map Pin Data
+	var herb_mappin		: BT_MapPin;
+	
+	default marker_status = BT_Herb_Hidden;
+
+	//---------------------------------------------------
+	//-- Logging Functions ------------------------------
+	//---------------------------------------------------
+
+	function get_info() : string
+	{
+		return "Herb Details: [HASH: " + this.herb_guidhash + "] [TYPE: " + this.herb_enum_type + "] [AREA: " + this.herb_areaname + "] [NAME: " + this.herb_tag + "] [CAN HARVEST: " + !this.is_looted() + "] [POSITION: " + this.world_position.X + ", " + this.world_position.Y + ", " + this.world_position.Z + ", " + this.world_position.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), world_position))), 0) + "]";
+	}
+	
+	//---------------------------------------------------
+	
+	function print_info() : void
+	{
+		BT_Logger("Herb Details: [TYPE: " + this.herb_enum_type + "] [AREA: " + this.herb_areaname + "] [NAME: " + this.herb_tag + "] [ATTACHED: " + (bool) this.herb_entity + "] [HASH: " + this.herb_guidhash + "] [CAN HARVEST: " + !this.is_looted() + "] [POSITION: " + this.world_position.X + ", " + this.world_position.Y + ", " + this.world_position.Z + ", " + this.world_position.W + "] [DISTANCE TO PLAYER: " + FloatToStringPrec( FloorF( SqrtF( VecDistanceSquared(thePlayer.GetWorldPosition(), world_position))), 0) + "]");
+	}
+	
+	//---------------------------------------------------
+	//-- Creation Functions -----------------------------
+	//---------------------------------------------------
+	
+	function create_new_herb(herb_entity: W3Herb, world_position: Vector, herb_tag: name, herb_guidhash: int, herb_areaname: EAreaName, master : Botanist) : bool
+	{
+		this.herb_areaname = set_herb_region(herb_areaname);
+		if (this.herb_areaname == BT_Invalid_Location)
+		{
+			return false;
+		}
+		
+		this.event_manager  = master.BT_PersistentStorage.BT_EventHandler;
+		this.entity_storage = master.BT_PersistentStorage.BT_HerbStorage;
+		
+		this.herb_entity 	= herb_entity;
+
+		this.world_position = world_position;
+		this.herb_tag 		= herb_tag;
+		this.herb_guidhash 	= herb_guidhash;
+		this.icon_guidhash	= herb_guidhash + 9854;
+		this.herb_enum_type = botanist_get_herb_enum_from_name( this.herb_tag );
+		this.marker_status  = BT_Herb_Ready;
+		
+		this.marker_manager = SUOL_getManager();
+		this.mappin_manager = SUMP_getManager();
+		
+		this.icon_path		= thePlayer.GetInventory().GetItemIconPathByName(herb_tag);
+		this.localised_name = GetLocStringByKeyExt(theGame.GetDefinitionsManager().GetItemLocalisationKeyName(herb_tag));
+	
+		this.add_herb_to_storage();
+		
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Reset, , , this) );
+		
+		return true;
+	}
+	
+	//---------------------------------------------------
+	
+	function add_herb_to_storage() : void
+	{
+		this.entity_storage.botanist_known_herbs[herb_areaname][herb_enum_type].PushBack(this);
+		this.entity_storage.botanist_known_herbs_guid_hashes.PushBack(herb_guidhash);
+
+		this.entity_storage.botanist_master_herbs.PushBack(this);
+		this.entity_storage.botanist_master_hashs.PushBack(herb_guidhash);
+		this.entity_storage.botanist_master_names.PushBack(herb_tag);
+		this.entity_storage.botanist_master_world.PushBack(world_position);
+		
+		this.print_info();
+	}
+
+	//---------------------------------------------------
+	
+	function attach_shared_util_pointers(marker_manager : SUOL_Manager, mappin_manager : SUMP_Manager) : bool
+	{
+		this.marker_manager = marker_manager;
+		this.mappin_manager = mappin_manager;
+		
+		if (this.marker_manager && this.mappin_manager)
+			return true;
+			
+		return false;
+	}
+
+	//---------------------------------------------------
+	
+	function are_shared_util_pointers_attached() : bool
+	{
+		if (this.marker_manager && this.mappin_manager)
+			return true;
+			
+		return false;
+	}
+	
+	//---------------------------------------------------
+	//-- Reset Functions --------------------------------
+	//---------------------------------------------------
+	
+	function reset(remove_from_list : bool) : void
+	{
+		this.remove_markers(remove_from_list);
+		
+		if ( this.is_looted() )
+		{
+			this.marker_status = BT_Herb_Hidden;
+		}
+		else 
+		{
+			this.marker_status = BT_Herb_Ready;
+		}	
+	}
+	
+	//---------------------------------------------------
+	
+	function reset_entity( herb_entity : W3Herb ) : bool
+	{
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , this) );
+		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Reset, , , this) );
+		this.herb_entity = herb_entity;
+		
+		if ( this.herb_entity )
+			return true;
+		
+		return false;
+	}	
+	
+	//---------------------------------------------------
+	
+	function apply_boon(total : int) : void
+	{
+		this.herb_has_boon = true;
+		this.boon_total = total;
+	}
+
+	//---------------------------------------------------
+	
+	function remove_boon() : void
+	{
+		this.herb_has_boon = false;
+		this.boon_total = 0;
+	}
+
+	//---------------------------------------------------
+	
+	function set_in_harvesting_grounds() : void
+	{
+		this.marker_status = BT_Herb_In_Grounds;
+	}
+
+	//---------------------------------------------------
+	
+	function is_in_harvesting_grounds() : bool
+	{
+		return this.marker_status == BT_Herb_In_Grounds;
+	}
+	
+	//---------------------------------------------------
+	//-- Region Functions -------------------------------
+	//---------------------------------------------------
+
+	function set_herb_region(areaname : EAreaName) : BT_Herb_Region
+	{
+		switch( AreaTypeToName( areaname ) )
+		{
+			case "novigrad"			: return BT_NoMansLand;
+			case "no_mans_land"		: return BT_NoMansLand;
+			case "skellige"			: return BT_Skellige;
+			case "kaer_morhen"		: return BT_KaerMorhen;
+			case "prolog_village"	: return BT_WhiteOrchard;
+			case "bob"				: return BT_Toussaint;
+			default 				: return BT_Invalid_Location;
+		}
+	}
+
+	//---------------------------------------------------
+
+	function get_herb_region_string() : string
+	{
+		switch( this.herb_areaname )
+		{
+			case BT_NoMansLand:	 	return SUH_normalizeRegion("novigrad");
+			case BT_NoMansLand:	 	return SUH_normalizeRegion("no_mans_land");
+			case BT_Skellige:	 	return SUH_normalizeRegion("skellige");
+			case BT_KaerMorhen: 	return SUH_normalizeRegion("kaer_morhen");
+			case BT_WhiteOrchard: 	return SUH_normalizeRegion("prolog_village");
+			case BT_Toussaint: 		return SUH_normalizeRegion("bob");
+			default: 				return "";
+		}
+	}
+	
+	//---------------------------------------------------
+	//-- Loot Functions ---------------------------------
+	//---------------------------------------------------
+
+	event On_herb_looted(hash : int) : void
+	{
+		if ( this.herb_guidhash == hash )
+		{			
+			if ( this.herb_has_boon && this.is_in_harvesting_grounds() )
+			{
+				GetWitcherPlayer().DisplayHudMessage( StrReplace(GetLocStringByKeyExt("BT_HerbYieldInfo_HG"), "[REPLACE]", this.boon_total) );
+				thePlayer.inv.AddAnItem(this.herb_tag, boon_total, false, false, true);
+			}
+			
+			this.remove_boon();	
+			this.reset( true );
+		}
+	}
+
+	//---------------------------------------------------
+	
+	event On_herb_reset() : void
+	{
+		if ( !this.is_in_harvesting_grounds() )
+			this.reset( true );
+	}
+
+	//---------------------------------------------------
+	
+	function is_looted() : bool
+	{
+		return this.herb_entity.is_empty();
+	}
+
+	//---------------------------------------------------
+	
+	function is_eligible_for_harvesting_grounds() : bool
+	{		
+		return !this.is_looted() && this.is_displayed() && !this.is_in_harvesting_grounds();
+	}
+
+	//---------------------------------------------------
+	
+	function is_eligible_for_normal_display() : bool
+	{		
+		return !this.is_looted() && !this.is_displayed() && !this.is_in_harvesting_grounds();
+	}
+	
+	//---------------------------------------------------
+	//-- 3D Markers & Map Pin Functions -----------------
+	//---------------------------------------------------
+	
+	function set_displayed(user_settings : Botanist_UserSettings) : void
+	{
+		this.user_settings = user_settings;
+		
+		if ( this.is_displayed() )
+		{
+			return;
+		}
+
+		this.marker_status 	= BT_Herb_HarvestReady;
+		
+		this.display_markers();	
+	}
+
+	//---------------------------------------------------
+	
+	function is_displayed() : bool
+	{
+		return this.entity_storage.botanist_displayed_herbs_guid_hashes.Contains(this.herb_guidhash);
+	}
+	
+	//---------------------------------------------------
+	
+	function set_displayed_in_grounds(user_settings : Botanist_UserSettings) : void
+	{
+		this.reset( true );
+		this.set_in_harvesting_grounds();
+		this.user_settings = user_settings;		
+		this.display_markers_for_harvesting_grounds();	
+	}
+	
+	//---------------------------------------------------
+
+	function update_markers() : void
+	{
+		if ( !herb_marker )
+		{
+			herb_marker					= new BT_OneLiner in this;
+		}
+		
+		herb_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
+		herb_marker.text 				= this.get_marker_label();
+		herb_marker.position 			= this.world_position;
+		herb_marker.render_distance 	= this.get_marker_visibility_range();
+
+		if ( !icon_marker )
+		{
+			icon_marker					= new BT_OneLiner in this;
+		}
+		
+		icon_marker.active_status		= this.user_settings.ints[BT_Config_Ols_Active];
+		icon_marker.text 				= this.get_marker_iconpath();
+		icon_marker.position 			= this.world_position;
+		icon_marker.render_distance 	= this.get_marker_visibility_range();
+
+		if ( !herb_mappin )
+		{
+			herb_mappin					= new BT_MapPin in this;
+		}
+		
+		herb_mappin.tag 				= "Botanist_" + this.herb_guidhash;
+		herb_mappin.label 				= get_mappin_label();
+		herb_mappin.description 		= get_mappin_description();
+		herb_mappin.radius				= get_mappin_radius();
+		herb_mappin.type 				= get_mappin_type();
+		herb_mappin.filtered_type   	= get_mappin_type();
+		herb_mappin.position 			= Vector(world_position.X, world_position.Y);
+		herb_mappin.region 				= get_herb_region_string();
+		herb_mappin.is_quest 			= false;
+		herb_mappin.appears_on_minimap 	= false;
+		herb_mappin.pointed_by_arrow 	= false;
+		herb_mappin.highlighted 		= false;
+		herb_mappin.is_fast_travel		= false;
+	}
+	
+	//---------------------------------------------------
+
+	function display_markers() : void
+	{
+		var Idx : int;
+		
+		this.update_markers();
+		
+		if (this.user_settings.bools[BT_Config_Ols_Enabled]  )
+		{
+			switch( this.user_settings.ints[BT_Config_Ols_Display] )
+			{
+				case 0: 
+				{
+					this.marker_manager.createOneliner( this.herb_marker ); 
+					this.marker_manager.createOneliner( this.icon_marker );
+					break;
+				}
+
+				case 1: 
+				{
+					this.marker_manager.createOneliner( this.herb_marker ); 
+					break;
+				}
+				
+				case 2: 
+				{
+					this.marker_manager.createOneliner( this.icon_marker );
+					break;
+				}
+			}
+		}
+		
+		this.entity_storage.botanist_displayed_herbs[herb_areaname][herb_enum_type].PushBack( this );
+		this.entity_storage.botanist_displayed_herbs_guid_hashes.PushBack( this.herb_guidhash );
+
+		if ( this.user_settings.bools[BT_Config_Pin_Enabled] )
+		{
+			Idx = this.mappin_manager.mappins.FindFirst( this.herb_mappin );
+			
+			if ( Idx != -1 )
+			{
+				this.mappin_manager.mappins[Idx] = this.herb_mappin;
+			}
+			else
+			{
+				this.mappin_manager.mappins.PushBack( this.herb_mappin );
+			}
+		}
+	}
+
+	//---------------------------------------------------
+
+	function display_markers_for_harvesting_grounds() : void
+	{
+		var Idx : int;
+		
+		this.update_markers();
+		
+		if (this.user_settings.bools[BT_Config_Ols_Enabled]  )
+		{
+			switch( this.user_settings.ints[BT_Config_Ols_Display] )
+			{
+				case 0: 
+				{
+					this.marker_manager.createOneliner( this.herb_marker ); 
+					this.marker_manager.createOneliner( this.icon_marker );
+					break;
+				}
+
+				case 1: 
+				{
+					this.marker_manager.createOneliner( this.herb_marker ); 
+					break;
+				}
+				
+				case 2: 
+				{
+					this.marker_manager.createOneliner( this.icon_marker );
+					break;
+				}
+			}
+		}
+		
+		if ( this.user_settings.bools[BT_Config_Pin_Enabled] )
+		{
+			Idx = this.mappin_manager.mappins.FindFirst( this.herb_mappin );
+			
+			if ( Idx != -1 )
+			{
+				this.mappin_manager.mappins[Idx] = this.herb_mappin;
+			}
+			else
+			{
+				this.mappin_manager.mappins.PushBack( this.herb_mappin );
+			}
+		}
+	}
+	
+	//---------------------------------------------------
+
+	function remove_markers(remove_from_list : bool) : void
+	{
+		if ( remove_from_list )
+		{
+			this.entity_storage.botanist_displayed_herbs[herb_areaname][herb_enum_type].Remove( this );
+			this.entity_storage.botanist_displayed_herbs_guid_hashes.Remove( this.herb_guidhash );
+		}
+		
+		this.marker_manager.deleteOneliner( (SU_Oneliner)this.herb_marker );
+		this.marker_manager.deleteOneliner( (SU_Oneliner)this.icon_marker );
+		this.mappin_manager.mappins.Remove( this.herb_mappin );
+	}
+	
+	//---------------------------------------------------
+	
+	function get_marker_visibility_range() : int
+	{
+		switch( this.user_settings.ints[BT_Config_Ols_Visible] )
+		{
+			case 0: return 10;
+			case 1: return 25;
+			case 2: return 75;
+			case 3: return 115;
+			case 4: return 150;
+		}
+	}
+	
+	//---------------------------------------------------
+
+	function get_marker_label() : string
+	{
+		//return this.herb_guidhash;
+		return "<font size='" + this.user_settings.ints[BT_Config_Ols_Fontsize] + "'>" + this.localised_name + "</font>";
+	}
+
+	//---------------------------------------------------
+
+	function get_marker_iconpath() : string
+	{
+		var fontSize : int = this.user_settings.ints[BT_Config_Ols_Fontsize];
+		return "<img src='img://" + icon_path + "' height='" + (fontSize + 30) + "' width='" + (fontSize + 30) + "' vspace='" + (fontSize) + "' />&nbsp;";
+	}
+	
+	//---------------------------------------------------
+
+	function get_mappin_label() : string
+	{
+		if ( this.is_in_harvesting_grounds() )
+			return GetLocStringByKeyExt("BT_HerbLootableHG");
+		
+		return GetLocStringByKeyExt("BT_HerbLootable");
+	}
+
+	//---------------------------------------------------
+
+	function get_mappin_type() : string
+	{
+		if ( this.is_in_harvesting_grounds() )
+			return "BotanistHGHerb";
+		
+		return "Botanist";
+	}
+
+	//---------------------------------------------------
+	
+	function get_mappin_description() : string
+	{
+		if ( this.is_in_harvesting_grounds() )
+			return StrReplace(GetLocStringByKeyExt("BT_HerbMapPinInfo_HG"), "[NAME]", this.localised_name);
+		
+		return StrReplace(GetLocStringByKeyExt("BT_HerbMapPinInfo"), "[NAME]", this.localised_name);
+	}
+
+	//---------------------------------------------------
+	
+	function get_mappin_radius() : int
+	{
+		return this.user_settings.ints[BT_Config_Pin_Radius];
+	}
+}
+
 class Botanist_RemoveAllMapPins extends SU_PredicateInterfaceRemovePin 
 {
 	function predicate(pin: SU_MapPin): bool {
@@ -1729,7 +1860,6 @@ class Botanist_KnownEntityStorage
 	function inititalise(master: Botanist) : void
 	{	
 		this.master = master;	
-		this.init_exclussion_list();
 		this.attach_herb_pointers();
 		this.attach_shared_util_pointers();
 		
@@ -1738,25 +1868,29 @@ class Botanist_KnownEntityStorage
 
 		predicate = new Botanist_RemoveAllMapPins in thePlayer;
 		SU_removeCustomPinByPredicate(predicate);
-			
+		
+		this.initialise_exclusion_list();
 		this.initialise_temporary_displayed_arrays();
 		this.initialise_saved_harvesting_grounds();
 	}
 	
-	function init_exclussion_list() : void
+	function initialise_exclusion_list() : void
 	{
+		this.excluded_herbs.Clear();
+		
 		// Keira's Hideout
-		this.excluded_herbs.PushBack( 1338875484 );
 		this.excluded_herbs.PushBack( 549522696 );
-		this.excluded_herbs.PushBack( -541392408 );
+		this.excluded_herbs.PushBack( 1338875484 );
 		this.excluded_herbs.PushBack( -1078211475 );
+		this.excluded_herbs.PushBack( -541392408 );
 		this.excluded_herbs.PushBack( -559926266 );
-		this.excluded_herbs.PushBack( -1791854638 );
 		this.excluded_herbs.PushBack( -2006234737 );
+		this.excluded_herbs.PushBack( -1791854638 );
 		this.excluded_herbs.PushBack( -484491973 );
+		this.excluded_herbs.PushBack( 400975944 );
+		this.excluded_herbs.PushBack( -1606184739 );
 		this.excluded_herbs.PushBack( 963451185 );
 		this.excluded_herbs.PushBack( 1270212183 );
-		this.excluded_herbs.PushBack( -1606184739 );
 	}
 	
 	function reset_and_clerar() : void
@@ -2061,6 +2195,85 @@ class Botanist_KnownEntityStorage
 		}
 		
 		GetWitcherPlayer().DisplayHudMessage("Shared Util Pointers Verified On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");	
+	}
+}
+class Botanist_TutorialsSystem 
+{
+	var master : Botanist;
+	var config : Botanist_Config;
+	
+	//---------------------------------------------------
+	
+	function initialise(master : Botanist, config : Botanist_Config)
+	{
+		this.master = master;
+		this.config = config;
+	}
+	
+	//---------------------------------------------------
+	
+	function show_tutorial(tutorial_identifier : Botanist_Tutorial_Enum, optional object : Vector) 
+	{
+		var data          : W3TutorialPopupData;
+		var tutorial_data : Botanist_Tutorial_Data;
+		
+		if ( !get_tutorial_data( tutorial_identifier, tutorial_data ) )
+		{
+			return;
+		}
+		
+		data                     = new W3TutorialPopupData in thePlayer;
+		data.managerRef          = theGame.GetTutorialSystem();
+		
+		data.messageTitle        = tutorial_data.title;
+		data.messageText         = tutorial_data.body;
+		
+		data.enableGlossoryLink  = false;
+		data.autosize            = true;
+		data.blockInput          = true;
+		data.pauseGame           = true;
+		data.fullscreen          = true;
+		data.canBeShownInMenus   = true;
+		data.enableAcceptButton  = true;
+		data.fullscreen          = true;	
+
+		
+		data.duration = -1;
+		data.posX = 0;
+		data.posY = 0;
+
+		theGame.GetInGameConfigWrapper().SetVarValue('Botanist_Tutorials', tutorial_data.variable, "false");
+		theGame.GetTutorialSystem().ShowTutorialHint(data);
+	}
+	
+	//---------------------------------------------------
+	
+	function get_tutorial_data(tutorial_identifier : Botanist_Tutorial_Enum, out output : Botanist_Tutorial_Data) : bool
+	{
+		var settings : Botanist_UserSettings = this.config.get_tutorial_settings();
+		
+		if ( !settings.bools[tutorial_identifier] )
+		{	
+			return false;
+		}
+		
+		switch( tutorial_identifier )
+		{
+			case Botanist_Tutorial_Installation : { 
+				output.title = GetLocStringByKeyExt("BT_Tutorial_Installation_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_Installation_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				break; 
+			}
+			
+			case Botanist_Tutorial_Discovery : { 
+				output.title = GetLocStringByKeyExt("BT_Tutorial_Discovery_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_Discovery_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				break; 
+			}
+			
+			default : 
+				break;
+		}
+		
+		return true;
 	}
 }
 //---------------------------------------------------
@@ -2405,6 +2618,9 @@ state on_tick in Botanist_UIRenderLoop
 				//If the player is only wanting to display a specific herb and that herb is required for a recipe then only process that one list.
 				if ( target_herb != '' )
 				{
+					//if we are targetting a specific herb, remove all harvesting grounds not of this type.
+					this.remove_all_harvesting_grounds_except( target_herb );
+					
 					if ( new_herb_requirements.names.Contains( target_herb ) )
 					{
 						Idx = new_herb_requirements.names.FindFirst( target_herb );
@@ -2496,6 +2712,13 @@ state on_tick in Botanist_UIRenderLoop
 		parent.storage.initialise_temporary_displayed_arrays();	
 	}
 
+	//---------------------------------------------------
+	
+	private function remove_all_harvesting_grounds_except( target_herb : name )
+	{
+		parent.master.BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Clear_Except, , target_herb ) );
+	}
+	
 	//---------------------------------------------------
 
 	private function requirements_have_changed(old_data, new_data : Botanist_HerbRequirements, target_herb : name) : bool
@@ -2594,6 +2817,16 @@ enum Botanist_UserSettings_Enum_Ints
 }
 
 //---------------------------------------------------
+//-- Botanist Tutorials Enum ------------------------
+//---------------------------------------------------
+
+enum Botanist_Tutorial_Enum
+{
+	Botanist_Tutorial_Installation = 0,
+	Botanist_Tutorial_Discovery = 1,
+}
+
+//---------------------------------------------------
 //-- Botanist Herb Type Enum ------------------------
 //---------------------------------------------------
 
@@ -2670,6 +2903,7 @@ enum BT_Event_Type
 {
 	BT_Herb_Looted = 0,
 	BT_Herb_Reset = 1,
+	BT_Herb_Clear_Except = 2,
 }
 //---------------------------------------------------
 //-- Botanist User Settings Struct ------------------
@@ -2679,6 +2913,17 @@ struct Botanist_UserSettings
 {
 	var bools : array<bool>;
 	var ints  : array<int>;
+}
+
+//---------------------------------------------------
+//-- Botanist Tutorial Data Struct ------------------
+//---------------------------------------------------
+
+struct Botanist_Tutorial_Data
+{
+	var title    : string;
+	var body     : string;
+	var variable : name;
 }
 
 //---------------------------------------------------
@@ -2724,7 +2969,8 @@ struct botanist_event_data
 	var type : BT_Event_Type;
 	
 	//For event sending
-	var hash : int;
+	var _int : int;
+	var _name : name;
 	
 	//For new registrations
 	var herb : BT_Herb;
@@ -2739,4 +2985,16 @@ struct Botanist_HerbRequirements
 {
 	var names		: array<name>;
 	var quantities	: array<int>;
+}
+
+//---------------------------------------------------
+//-- Botanist Lookup Mappin Struct ------------------
+//---------------------------------------------------
+
+struct Botanist_MapPinLookupData
+{
+	var hash	: int;
+	var type	: BT_Herb_Enum;
+	var region	: BT_Herb_Region;
+	var grounds : bool;
 }

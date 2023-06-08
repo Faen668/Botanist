@@ -93,7 +93,6 @@ class Botanist_KnownEntityStorage
 	function inititalise(master: Botanist) : void
 	{	
 		this.master = master;	
-		this.init_exclussion_list();
 		this.attach_herb_pointers();
 		this.attach_shared_util_pointers();
 		
@@ -102,25 +101,29 @@ class Botanist_KnownEntityStorage
 
 		predicate = new Botanist_RemoveAllMapPins in thePlayer;
 		SU_removeCustomPinByPredicate(predicate);
-			
+		
+		this.initialise_exclusion_list();
 		this.initialise_temporary_displayed_arrays();
 		this.initialise_saved_harvesting_grounds();
 	}
 	
-	function init_exclussion_list() : void
+	function initialise_exclusion_list() : void
 	{
+		this.excluded_herbs.Clear();
+		
 		// Keira's Hideout
-		this.excluded_herbs.PushBack( 1338875484 );
 		this.excluded_herbs.PushBack( 549522696 );
-		this.excluded_herbs.PushBack( -541392408 );
+		this.excluded_herbs.PushBack( 1338875484 );
 		this.excluded_herbs.PushBack( -1078211475 );
+		this.excluded_herbs.PushBack( -541392408 );
 		this.excluded_herbs.PushBack( -559926266 );
-		this.excluded_herbs.PushBack( -1791854638 );
 		this.excluded_herbs.PushBack( -2006234737 );
+		this.excluded_herbs.PushBack( -1791854638 );
 		this.excluded_herbs.PushBack( -484491973 );
+		this.excluded_herbs.PushBack( 400975944 );
+		this.excluded_herbs.PushBack( -1606184739 );
 		this.excluded_herbs.PushBack( 963451185 );
 		this.excluded_herbs.PushBack( 1270212183 );
-		this.excluded_herbs.PushBack( -1606184739 );
 	}
 	
 	function reset_and_clerar() : void

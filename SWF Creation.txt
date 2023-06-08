@@ -1,0 +1,67 @@
+//Shapes
+
+        Clone shape 357
+		Transform - rotate -90*
+		shape records - record 79 - fillstyles - colourcode 9BAADD
+		
+        Clone shape 399
+		Transform - rotate -90*
+		shape records - record 46 - fillstyles - colourcode FFCC00
+
+//SWF Data (sprite 518)
+		
+		Add 2 new frames to the bottom
+		
+		frame 1:
+		insert RemoveObjectDepth2 = 6
+		insert FrameLabel(BotanistHG)
+		insert PlaceObject2 (HasCharacter = true, Move = true, depth = 3, CharacterID = Second Shape Above)
+
+		frame 2:
+		insert RemoveObjectDepth2 = 1
+		insert FrameLabel(Botanist)
+		insert PlaceObject2 (HasCharacter = true, Move = true, depth = 3, CharacterID = First Shape Above)
+		
+//Script CategoryData
+
+         pushstring "Botanist"
+         findpropstrict QName(PrivateNamespace(null,"22"),"CategoryDefinition")
+         pushbyte 8
+         pushtrue
+         pushfalse
+         pushfalse
+         constructprop QName(PrivateNamespace(null,"22"),"CategoryDefinition"), 4
+		 
+		 //Edit ArrayLength += 1
+
+//Stables Compatibility
+		 
+		 pushstring "Stables"
+		 findpropstrict QName(PrivateNamespace(null,"22"),"PinTypeDefinition")
+		 pushstring "NPCs"
+         pushshort 516
+         constructprop QName(PrivateNamespace(null,"22"),"PinTypeDefinition"), 2
+		 
+		 //Edit ArrayLength += 1
+		 
+//Script PinData
+
+         pushstring "BotanistHGHerb"
+         findpropstrict QName(PrivateNamespace(null,"22"),"PinTypeDefinition")
+         pushstring "Botanist"
+         pushshort 612
+         constructprop QName(PrivateNamespace(null,"22"),"PinTypeDefinition"), 2
+         pushstring "BotanistHG"
+         findpropstrict QName(PrivateNamespace(null,"22"),"PinTypeDefinition")
+         pushstring "Botanist"
+         pushshort 613
+         constructprop QName(PrivateNamespace(null,"22"),"PinTypeDefinition"), 2
+         pushstring "Botanist"
+         findpropstrict QName(PrivateNamespace(null,"22"),"PinTypeDefinition")
+         pushstring "Botanist"
+         pushshort 614
+		 constructprop QName(PrivateNamespace(null,"22"),"PinTypeDefinition"), 2
+		 
+		 //Edit ArrayLength += 3
+
+//Done

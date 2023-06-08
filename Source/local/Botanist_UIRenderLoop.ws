@@ -98,6 +98,9 @@ state on_tick in Botanist_UIRenderLoop
 				//If the player is only wanting to display a specific herb and that herb is required for a recipe then only process that one list.
 				if ( target_herb != '' )
 				{
+					//if we are targetting a specific herb, remove all harvesting grounds not of this type.
+					this.remove_all_harvesting_grounds_except( target_herb );
+					
 					if ( new_herb_requirements.names.Contains( target_herb ) )
 					{
 						Idx = new_herb_requirements.names.FindFirst( target_herb );
@@ -189,6 +192,13 @@ state on_tick in Botanist_UIRenderLoop
 		parent.storage.initialise_temporary_displayed_arrays();	
 	}
 
+	//---------------------------------------------------
+	
+	private function remove_all_harvesting_grounds_except( target_herb : name )
+	{
+		parent.master.BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Clear_Except, , target_herb ) );
+	}
+	
 	//---------------------------------------------------
 
 	private function requirements_have_changed(old_data, new_data : Botanist_HerbRequirements, target_herb : name) : bool

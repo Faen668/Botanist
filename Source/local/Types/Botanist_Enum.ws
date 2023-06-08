@@ -25,6 +25,16 @@ enum Botanist_UserSettings_Enum_Ints
 }
 
 //---------------------------------------------------
+//-- Botanist Tutorials Enum ------------------------
+//---------------------------------------------------
+
+enum Botanist_Tutorial_Enum
+{
+	Botanist_Tutorial_Installation = 0,
+	Botanist_Tutorial_Discovery = 1,
+}
+
+//---------------------------------------------------
 //-- Botanist Herb Type Enum ------------------------
 //---------------------------------------------------
 
@@ -101,4 +111,5 @@ enum BT_Event_Type
 {
 	BT_Herb_Looted = 0,
 	BT_Herb_Reset = 1,
+	BT_Herb_Clear_Except = 2,
 }
