@@ -67,14 +67,6 @@
 				</OptionsArray>
 			</Var>	
 			
-			<Var id="Botanist_Markers_Display" displayName="Botanist_Markers_Display" displayType="OPTIONS">
-				<OptionsArray>	
-					<Option id="00" displayName="BT_Display_00"> <Entry varId="Botanist_Markers_Display" value="00"/></Option>
-					<Option id="01" displayName="BT_Display_01"> <Entry varId="Botanist_Markers_Display" value="01"/></Option>
-					<Option id="02" displayName="BT_Display_02"> <Entry varId="Botanist_Markers_Display" value="02"/></Option>
-				</OptionsArray>
-			</Var>	
-			
 			<Var id="Botanist_Markers_Visible" displayName="Botanist_Markers_Visible" displayType="OPTIONS">
 				<OptionsArray>	
 					<Option id="00" displayName="BT_Visible_00"> <Entry varId="Botanist_Markers_Visible" value="00"/></Option>
@@ -113,8 +105,9 @@
 	<Group id="Botanist_Tutorials" displayName="Mods.BT_Name.BT_Page_Tutorials">
 		<VisibleVars>
 			
-			<Var id="Botanist_Tutorial_Installation" displayName="Botanist_Tutorial_Installation" displayType="TOGGLE"/>
-			<Var id="Botanist_Tutorial_Discovery"    displayName="Botanist_Tutorial_Discovery"    displayType="TOGGLE"/>
+			<Var id="Botanist_Tutorial_Installation"         displayName="Botanist_Tutorial_Installation"         displayType="TOGGLE"/>
+			<Var id="Botanist_Tutorial_Discovery"            displayName="Botanist_Tutorial_Discovery"            displayType="TOGGLE"/>
+			<Var id="Botanist_Tutorial_HarvestingGrounds"    displayName="Botanist_Tutorial_HarvestingGrounds"    displayType="TOGGLE"/>
 			
 		</VisibleVars>
 	</Group>	

@@ -1,4 +1,6 @@
-#HerbScanner Install script by Faen668
+#Botanist Install script by Faen668
+
+$InstallPrimerPatch = 0
 
 cls
 
@@ -66,11 +68,9 @@ write-host "- Downloading Botanist $($latestversion)"
 echo ""
 
 $extractingFolder = "./__install_Botanist"
-
-
 $latestAssetName = "Botanist.zip"
-Invoke-WebRequest -Uri $latestAssetUrl -OutFile $latestAssetName
 
+Invoke-WebRequest -Uri $latestAssetUrl -OutFile $latestAssetName
 Expand-Archive -Force -LiteralPath $latestAssetName -DestinationPath ./$extractingFolder
 remove-item $latestAssetName -recurse -force
 
@@ -130,6 +130,66 @@ foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
 
 if (test-path $extractingFolder) {
   remove-item $extractingFolder -recurse -force
+}
+
+#Install Primer Patch Scripts
+if (test-path mods/modPrimer) 
+{
+	#Restore Primer's herb.ws
+	if (test-path mods/modPrimer/content/scripts/game/gameplay/containers/herb.ws.bak) 
+	{	
+		Rename-Item -Path "mods/modPrimer/content/scripts/game/gameplay/containers/herb.ws.bak" -NewName "herb.ws"
+	}
+
+	$latestAssetUrl_PP = "https://github.com/Faen668/Botanist/releases/latest/download/PrimerPatch.zip"
+	$extractingFolder_PP = "./__install_Botanist_Primer_Patch"
+	$latestAssetName_PP = "PrimerPatch.zip"
+	
+	Invoke-WebRequest -Uri $latestAssetUrl_PP -OutFile $latestAssetName_PP
+	Expand-Archive -Force -LiteralPath $latestAssetName_PP -DestinationPath ./$extractingFolder_PP
+	remove-item $latestAssetName_PP -recurse -force	
+	
+	echo ""
+
+	$shouldInstall = Read-Host "- Install Alchemy/Primer Patch? [Y/N]"
+	while($shouldInstall -ne "y")
+	{
+		if ($shouldInstall -eq 'n') 
+		{
+			break
+		}
+		write-Host '*** Please Type ' -NoNewline; Write-Host -ForegroundColor darkgreen 'Y' -NoNewline; Write-Host ' to install the patch or ' -NoNewline; Write-Host -ForegroundColor darkred 'N' -NoNewline; Write-Host ' to exit.'
+		echo ""
+		$shouldInstall = Read-Host "- Install Alchemy/Primer Patch? [Y/N]"
+	}
+
+	if ($shouldInstall -eq 'y') 
+	{
+		echo ""
+
+		if (test-path mods/modPrimer/content/scripts/game/gameplay/containers/herb.ws) 
+		{	
+			Rename-Item -Path "mods/modPrimer/content/scripts/game/gameplay/containers/herb.ws" -NewName "herb.ws.bak"
+			Write-Host -ForegroundColor green 'Renamed' -NoNewline; Write-Host ' - herb.ws ( herb.ws.bak )'
+		}
+
+		$children = Get-ChildItem ./$extractingFolder_PP
+		foreach ($child in $children) {
+		  $fullpath = "{0}/{1}" -f $extractingFolder_PP, $child
+		  copy-item $fullpath . -force -recurse
+		}
+		
+		$children = Get-ChildItem ./$extractingFolder_PP -recurse
+		foreach ($child in $children | Where-Object -Property PSIsContainer -eq $false)
+		{
+		  Write-Host -ForegroundColor green 'Installed' -NoNewline; Write-Host " - $($child.name)"
+		}
+
+		if (test-path $extractingFolder_PP) 
+		{
+			remove-item $extractingFolder_PP -recurse -force
+		}	
+	}			
 }
 
 $installedMessage = "=== Botanist {0} installed ===" -f $latestversion

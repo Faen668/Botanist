@@ -63,6 +63,8 @@ class BT_Harvesting_Ground
 		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Looted, , , , this) );
 		this.event_manager.register_for_event( botanist_event_data(BT_Herb_Clear_Except, , , , this) );
 		
+		master.BT_TutorialsSystem.show_tutorial( Botanist_Tutorial_HarvestingGrounds );
+		
 		this.GotoState('update');
 		return this;
 	}
@@ -85,11 +87,11 @@ class BT_Harvesting_Ground
 		{
 			if ( !this.spot_herbs[Idx].herb.is_looted() && !this.entity_storage.is_herb_excluded( this.spot_herbs[Idx].herb.herb_guidhash ) )
 			{
-				this.spot_herbs[Idx].herb.set_displayed_in_grounds(this.user_settings);
+				this.spot_herbs[Idx].herb.set_displayed(this.user_settings, true);
 				continue;
 			}
 
-			this.spot_herbs[Idx].herb.reset( true );
+			this.spot_herbs[Idx].herb.reset();
 			this.spot_herbs.EraseFast(Idx);
 		}
 		
@@ -223,7 +225,7 @@ class BT_Harvesting_Ground
 		
 		for( Idx = this.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
-			this.spot_herbs[Idx].herb.reset( true );
+			this.spot_herbs[Idx].herb.reset();
 		}
 		this.spot_herbs.Clear();
 			
@@ -308,7 +310,7 @@ state update in BT_Harvesting_Ground
 		
 		for( Idx = parent.spot_herbs.Size()-1; Idx >= 0 ; Idx -= 1 )
 		{
-			parent.spot_herbs[Idx].herb.set_displayed_in_grounds(parent.user_settings);
+			parent.spot_herbs[Idx].herb.set_displayed(parent.user_settings, true);
 		}
 
 		parent.GotoState('waiting');

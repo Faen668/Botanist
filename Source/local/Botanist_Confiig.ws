@@ -34,14 +34,13 @@ class Botanist_Config
 		{
 		 case 0: return 'Botanist_Mod_Targets';
 		 case 1: return 'Botanist_Markers_Active';
-		 case 2: return 'Botanist_Markers_Display';
-		 case 3: return 'Botanist_Markers_Visible';
-		 case 4: return 'Botanist_Markers_FontSize';
-		 case 5: return 'Botanist_MapPins_Radius';
-		 case 6: return 'Botanist_Farming_Radius';
-		 case 7: return 'Botanist_Farming_MinReq';
-		 case 8: return 'Botanist_Farming_MaxAll';
-		 case 9: return 'Botanist_Farming_MaxGrd';
+		 case 2: return 'Botanist_Markers_Visible';
+		 case 3: return 'Botanist_Markers_FontSize';
+		 case 4: return 'Botanist_MapPins_Radius';
+		 case 5: return 'Botanist_Farming_Radius';
+		 case 6: return 'Botanist_Farming_MinReq';
+		 case 7: return 'Botanist_Farming_MaxAll';
+		 case 8: return 'Botanist_Farming_MaxGrd';
 		 case 9: return 'Botanist_Mod_Quantity';
 		}
 	}
@@ -54,6 +53,7 @@ class Botanist_Config
 		{
 			case 0: return 'Botanist_Tutorial_Installation';
 			case 1: return 'Botanist_Tutorial_Discovery';
+			case 2: return 'Botanist_Tutorial_HarvestingGrounds';
 		}
 	}
 	
@@ -70,7 +70,6 @@ class Botanist_Config
 		
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Mod_Targets')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HerbMarkers', 'Botanist_Markers_Active')));
-		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HerbMarkers', 'Botanist_Markers_Display')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HerbMarkers', 'Botanist_Markers_Visible')));
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_HerbMarkers', 'Botanist_Markers_FontSize')));	
 		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_MapPins_Radius')));
@@ -92,6 +91,7 @@ class Botanist_Config
 		
 		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Installation'));
 		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_Discovery'));
+		output_data.bools.PushBack(config_wrapper.GetVarValue('Botanist_Tutorials', 'Botanist_Tutorial_HarvestingGrounds'));
 		return output_data;
 	}
 }

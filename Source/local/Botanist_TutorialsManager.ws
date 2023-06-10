@@ -70,6 +70,13 @@ class Botanist_TutorialsSystem
 				output.title = GetLocStringByKeyExt("BT_Tutorial_Discovery_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_Discovery_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
 				break; 
 			}
+
+			case Botanist_Tutorial_HarvestingGrounds : { 
+				output.title = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				break; 
+			}			
+			
+			
 			
 			default : 
 				break;

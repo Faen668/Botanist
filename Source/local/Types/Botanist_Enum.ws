@@ -13,15 +13,14 @@ enum Botanist_UserSettings_Enum_Ints
 {
 	BT_Config_Mod_Targets 	= 0,
 	BT_Config_Ols_Active 	= 1,
-	BT_Config_Ols_Display 	= 2,
-	BT_Config_Ols_Visible 	= 3,
-	BT_Config_Ols_Fontsize 	= 4,
-	BT_Config_Pin_Radius 	= 5,
-	BT_Config_Hgr_Radius    = 6,
-	BT_Config_Hgr_MinReq    = 7,
-	BT_Config_Hgr_MaxAll    = 8,
-	BT_Config_Hgr_MaxGrd    = 9,
-	BT_Config_Mod_Quantity  = 10,
+	BT_Config_Ols_Visible 	= 2,
+	BT_Config_Ols_Fontsize 	= 3,
+	BT_Config_Pin_Radius 	= 4,
+	BT_Config_Hgr_Radius    = 5,
+	BT_Config_Hgr_MinReq    = 6,
+	BT_Config_Hgr_MaxAll    = 7,
+	BT_Config_Hgr_MaxGrd    = 8,
+	BT_Config_Mod_Quantity  = 9,
 }
 
 //---------------------------------------------------
@@ -32,6 +31,7 @@ enum Botanist_Tutorial_Enum
 {
 	Botanist_Tutorial_Installation = 0,
 	Botanist_Tutorial_Discovery = 1,
+	Botanist_Tutorial_HarvestingGrounds = 2,
 }
 
 //---------------------------------------------------

@@ -17,90 +17,89 @@
 ;
 2116254008||option_Botanist_Markers_Enabled		|<font color="#FFF1BA">3D Markers      :   Enabled:</font>
 2116254009||option_Botanist_Markers_Active		|<font color="#FFF1BA">3D Markers      :   Display:</font>
-2116254010||option_Botanist_Markers_Display		|<font color="#FFF1BA">3D Markers      :   Display:</font>
 2116254011||option_Botanist_Markers_Visible		|<font color="#FFF1BA">3D Markers      :   Visibility Range:</font>
-2116254012||option_Botanist_Markers_FontSize	|<font color="#FFF1BA">3D Markers      :   Text & Icon Size:
+2116254012||option_Botanist_Markers_FontSize	|<font color="#FFF1BA">3D Markers      :   Marker Size:
 ;
 2116254013||preset_value_BT_Active_00|While Focussing
 2116254014||preset_value_BT_Active_01|While Not Focussing
 2116254015||preset_value_BT_Active_02|Always
 2116254016||preset_value_BT_Active_03|Never (Disabled)
 ;
-2116254017||preset_value_BT_Display_00|Icons & Text
-2116254018||preset_value_BT_Display_01|Text Only
-2116254019||preset_value_BT_Display_02|Icon Only
+2116254017||preset_value_BT_Visible_00|Extra Short
+2116254018||preset_value_BT_Visible_01|Short
+2116254019||preset_value_BT_Visible_02|Normal
+2116254020||preset_value_BT_Visible_03|Long
+2116254021||preset_value_BT_Visible_04|Extra Long
 ;
-2116254020||preset_value_BT_Visible_00|Extra Short
-2116254021||preset_value_BT_Visible_01|Short
-2116254022||preset_value_BT_Visible_02|Normal
-2116254023||preset_value_BT_Visible_03|Long
-2116254024||preset_value_BT_Visible_04|Extra Long
+2116254022||option_Botanist_MapPins_Enabled		|<font color="#8EA4C8">Map Pins       :    Enabled</font>
+2116254023||option_Botanist_MapPins_Radius		|<font color="#8EA4C8">Map Pins       :    Map Pin Size</font> <font size="16"> (Recommended '5')</font>
 ;
-2116254025||option_Botanist_MapPins_Enabled		|<font color="#8EA4C8">Map Pins       :    Enabled</font>
-2116254026||option_Botanist_MapPins_Radius		|<font color="#8EA4C8">Map Pins       :    Map Pin Size</font> <font size="16"> (Recommended '5')</font>
+2116254024||preset_value_BT_OverrideTarget_00|All Discovered Herbs
+2116254025||preset_value_BT_OverrideTarget_01|Allspice
+2116254026||preset_value_BT_OverrideTarget_02|Arenaria
+2116254027||preset_value_BT_OverrideTarget_03|Balisse fruit
+2116254028||preset_value_BT_OverrideTarget_04|Beggartick blossoms
+2116254029||preset_value_BT_OverrideTarget_05|Berbercane fruit
+2116254030||preset_value_BT_OverrideTarget_06|Bloodmoss
+2116254031||preset_value_BT_OverrideTarget_07|Blowball
+2116254032||preset_value_BT_OverrideTarget_08|Bryonia
+2116254033||preset_value_BT_OverrideTarget_09|Buckthorn
+2116254034||preset_value_BT_OverrideTarget_10|Celandine
+2116254035||preset_value_BT_OverrideTarget_11|Cortinarius
+2116254036||preset_value_BT_OverrideTarget_12|Crow's eye
+2116254037||preset_value_BT_OverrideTarget_13|Ergot seeds
+2116254038||preset_value_BT_OverrideTarget_14|Fool's parsley leaves
+2116254039||preset_value_BT_OverrideTarget_15|Ginatia petals
+2116254040||preset_value_BT_OverrideTarget_16|Green mold
+2116254041||preset_value_BT_OverrideTarget_17|Han fiber
+2116254042||preset_value_BT_OverrideTarget_18|Hellebore petals
+2116254043||preset_value_BT_OverrideTarget_19|Honeysuckle
+2116254044||preset_value_BT_OverrideTarget_20|Hop umbels
+2116254045||preset_value_BT_OverrideTarget_21|Hornwort
+2116254046||preset_value_BT_OverrideTarget_22|Longrube
+2116254047||preset_value_BT_OverrideTarget_23|Mandrake root
+2116254048||preset_value_BT_OverrideTarget_24|Mistletoe
+2116254049||preset_value_BT_OverrideTarget_25|Moleyarrow
+2116254050||preset_value_BT_OverrideTarget_26|Nostrix
+2116254051||preset_value_BT_OverrideTarget_27|Puffball
+2116254052||preset_value_BT_OverrideTarget_28|Pringrape
+2116254053||preset_value_BT_OverrideTarget_29|Ranogrin
+2116254054||preset_value_BT_OverrideTarget_30|Ribleaf
+2116254055||preset_value_BT_OverrideTarget_31|Sewant mushrooms
+2116254056||preset_value_BT_OverrideTarget_32|Verbena
+2116254057||preset_value_BT_OverrideTarget_33|White myrtle petals
+2116254058||preset_value_BT_OverrideTarget_34|Wolfsbane
 ;
-2116254027||preset_value_BT_OverrideTarget_00|All Discovered Herbs
-2116254028||preset_value_BT_OverrideTarget_01|Allspice
-2116254029||preset_value_BT_OverrideTarget_02|Arenaria
-2116254030||preset_value_BT_OverrideTarget_03|Balisse fruit
-2116254031||preset_value_BT_OverrideTarget_04|Beggartick blossoms
-2116254032||preset_value_BT_OverrideTarget_05|Berbercane fruit
-2116254033||preset_value_BT_OverrideTarget_06|Bloodmoss
-2116254034||preset_value_BT_OverrideTarget_07|Blowball
-2116254035||preset_value_BT_OverrideTarget_08|Bryonia
-2116254036||preset_value_BT_OverrideTarget_09|Buckthorn
-2116254037||preset_value_BT_OverrideTarget_10|Celandine
-2116254038||preset_value_BT_OverrideTarget_11|Cortinarius
-2116254039||preset_value_BT_OverrideTarget_12|Crow's eye
-2116254040||preset_value_BT_OverrideTarget_13|Ergot seeds
-2116254041||preset_value_BT_OverrideTarget_14|Fool's parsley leaves
-2116254042||preset_value_BT_OverrideTarget_15|Ginatia petals
-2116254043||preset_value_BT_OverrideTarget_16|Green mold
-2116254044||preset_value_BT_OverrideTarget_17|Han fiber
-2116254045||preset_value_BT_OverrideTarget_18|Hellebore petals
-2116254046||preset_value_BT_OverrideTarget_19|Honeysuckle
-2116254047||preset_value_BT_OverrideTarget_20|Hop umbels
-2116254048||preset_value_BT_OverrideTarget_21|Hornwort
-2116254049||preset_value_BT_OverrideTarget_22|Longrube
-2116254050||preset_value_BT_OverrideTarget_23|Mandrake root
-2116254051||preset_value_BT_OverrideTarget_24|Mistletoe
-2116254052||preset_value_BT_OverrideTarget_25|Moleyarrow
-2116254053||preset_value_BT_OverrideTarget_26|Nostrix
-2116254054||preset_value_BT_OverrideTarget_27|Puffball
-2116254055||preset_value_BT_OverrideTarget_28|Pringrape
-2116254056||preset_value_BT_OverrideTarget_29|Ranogrin
-2116254057||preset_value_BT_OverrideTarget_30|Ribleaf
-2116254058||preset_value_BT_OverrideTarget_31|Sewant mushrooms
-2116254059||preset_value_BT_OverrideTarget_32|Verbena
-2116254060||preset_value_BT_OverrideTarget_33|White myrtle petals
-2116254061||preset_value_BT_OverrideTarget_34|Wolfsbane
+2116254059||BT_HerbLootable|<font color="#ffcc00">Harvest-Ready Herb</font>
+2116254060||BT_HerbLootableHG|<font color="#9BAADD">Harvesting Grounds Herb</font>
 ;
-2116254062||BT_HerbLootable|<font color="#ffcc00">Harvest-Ready Herb</font>
-2116254063||BT_HerbLootableHG|<font color="#9BAADD">Harvesting Grounds Herb</font>
+2116254061||BT_HerbMapPinInfo|A common <font color="#ffcc00">[NAME]</font> plant that can be harvested to create a variety of useful recipes.
+2116254062||BT_HerbMapPinInfo_HG|A <font color="#9BAADD">Harvesting Grounds</font> <font color="#ffcc00">[NAME]</font> plant that can be harvested to create a variety of useful recipes, harvest this plant for a chance to recieve bonus herbs!
 ;
-2116254064||BT_HerbMapPinInfo|A common <font color="#ffcc00">[NAME]</font> plant that can be harvested to create a variety of useful recipes.
-2116254065||BT_HerbMapPinInfo_HG|A <font color="#9BAADD">Harvesting Grounds</font> <font color="#ffcc00">[NAME]</font> plant that can be harvested to create a variety of useful recipes, harvest this plant for a chance to recieve bonus herbs!
+2116254063||BT_HarvestingGrounds|<font color="#9BAADD">Harvesting Grounds</font> 
+2116254064||BT_HarvestingGrounds_Description|This is a dedicated <font color="#9BAADD">[NAME]</font> Harvesting Ground. Harvest these [COUNT] plants for a chance to receieve bonus herbs!
+2116254065||BT_HerbYieldInfo_HG|Harvesting Grounds: This plant yielded an extra [REPLACE] herbs.
 ;
-2116254066||BT_HarvestingGrounds|<font color="#9BAADD">Harvesting Grounds</font> 
-2116254067||BT_HarvestingGrounds_Description|This is a dedicated <font color="#9BAADD">[NAME]</font> Harvesting Ground. Harvest these [COUNT] plants for a chance to receieve bonus herbs!
-2116254068||BT_HerbYieldInfo_HG|Harvesting Grounds: This plant yielded an extra [REPLACE] herbs.
+2116254066||BT_Message_Updated|Botanist: Updated To Version [REPLACE]
+2116254067||BT_Message_Install|Botanist: Version [REPLACE] Installed & Ready
 ;
-2116254069||BT_Message_Updated|Botanist: Updated To Version [REPLACE]
-2116254070||BT_Message_Install|Botanist: Version [REPLACE] Installed & Ready
+2116254068||option_Botanist_Farming_Enabled		|<font color="#9BAADD">Harvesting Grounds       :    Grounds Enabled</font>
+2116254069||option_Botanist_Farming_MaxGrd		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Grounds of The Same Type</font>
+2116254070||option_Botanist_Farming_Radius		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Grounds Radius</font>
+2116254071||option_Botanist_Farming_MinReq		|<font color="#9BAADD">Harvesting Grounds       :    Minimum Herbs Required</font>
+2116254072||option_Botanist_Farming_MaxAll		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Herbs In Grounds</font>
 ;
-2116254071||option_Botanist_Farming_Enabled		|<font color="#9BAADD">Harvesting Grounds       :    Grounds Enabled</font>
-2116254072||option_Botanist_Farming_MaxGrd		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Grounds of The Same Type</font>
-2116254073||option_Botanist_Farming_Radius		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Grounds Radius</font>
-2116254074||option_Botanist_Farming_MinReq		|<font color="#9BAADD">Harvesting Grounds       :    Minimum Herbs Required</font>
-2116254075||option_Botanist_Farming_MaxAll		|<font color="#9BAADD">Harvesting Grounds       :    Maximum Herbs In Grounds</font>
+2116254073||option_Botanist_Tutorial_Discovery|Herb Discovery
+2116254074||BT_Tutorial_Discovery_T|Botanist: <font color="#A1EF7A">Herb Discovery</font>
+2116254075||BT_Tutorial_Discovery_B|You have just discovered a new herb!<br/><br/>As you explore the world, make sure to pass close by to any herbs you find along the way.<br/><br/>You can discover new herbs by simply passing close enough to display the 'Gather Ingredients' message on the screen.<br/><br/>Once you have discovered a herb, Botanist will remember its location and display 3D Markers and map pins for it when you need it.
 ;
-2116254076||option_Botanist_Tutorial_Discovery|Herb Discovery
-2116254077||BT_Tutorial_Discovery_T|Botanist: <font color="#A1EF7A">Herb Discovery</font>
-2116254078||BT_Tutorial_Discovery_B|You have just discovered a new herb!<br/><br/>As you explore the world, make sure to pass close by to any herbs you find along the way.<br/><br/>You can discover new herbs by simply passing close enough to display the 'Gather Ingredients' message on the screen.<br/><br/>Once you have discovered a herb, Botanist will remember its location and display 3D Markers and map pins for it when you need it.
+2116254076||option_Botanist_Tutorial_Installation|Welcome Message
+2116254077||BT_Tutorial_Installation_T|Botanist: <font color="#A1EF7A">Ready To Use</font>
+2116254078||BT_Tutorial_Installation_B|Thank you for installing Botanist!<br/><br/>Please make sure to check the mod menu and update the settings to your liking.<br/><br/>As you explore the world and play through the game, further tutorials and tips will be shown on screen to help you navigate the mod and understand it's features.<br/><br/>Tutorials can be disabled or re-enabled using the toggles in the 'Tutorials' page of the mod menu.<br/><br/>For now, why don't you go and find your first herb!
 ;
-2116254079||option_Botanist_Tutorial_Installation|Welcome Message
-2116254080||BT_Tutorial_Installation_T|Botanist: <font color="#A1EF7A">Ready To Use</font>
-2116254081||BT_Tutorial_Installation_B|Thank you for installing Botanist!<br/><br/>Please make sure to check the mod menu and update the settings to your liking.<br/><br/>As you explore the world and play through the game, further tutorials and tips will be shown on screen to help you navigate the mod and understand it's features.<br/><br/>Tutorials can be disabled or re-enabled using the toggles in the 'Tutorials' page of the mod menu.<br/><br/>For now, why don't you go and find your first herb!
+2116254079||option_Botanist_Tutorial_HarvestingGrounds|Harvesting Grounds
+2116254080||BT_Tutorial_HarvestingGounds_T|Botanist: <font color="#A1EF7A">Harvesting Grounds</font>
+2116254081||BT_Tutorial_HarvestingGounds_B|You have just discovered enough herbs to create a <font color="#9BAADD">Harvesting Ground</font><br/><br/>These special grounds are created when you discover a certain amount of the same type of herb within a specific radius.<br/><br/><font color="#9BAADD">Harvesting Grounds</font> always contain one plant chosen at random which yields a bonus amount of herbs relative to the grounds size.<br/><br/> As an example, if you discovered a Celandine grounds with 8 harvestable plants in it, one of those plants will produces an extra 8 herbs when harvested!<br/><br/>These grounds will persist when saving / loading your game and will not be removed until you either harvest all the herbs included or change the 'Herb Targetting' setting in the mod menu to a different type of herb.<br/><br/>Why don't you try it out and go harvest yourself some herbs!
 ;
 2116254082||map_category_Botanist|Botanist
 ;

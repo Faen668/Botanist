@@ -15,6 +15,9 @@ XCOPY "%modpath%\release\mods\mod%modname%\content\scripts\local\" "%modpath%\Co
 ::Copy over all vanilla .ws scripts.
 XCOPY "%modpath%\Source\game" "%modpath%\release\mods\mod%modname%\content\Scripts\game\" /e /s /y
 
+::Copy over all primer patch .ws scripts.
+XCOPY "%modpath%\primer\game" "%modpath%\release\PrimerPatch\mods\mod%modname%\content\Scripts\game\" /e /s /y
+
 ::Copy over the menu xml.
 mkdir "%modpath%\release\bin\config\r4game\user_config_matrix\pc\"
 XCOPY "%modPath%\Menu" "%modpath%\release\bin\config\r4game\user_config_matrix\pc\" /e /s /y
@@ -37,3 +40,4 @@ XCOPY "%supath%\mod_sharedutils_storage\" "%modpath%\release\mods\mod_sharedutil
 
 ::Create zip file for the release.
 powershell Compress-Archive -Path "%modpath%\release\bin", "%modpath%\release\mods", "%modpath%\release\dlc" -DestinationPath "%modpath%\release\Botanist.zip"
+powershell Compress-Archive -Path "%modpath%\release\PrimerPatch\mods" -DestinationPath "%modpath%\release\PrimerPatch.zip"
