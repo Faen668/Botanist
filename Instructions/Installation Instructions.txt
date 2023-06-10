@@ -2,11 +2,13 @@
 //-------------------- Installation ----------------------
 //--------------------------------------------------------
 
-Completely remove any old version.
+Make sure you have downloaded and installed the following 3 mods before continuing
 
-Skip this step if you have installed the mod with the install script.
+ - Script Merger
+ - Menu Filelist Updater
+ - Community Patch - World Map
 
-Copy the 'mods', 'dlc' and 'bin' folder into your witcher 3 directory.
+Once installed, copy the 'mods', 'dlc' and 'bin' folder from Botanist into your witcher 3 directory.
 
 If you get a prompt to overwrite files go ahead and do so.
 
@@ -18,22 +20,22 @@ If you get a prompt to overwrite files go ahead and do so.
 
 [Botanist_GeneralSettings]
 Botanist_Mod_Targets=00
+Botanist_Mod_Quantity=60
 Botanist_MapPins_Enabled=true
 Botanist_MapPins_Radius=5
 
 [Botanist_HerbMarkers]
 Botanist_Markers_Enabled=true
-Botanist_Markers_Visible=02
-Botanist_Markers_FontSize=20
-Botanist_Markers_Display=00
 Botanist_Markers_Active=02
+Botanist_Markers_Visible=02
+Botanist_Markers_FontSize=18
 
 [Botanist_HarvestingGrounds]
 Botanist_Farming_Enabled=true
-Botanist_Farming_MaxAll=30
-Botanist_Farming_MaxGrd=3
-Botanist_Farming_MinReq=5
+Botanist_Farming_MaxGrd=1
 Botanist_Farming_Radius=150
+Botanist_Farming_MinReq=5
+Botanist_Farming_MaxAll=30
 
 - Into These 2 Files:
 
@@ -43,6 +45,10 @@ Botanist_Farming_Radius=150
 //--------------------------------------------------------
 //----------------- Menu Building (NG ONLY) --------------
 //--------------------------------------------------------
+
+navigate to your witcher 3 directory and run 'tw3-menufilelist-updater.exe' to automatically add Botanist's Menu.
+
+if for some reason you are not able to run the above exe then you can install the menu manually by doing the following:
 
 -Copy and paste the following:
 

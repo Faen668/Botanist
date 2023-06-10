@@ -1,0 +1,15 @@
+//--------------------------------------------------------
+//-------------------- Installation ----------------------
+//--------------------------------------------------------
+
+navigate to The Witcher 3\Mods\modPrimer\content\scripts\game\gameplay\containers
+
+delete the file 'herb.ws' or rename it to 'herb.ws.bak'
+
+Once you have done that, copy the 'mods' folder from this archive into your witcher 3 directory.
+
+If you get a prompt to overwrite files go ahead and do so.
+
+//--------------------------------------------------------
+//-------------------------- End -------------------------
+//--------------------------------------------------------

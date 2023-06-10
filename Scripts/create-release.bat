@@ -28,8 +28,9 @@ XCOPY "%modpath%\Strings\" "%modpath%\release\mods\mod%modname%\content\" /e /s 
 ::Copy over the DLC bundle files.
 XCOPY "%modpath%\Build\Botanist\packed\DLC\dlc_botanist\content" "%modpath%\release\dlc\dlc%modname%\content\" /e /s /y
 
-::Copy over the README.
-XCOPY "%modpath%\Instructions\" "%modpath%\release\mods\mod%modname%\" /e /s /y
+::Copy over the Installation Instructions.
+XCOPY "%modpath%\Instructions\Installation Instructions.txt" "%modpath%\release\"
+XCOPY "%modpath%\Instructions\Primer\Installation Instructions.txt" "%modpath%\release\PrimerPatch"
 
 ::Copy over the Shared Util dependencies
 XCOPY "%supath%\mod_sharedutils_mappins\" "%modpath%\release\mods\mod_sharedutils_mappins\" /e /s /y
@@ -39,5 +40,13 @@ XCOPY "%supath%\mod_sharedutils_tiny_bootstrapper\" "%modpath%\release\mods\mod_
 XCOPY "%supath%\mod_sharedutils_storage\" "%modpath%\release\mods\mod_sharedutils_storage\" /e /s /y
 
 ::Create zip file for the release.
-powershell Compress-Archive -Path "%modpath%\release\bin", "%modpath%\release\mods", "%modpath%\release\dlc" -DestinationPath "%modpath%\release\Botanist.zip"
-powershell Compress-Archive -Path "%modpath%\release\PrimerPatch\mods" -DestinationPath "%modpath%\release\PrimerPatch.zip"
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\Botanist.zip" "%modpath%\release\mods"
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\Botanist.zip" "%modpath%\release\dlc"
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\Botanist.zip" "%modpath%\release\bin"
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\Botanist.zip" "%modpath%\release\Installation Instructions.txt"
+
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\PrimerPatch.zip" "%modpath%\release\PrimerPatch\mods"
+"C:\Program Files\7-Zip\7z.exe" a "%modpath%\release\PrimerPatch.zip" "%modpath%\release\PrimerPatch\Installation Instructions.txt"
+
+del "%modpath%\release\Installation Instructions.txt"
+del "%modpath%\release\PrimerPatch\Installation Instructions.txt"
