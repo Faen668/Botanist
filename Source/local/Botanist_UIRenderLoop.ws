@@ -123,7 +123,7 @@ state on_tick in Botanist_UIRenderLoop
 			old_herb_requirements = new_herb_requirements;
 			
 			//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to run");
-			SleepOneFrame();
+			Sleep(2);
 		}
 	}
 
