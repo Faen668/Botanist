@@ -9,7 +9,7 @@ state Botanist_BootStrapper in SU_TinyBootstrapperManager extends BaseMod
 	{
 		return 'Botanist_BootStrapper';
 	}
-	
+
 	//-----------------------------------------------
 	
 	public function getMod(): SU_BaseBootstrappedMod 

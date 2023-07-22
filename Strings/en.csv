@@ -103,4 +103,11 @@
 ;
 2116254082||map_category_Botanist|Botanist
 ;
+2116254083||option_Botanist_Discovery_Method    |<font color="#f8df81">Herb Discovery      :   Method</font>
+2116254084||option_Botanist_Discovery_Range	    |<font color="#f8df81">Herb Discovery      :   Focus Range</font>
+;
+2116254085||preset_value_BT_DiscoveryMethod_00|Focus & Range
+2116254086||preset_value_BT_DiscoveryMethod_01|While Focussing
+2116254087||preset_value_BT_DiscoveryMethod_02|When In Range
+;
 ;Next ID 2116254083

@@ -49,6 +49,18 @@ function BT_SetEntityLooted(ent: W3RefillableContainer) : void
 //-- Functions --------------------------------------
 //---------------------------------------------------
 
+function BT_SetFocussing() : void
+{
+	var master : Botanist;
+
+	if (Get_Botanist(master, 'BT_SetFocussing'))
+		master.BT_FocusModeHander.start();
+}
+
+//---------------------------------------------------
+//-- Functions --------------------------------------
+//---------------------------------------------------
+
 function BT_Logger(message: string, optional ShowInGUI: bool) : void
 {	
 	LogChannel('Botanist', message);

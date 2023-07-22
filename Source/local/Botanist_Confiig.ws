@@ -56,6 +56,17 @@ class Botanist_Config
 			case 2: return 'Botanist_Tutorial_HarvestingGrounds';
 		}
 	}
+
+	//-----------------------------------------------
+
+	public function get_config_discovery_name(Idx : int) : name
+	{
+		switch (Idx)
+		{
+			case 0: return 'Botanist_Discovery_Method';
+			case 1: return 'Botanist_Discovery_Range';
+		}
+	}
 	
 	//-----------------------------------------------
 
@@ -82,6 +93,18 @@ class Botanist_Config
 		return output_data;
 	}
 
+	//-----------------------------------------------
+
+	public function get_discovery_settings() : Botanist_UserSettings
+	{
+		var output_data    : Botanist_UserSettings;
+		var config_wrapper : CInGameConfigWrapper = theGame.GetInGameConfigWrapper();
+		
+		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Discovery_Method')));
+		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Discovery_Range')));
+		return output_data;
+	}
+	
 	//-----------------------------------------------
 
 	public function get_tutorial_settings() : Botanist_UserSettings

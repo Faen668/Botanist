@@ -64,4 +64,104 @@
 		 
 		 //Edit ArrayLength += 3
 
-//Done
+//Hubmap Dispatch Event
+
+trait method QName(PackageNamespace(""),"UseSelectedPin")
+   dispid 0
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 6
+         localcount 6
+         initscopedepth 12
+         maxscopedepth 13
+         
+         code
+            getlocal0
+            pushscope
+            pushnull
+            coerce QName(PackageNamespace("red.game.witcher3.menus.worldmap"),"StaticMapPinDescribed")
+            setlocal1
+            pushbyte 0
+            setlocal2
+            getlocal0
+            getproperty QName(PrivateNamespace(null,"41"),"_selectedMapPinIndex")
+            pushbyte -1
+            ifngt ofs00a9
+            getlocal0
+            getproperty QName(PrivateNamespace(null,"41"),"_staticMapPins")
+            getlocal0
+            getproperty QName(PrivateNamespace(null,"41"),"_selectedMapPinIndex")
+            getproperty MultinameL([PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            coerce QName(PackageNamespace("red.game.witcher3.menus.worldmap"),"StaticMapPinDescribed")
+            setlocal1
+            getlocal1
+            iffalse ofs00a9
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("isFastTravel",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            setlocal 3
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("wmkTag",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            setlocal 4
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("wmkData",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            setlocal 5
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("areaId",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            iffalse ofs0058
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("areaId",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            convert_i
+            jump ofs005a
+   ofs0058:
+            pushbyte -1
+   ofs005a:
+            convert_i
+            setlocal2
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("isFastTravel",[PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("red.game.witcher3.menus.worldmap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),PrivateNamespace("red.game.witcher3.menus.worldmap:HubMap"),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),PrivateNamespace("HubMap.as$371")])
+            not
+			iffalse ofs008b
+            findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+            findpropstrict QName(PackageNamespace("red.core.events"),"GameEvent")
+            getlex QName(PackageNamespace("red.core.events"),"GameEvent")
+            getproperty QName(PackageNamespace(""),"CALL")
+            pushstring "OnWmkMapPinUsed"
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("id",[PrivateNamespace(null,"41"),PackageNamespace(""),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),PrivateNamespace(null,"168"),PackageNamespace("red.game.witcher3.menus.worldmap"),Namespace("http://adobe.com/AS3/2006/builtin"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher")])
+            getlocal 4
+            getlocal 5
+            getlocal2
+            getlocal 3
+            newarray 5
+            constructprop QName(PackageNamespace("red.core.events"),"GameEvent"), 3
+            callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+			returnvoid
+   ofs008b:
+            findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+            findpropstrict QName(PackageNamespace("red.core.events"),"GameEvent")
+            getlex QName(PackageNamespace("red.core.events"),"GameEvent")
+            getproperty QName(PackageNamespace(""),"CALL")
+            pushstring "OnStaticMapPinUsed"
+            getlocal1
+            getproperty QName(PackageNamespace(""),"data")
+            getproperty Multiname("id",[PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("red.game.witcher3.menus.worldmap"),PackageInternalNs("red.game.witcher3.menus.worldmap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:BaseMap"),StaticProtectedNs("scaleform.clik.core:UIComponent"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),PrivateNamespace("red.game.witcher3.menus.worldmap:HubMap"),ProtectedNamespace("red.game.witcher3.menus.worldmap:HubMap"),StaticProtectedNs("red.game.witcher3.menus.worldmap:HubMap"),PrivateNamespace("HubMap.as$371")])
+            getlocal2
+            newarray 2
+            constructprop QName(PackageNamespace("red.core.events"),"GameEvent"), 3
+            callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+   ofs00a9:
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+end ; trait

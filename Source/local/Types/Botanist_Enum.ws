@@ -23,6 +23,12 @@ enum Botanist_UserSettings_Enum_Ints
 	BT_Config_Mod_Quantity  = 9,
 }
 
+enum Botanist_UserSettings_Discovery
+{
+	BT_Config_Disc_Method = 0,
+	BT_Config_Disc_Range = 1,
+}
+
 //---------------------------------------------------
 //-- Botanist Tutorials Enum ------------------------
 //---------------------------------------------------

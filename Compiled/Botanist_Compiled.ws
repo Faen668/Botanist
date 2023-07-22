@@ -8,13 +8,14 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	public var BT_ConfigSettings          : Botanist_Config;
 	public var BT_RenderingLoop           : Botanist_UIRenderLoop;
 	public var BT_TutorialsSystem         : Botanist_TutorialsSystem;
+	public var BT_FocusModeHander         : Botanist_FocusModeHandler;
 	
 	default tag                           = 'Botanist_BootStrapper';
 
 	//-----------------------------------------------
-	
+
 	public function start() : void
-	{				
+	{	
 		if ( thePlayer.IsCiri() )
 		{
 			BT_Logger("Unable to start as Ciri");
@@ -24,6 +25,7 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		this.BT_ConfigSettings  = new Botanist_Config in this;
 		this.BT_RenderingLoop   = new Botanist_UIRenderLoop in this;
 		this.BT_TutorialsSystem = new Botanist_TutorialsSystem in this;
+		this.BT_FocusModeHander = new Botanist_FocusModeHandler in this;
 		this.GotoState('Initialising');
 	}
 	
@@ -79,10 +81,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.5";
+		default curVersionStr = "1.0.6";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 105;
+		default curVersionInt = 106;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -112,13 +114,14 @@ state Initialising in Botanist
 		{
 		  Sleep(1);
 		}
-		
+	  
 		BT_LoadStorageCollection(parent);
 		
 		this.SetModVersion();
 		
 		parent.BT_ConfigSettings 	.initialise(parent);
 		parent.BT_RenderingLoop		.initialise(parent);
+		parent.BT_FocusModeHander 	.initialise(parent);
 		parent.BT_TutorialsSystem   .initialise(parent, parent.BT_ConfigSettings);
 		parent.GotoState('Idle');
 	}
@@ -151,6 +154,7 @@ state Initialising in Botanist
 		if (FactsQuerySum(VersStr) < curVersionInt) 
 		{
 			if (FactsQuerySum(VersStr) < 105) { FactsSet(VersStr, 105); this.remove_excluded_herbs(); hasUpdated = true; }
+			if (FactsQuerySum(VersStr) < 106) { FactsSet(VersStr, 106); hasUpdated = true; }
 		}
 	}
 	
@@ -210,7 +214,7 @@ state Botanist_BootStrapper in SU_TinyBootstrapperManager extends BaseMod
 	{
 		return 'Botanist_BootStrapper';
 	}
-	
+
 	//-----------------------------------------------
 	
 	public function getMod(): SU_BaseBootstrappedMod 
@@ -276,6 +280,17 @@ class Botanist_Config
 			case 2: return 'Botanist_Tutorial_HarvestingGrounds';
 		}
 	}
+
+	//-----------------------------------------------
+
+	public function get_config_discovery_name(Idx : int) : name
+	{
+		switch (Idx)
+		{
+			case 0: return 'Botanist_Discovery_Method';
+			case 1: return 'Botanist_Discovery_Range';
+		}
+	}
 	
 	//-----------------------------------------------
 
@@ -302,6 +317,18 @@ class Botanist_Config
 		return output_data;
 	}
 
+	//-----------------------------------------------
+
+	public function get_discovery_settings() : Botanist_UserSettings
+	{
+		var output_data    : Botanist_UserSettings;
+		var config_wrapper : CInGameConfigWrapper = theGame.GetInGameConfigWrapper();
+		
+		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Discovery_Method')));
+		output_data.ints.PushBack(StringToInt(config_wrapper.GetVarValue('Botanist_GeneralSettings', 'Botanist_Discovery_Range')));
+		return output_data;
+	}
+	
 	//-----------------------------------------------
 
 	public function get_tutorial_settings() : Botanist_UserSettings
@@ -466,6 +493,91 @@ class Botanist_EventHandler
 }
 
 //---------------------------------------------------
+//-- Botanist Focus Handler -------------------------
+//---------------------------------------------------
+
+statemachine class Botanist_FocusModeHandler 
+{
+	public var master : Botanist;
+	
+	//-----------------------------------------------
+
+	public function initialise(master: Botanist) : void
+	{
+		this.master = master;
+	}
+
+	//-----------------------------------------------
+	
+	public function start() : void
+	{
+		this.GotoState('Focus');
+	}
+
+	//-----------------------------------------------
+	
+	public function stop() : void
+	{
+		this.GotoState('Idle');
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Botanist Focus Handler - (Idle State) -
+//---------------------------------------------------
+
+state Idle in Botanist_FocusModeHandler 
+{
+	event OnEnterState(previous_state_name: name) 
+	{
+		super.OnEnterState(previous_state_name);
+	}
+}
+
+//---------------------------------------------------
+//-- Botanist Botanist Focus Handler - (Focus State) -
+//---------------------------------------------------
+
+state Focus in Botanist_FocusModeHandler 
+{
+	event OnEnterState(previous_state_name: name) 
+	{
+		super.OnEnterState(previous_state_name);
+		this.monitor_focus_mode();
+	}
+	
+	entry function monitor_focus_mode() : void
+	{
+		var settings : Botanist_UserSettings = parent.master.BT_ConfigSettings.get_discovery_settings();
+		
+		var Idx : int;
+		var ents, cache : array<CGameplayEntity>;
+
+		while(true)
+		{
+			if ( !theGame.IsFocusModeActive() || settings.ints[BT_Config_Disc_Method] == 2 )
+			{
+				parent.stop();
+				break;
+			}
+			
+			ents.Clear();
+			FindGameplayEntitiesCloseToPoint( ents, thePlayer.GetWorldPosition(), settings.ints[BT_Config_Disc_Range], 50, , , ,'W3Herb' );
+
+			for( Idx = ents.Size(); Idx >= 0 ; Idx -= 1 )
+			{
+				if ( !cache.Contains( ents[Idx] ) )
+					parent.master.SetEntityKnown( (W3RefillableContainer)ents[Idx] );
+				
+				cache.PushBack( ents[Idx] );
+				ents.EraseFast( Idx );
+			}
+			
+			SleepOneFrame();
+		}	
+	}
+}
+//---------------------------------------------------
 //-- Functions --------------------------------------
 //---------------------------------------------------
 
@@ -509,6 +621,18 @@ function BT_SetEntityLooted(ent: W3RefillableContainer) : void
 
 	if (Get_Botanist(master, 'BT_SetEntityLooted'))
 		master.SetEntityLooted(ent);
+}
+
+//---------------------------------------------------
+//-- Functions --------------------------------------
+//---------------------------------------------------
+
+function BT_SetFocussing() : void
+{
+	var master : Botanist;
+
+	if (Get_Botanist(master, 'BT_SetFocussing'))
+		master.BT_FocusModeHander.start();
 }
 
 //---------------------------------------------------
@@ -2682,6 +2806,12 @@ enum Botanist_UserSettings_Enum_Ints
 	BT_Config_Hgr_MaxAll    = 7,
 	BT_Config_Hgr_MaxGrd    = 8,
 	BT_Config_Mod_Quantity  = 9,
+}
+
+enum Botanist_UserSettings_Discovery
+{
+	BT_Config_Disc_Method = 0,
+	BT_Config_Disc_Range = 1,
 }
 
 //---------------------------------------------------

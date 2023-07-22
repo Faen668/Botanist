@@ -8,13 +8,14 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 	public var BT_ConfigSettings          : Botanist_Config;
 	public var BT_RenderingLoop           : Botanist_UIRenderLoop;
 	public var BT_TutorialsSystem         : Botanist_TutorialsSystem;
+	public var BT_FocusModeHander         : Botanist_FocusModeHandler;
 	
 	default tag                           = 'Botanist_BootStrapper';
 
 	//-----------------------------------------------
-	
+
 	public function start() : void
-	{				
+	{	
 		if ( thePlayer.IsCiri() )
 		{
 			BT_Logger("Unable to start as Ciri");
@@ -24,6 +25,7 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 		this.BT_ConfigSettings  = new Botanist_Config in this;
 		this.BT_RenderingLoop   = new Botanist_UIRenderLoop in this;
 		this.BT_TutorialsSystem = new Botanist_TutorialsSystem in this;
+		this.BT_FocusModeHander = new Botanist_FocusModeHandler in this;
 		this.GotoState('Initialising');
 	}
 	
@@ -79,10 +81,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.5";
+		default curVersionStr = "1.0.6";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 105;
+		default curVersionInt = 106;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -112,13 +114,14 @@ state Initialising in Botanist
 		{
 		  Sleep(1);
 		}
-		
+	  
 		BT_LoadStorageCollection(parent);
 		
 		this.SetModVersion();
 		
 		parent.BT_ConfigSettings 	.initialise(parent);
 		parent.BT_RenderingLoop		.initialise(parent);
+		parent.BT_FocusModeHander 	.initialise(parent);
 		parent.BT_TutorialsSystem   .initialise(parent, parent.BT_ConfigSettings);
 		parent.GotoState('Idle');
 	}
@@ -151,6 +154,7 @@ state Initialising in Botanist
 		if (FactsQuerySum(VersStr) < curVersionInt) 
 		{
 			if (FactsQuerySum(VersStr) < 105) { FactsSet(VersStr, 105); this.remove_excluded_herbs(); hasUpdated = true; }
+			if (FactsQuerySum(VersStr) < 106) { FactsSet(VersStr, 106); hasUpdated = true; }
 		}
 	}
 	
