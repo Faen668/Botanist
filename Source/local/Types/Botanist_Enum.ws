@@ -81,6 +81,14 @@ enum BT_Herb_Enum
 	BT_Verbena             = 32,
 	BT_Whitemyrtle         = 33,
 	BT_Wolfsbane           = 34,
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	BT_Belladonna           = 35,
+	BT_Burmarigold          = 36,
+	BT_Chamomile           	= 37,
+	BT_Hemlock           	= 38,
+	BT_Scleroderm           = 39,
+	BT_Aloeleaves           = 40,
 }
 
 //---------------------------------------------------

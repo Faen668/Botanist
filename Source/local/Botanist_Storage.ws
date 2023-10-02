@@ -180,6 +180,7 @@ class Botanist_KnownEntityStorage
 
 		if ( this.botanist_known_herbs_initialised )
 		{
+			expand_storage_arrays();
 			return;
 		}
 		
@@ -196,12 +197,34 @@ class Botanist_KnownEntityStorage
 
 	//---------------------------------------------------
 	
+	function expand_storage_arrays() : void
+	{
+		var accurate_array_size: int = EnumGetMax('BT_Herb_Enum')+1;
+		var Idx, Edx : int;
+		
+		for (Idx = 0; Idx < this.botanist_known_herbs.Size(); Idx += 1) 
+		{
+			Edx = 0;
+			if ( this.botanist_known_herbs[Idx].Size() < accurate_array_size ) 
+			{
+				while ( this.botanist_known_herbs[Idx].Size() < accurate_array_size ) 
+				{
+					this.botanist_known_herbs[Idx].PushBack( this.get_blank_herb_array() );
+					Edx += 1;
+				}
+			}
+		}
+	}
+	
+	//---------------------------------------------------
+	
 	function initialise_displayed_harvesting_grounds_arrays() : void
 	{
 		var Idx : int;
 		
 		if ( this.botanist_displayed_harvesting_grounds_initialised )
 		{
+			expand_displayed_harvesting_grounds_arrays();
 			return;
 		}
 		
@@ -214,6 +237,27 @@ class Botanist_KnownEntityStorage
 		}
 		
 		this.botanist_displayed_harvesting_grounds_initialised = true;
+	}
+
+	//---------------------------------------------------
+	
+	function expand_displayed_harvesting_grounds_arrays() : void
+	{
+		var accurate_array_size: int = EnumGetMax('BT_Herb_Enum')+1;
+		var Idx, Edx : int;
+		
+		for (Idx = 0; Idx < this.botanist_displayed_harvesting_grounds.Size(); Idx += 1) 
+		{
+			Edx = 0;
+			if ( this.botanist_displayed_harvesting_grounds[Idx].Size() < accurate_array_size ) 
+			{
+				while ( this.botanist_displayed_harvesting_grounds[Idx].Size() < accurate_array_size ) 
+				{
+					this.botanist_displayed_harvesting_grounds[Idx].PushBack( this.get_blank_farming_herb_array() );
+					Edx += 1;
+				}
+			}
+		}
 	}
 	
 	//---------------------------------------------------

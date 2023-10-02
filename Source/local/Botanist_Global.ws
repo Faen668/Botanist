@@ -140,6 +140,15 @@ function botanist_get_herb_enum_from_name(herb_tag : name) : BT_Herb_Enum
 	case 'Verbena':              { return BT_Verbena; }
 	case 'White myrtle':         { return BT_Whitemyrtle; }
 	case 'Wolfsbane':            { return BT_Wolfsbane; }
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	case 'Belladonna':           { return BT_Belladonna; }
+	case 'Burmarigold':          { return BT_Burmarigold; }
+	case 'Chamomile':            { return BT_Chamomile; }
+	case 'Hemlock':            	 { return BT_Hemlock; }
+	case 'Scleroderm':           { return BT_Scleroderm; }
+	case 'Aloe leaves':          { return BT_Aloeleaves; }
+
 	default : return BT_Invalid_Herb_Type;
 	}
 }
@@ -185,7 +194,16 @@ function botanist_get_herb_name_from_enum(value : int) : name
 	case BT_Sewantmushrooms:     return 'Sewant mushrooms';     
 	case BT_Verbena:             return 'Verbena';              
 	case BT_Whitemyrtle:         return 'White myrtle';         
-	case BT_Wolfsbane:           return 'Wolfsbane';            
+	case BT_Wolfsbane:           return 'Wolfsbane';    
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	case BT_Belladonna:          return 'Belladonna';
+	case BT_Burmarigold:         return 'Burmarigold';
+	case BT_Chamomile:         	 return 'Chamomile';
+	case BT_Hemlock:             return 'Hemlock';
+	case BT_Scleroderm:          return 'Scleroderm';
+	case BT_Aloeleaves:     	 return 'Aloe leaves';
+	
 	default : return '';
 	}
 }
@@ -232,6 +250,15 @@ function botanist_get_herb_int_from_enum(value : BT_Herb_Enum) : int
 	case BT_Verbena:             return 31;
 	case BT_Whitemyrtle:         return 32;
 	case BT_Wolfsbane:           return 33;
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	case BT_Belladonna:          return 34;
+	case BT_Burmarigold:         return 35;
+	case BT_Chamomile:           return 36;
+	case BT_Hemlock:             return 37;
+	case BT_Scleroderm:          return 38;
+	case BT_Aloeleaves:     	 return 39;
+
 	default : return -1;               
 	}
 }
@@ -253,7 +280,25 @@ function botanist_get_herb_enum_region() : BT_Herb_Region
 		default 				: return BT_Invalid_Location;
 	}
 }
-	
+
+//---------------------------------------------------
+//-- Enum Return Functions --------------------------
+//---------------------------------------------------
+
+function botanist_get_herb_region_from_int_debug_function(value: int) : string
+{
+	switch( value )
+	{
+		case 0: return "Invalid Location";
+		case 1: return "White Orchard";
+		case 2: return "No Mans Land";
+		case 3: return "Skellige";
+		case 4: return "Kaer Morhen";
+		case 5: return "Toussaint";
+		default: return "";
+	}
+}
+
 //---------------------------------------------------
 //-- Herb Validity Functions ------------------------
 //---------------------------------------------------
@@ -296,13 +341,21 @@ function BT_IsValidHerb(itemName : name) : bool
 	case 'Verbena':
 	case 'White myrtle':
 	case 'Wolfsbane':
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	case 'Belladonna':
+	case 'Burmarigold':
+	case 'Chamomile':
+	case 'Hemlock':
+	case 'Scleroderm':
+	case 'Aloe leaves':
 		return true;
 	
 	default: 
 		return false;
 	}
 }
-
+	
 //---------------------------------------------------
 //-- Herb Override Functions ------------------------
 //---------------------------------------------------
@@ -354,6 +407,15 @@ function BT_GetOverrideItemName(value: float) : name
 	case 32: return 'Verbena';
 	case 33: return 'White myrtle';
 	case 34: return 'Wolfsbane';
+	
+	//Glassfish Herbs - https://www.nexusmods.com/witcher3/mods/8258
+	case 35: return 'Belladonna';
+	case 36: return 'Burmarigold';
+	case 37: return 'Chamomile';
+	case 38: return 'Hemlock';
+	case 39: return 'Scleroderm';
+	case 40: return 'Aloe leaves';
+
 	default: return '';
 	}
 }        

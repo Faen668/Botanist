@@ -69,6 +69,13 @@
 2116254056||preset_value_BT_OverrideTarget_32|Verbena
 2116254057||preset_value_BT_OverrideTarget_33|White myrtle petals
 2116254058||preset_value_BT_OverrideTarget_34|Wolfsbane
+;Expansion Herbs
+2116254088||preset_value_BT_OverrideTarget_35|<font color="#479c9d">Belladonna</font>
+2116254089||preset_value_BT_OverrideTarget_36|<font color="#479c9d">Burmarigold</font>
+2116254090||preset_value_BT_OverrideTarget_37|<font color="#479c9d">Chamomile</font>
+2116254091||preset_value_BT_OverrideTarget_38|<font color="#479c9d">Hemlock</font>
+2116254092||preset_value_BT_OverrideTarget_39|<font color="#479c9d">Scleroderm</font>
+2116254093||preset_value_BT_OverrideTarget_40|<font color="#479c9d">Wolf’s Aloe Leaves</font>
 ;
 2116254059||BT_HerbLootable|<font color="#ffcc00">Harvest-Ready Herb</font>
 2116254060||BT_HerbLootableHG|<font color="#9BAADD">Harvesting Grounds Herb</font>
@@ -110,4 +117,4 @@
 2116254086||preset_value_BT_DiscoveryMethod_01|While Focussing
 2116254087||preset_value_BT_DiscoveryMethod_02|When In Range
 ;
-;Next ID 2116254083
+;Next ID 2116254093

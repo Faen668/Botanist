@@ -39,8 +39,15 @@
 					<Option id="32" displayName="BT_OverrideTarget_32">	<Entry varId="Botanist_Mod_Targets" value="32"/></Option>
 					<Option id="33" displayName="BT_OverrideTarget_33">	<Entry varId="Botanist_Mod_Targets" value="33"/></Option>
 					<Option id="34" displayName="BT_OverrideTarget_34">	<Entry varId="Botanist_Mod_Targets" value="34"/></Option>
+					
+					<Option id="35" displayName="BT_OverrideTarget_35">	<Entry varId="Botanist_Mod_Targets" value="35"/></Option>
+					<Option id="36" displayName="BT_OverrideTarget_36">	<Entry varId="Botanist_Mod_Targets" value="36"/></Option>
+					<Option id="37" displayName="BT_OverrideTarget_37">	<Entry varId="Botanist_Mod_Targets" value="37"/></Option>
+					<Option id="38" displayName="BT_OverrideTarget_38">	<Entry varId="Botanist_Mod_Targets" value="38"/></Option>
+					<Option id="39" displayName="BT_OverrideTarget_39">	<Entry varId="Botanist_Mod_Targets" value="39"/></Option>
+					<Option id="40" displayName="BT_OverrideTarget_40">	<Entry varId="Botanist_Mod_Targets" value="40"/></Option>
 				</OptionsArray>
-			</Var>	
+			</Var>			
 			<Var id="Botanist_Mod_Quantity"  displayName="Botanist_Mod_Quantity"  displayType="SLIDER;1;100;99"/>	
 
 			<Var id="Separator"			   displayName="" 						  displayType="SUBTLE_SEPARATOR"/>
