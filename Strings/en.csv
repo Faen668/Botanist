@@ -6,6 +6,7 @@
 ; This file is used to create translations using https://www.nexusmods.com/witcher3/mods/1055 all credits go to rmemr
 ;
 2116254000||panel_Mods|Mods
+2116254093||panel_FaenMods|Faen's Mods
 2116254001||panel_BT_Name|Botanist
 2116254002||panel_BT_Page_General|Settings
 2116254003||panel_BT_Page_HerbMarkers|3D Markers
@@ -117,4 +118,4 @@
 2116254086||preset_value_BT_DiscoveryMethod_01|While Focussing
 2116254087||preset_value_BT_DiscoveryMethod_02|When In Range
 ;
-;Next ID 2116254093
+;Next ID 2116254094

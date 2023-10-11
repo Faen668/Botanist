@@ -81,10 +81,10 @@ state Idle in Botanist
 state Initialising in Botanist 
 {
 	private var curVersionStr: string;
-		default curVersionStr = "1.0.6";
+		default curVersionStr = "1.0.7";
 		
 	private var curVersionInt: int;
-		default curVersionInt = 106;
+		default curVersionInt = 107;
 	
 	private var hasUpdated: bool;
 		default hasUpdated = false;
@@ -155,6 +155,7 @@ state Initialising in Botanist
 		{
 			if (FactsQuerySum(VersStr) < 105) { FactsSet(VersStr, 105); this.remove_excluded_herbs(); hasUpdated = true; }
 			if (FactsQuerySum(VersStr) < 106) { FactsSet(VersStr, 106); hasUpdated = true; }
+			if (FactsQuerySum(VersStr) < 107) { FactsSet(VersStr, 107); hasUpdated = true; }
 		}
 	}
 	

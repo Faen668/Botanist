@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserConfig>	
-	<Group id="Botanist_GeneralSettings" displayName="Mods.BT_Name.BT_Page_General">
+	<Group id="Botanist_GeneralSettings" displayName="Mods.FaenMods.BT_Name.BT_Page_General">
 		<VisibleVars>
 			<Var id="Botanist_Mod_Targets" displayName="Botanist_Mod_Targets" displayType="OPTIONS">
 				<OptionsArray>
@@ -71,7 +71,7 @@
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
-	<Group id="Botanist_HerbMarkers" displayName="Mods.BT_Name.BT_Page_HerbMarkers">
+	<Group id="Botanist_HerbMarkers" displayName="Mods.FaenMods.BT_Name.BT_Page_HerbMarkers">
 		<VisibleVars>
 		
 			<Var id="Botanist_Markers_Enabled" displayName="Botanist_Markers_Enabled" displayType="TOGGLE"/>
@@ -103,7 +103,7 @@
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 	
-	<Group id="Botanist_HarvestingGrounds" displayName="Mods.BT_Name.BT_Page_HaverstingGrounds">
+	<Group id="Botanist_HarvestingGrounds" displayName="Mods.FaenMods.BT_Name.BT_Page_HaverstingGrounds">
 		<VisibleVars>
 		
 			<Var id="Botanist_Farming_Enabled" displayName="Botanist_Farming_Enabled" displayType="TOGGLE"/>
@@ -119,7 +119,7 @@
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 	
-	<Group id="Botanist_Tutorials" displayName="Mods.BT_Name.BT_Page_Tutorials">
+	<Group id="Botanist_Tutorials" displayName="Mods.FaenMods.BT_Name.BT_Page_Tutorials">
 		<VisibleVars>
 			
 			<Var id="Botanist_Tutorial_Installation"         displayName="Botanist_Tutorial_Installation"         displayType="TOGGLE"/>
