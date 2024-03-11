@@ -3,7 +3,7 @@
 //-- Botanist Main Harvesting Grounds Class ---------
 //---------------------------------------------------
 
-class BT_Harvesting_Ground
+statemachine class BT_Harvesting_Ground
 {
 	var event_manager   : Botanist_EventHandler; 
 	var user_settings	: Botanist_UserSettings;
