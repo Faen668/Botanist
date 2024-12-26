@@ -10,8 +10,7 @@ function Get_Botanist(out master: Botanist, optional caller: string): bool
 		return false;
 	}
 	
-	BT_Logger("Get_Botanist Called by [" + caller + "]");
-	master = (Botanist)SUTB_getModByTag('Botanist_BootStrapper');
+	master = thePlayer.BotanistClass;
 	
 	if (master)
 	{
@@ -96,6 +95,15 @@ function BT_Mod_Not_Ready(): bool
 function BT_VectorToString(vec : Vector): string 
 {
 	return vec.X + ", " + vec.Y + ", " + vec.Z + ", " + vec.W;
+}
+
+//---------------------------------------------------
+//-- Settings Return Functions ----------------------
+//---------------------------------------------------
+
+function BT_GetUserSettings(type: Botanist_UserSettings_Type) : Botanist_UserSettings
+{
+	return thePlayer.GetBotanistSettings(type);
 }
 
 //---------------------------------------------------
@@ -431,7 +439,7 @@ exec function bt_reset()
 	master.BT_PersistentStorage.BT_HerbStorage.reset_and_clerar();
 }
 
-exec function bt_verify_su()
+exec function bt_clear()
 {
 	var master : Botanist;
 	
@@ -439,5 +447,10 @@ exec function bt_verify_su()
 	{
 		return;
 	}
-	master.BT_PersistentStorage.BT_HerbStorage.verify_su_pointers();
+	master.BT_PersistentStorage.BT_HerbStorage.reset_ui();
+}
+
+exec function bt_settings()
+{
+	thePlayer.GetBotanistConfig().user_settings.log();
 }

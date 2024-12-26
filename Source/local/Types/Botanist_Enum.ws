@@ -2,6 +2,13 @@
 //-- Botanist User Settings Enums -------------------
 //---------------------------------------------------
 
+enum Botanist_UserSettings_Type
+{
+	BT_Config_User = 0,
+	BT_Config_Discovery = 1,
+	BT_Config_Tutorial = 2,
+}
+
 enum Botanist_UserSettings_Enum_Bool
 {
 	BT_Config_Ols_Enabled = 0,
@@ -126,4 +133,5 @@ enum BT_Event_Type
 	BT_Herb_Looted = 0,
 	BT_Herb_Reset = 1,
 	BT_Herb_Clear_Except = 2,
+	BT_HarvestingGrounds_Update = 3,
 }

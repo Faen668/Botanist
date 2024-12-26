@@ -8,6 +8,7 @@ class Botanist_EventHandler
 	private var on_herb_reset_registrations  : array< BT_Herb >;
 	private var on_herb_looted_registrations : array< BT_Herb >;
 	private var on_herb_looted_registrations_hg : array< BT_Harvesting_Ground >;
+	private var on_harvesting_ground_update_registrations : array< BT_Harvesting_Ground >;
 	private var on_herb_clear_except_registrations_hg : array< BT_Harvesting_Ground >;
 	
 	//-----------------------------------------------
@@ -18,7 +19,19 @@ class Botanist_EventHandler
 			  on_herb_looted_registrations.Size() 
 			+ on_herb_looted_registrations_hg.Size() 
 			+ on_herb_reset_registrations.Size()
-			+ on_herb_clear_except_registrations_hg.Size();
+			+ on_herb_clear_except_registrations_hg.Size()
+			+ on_harvesting_ground_update_registrations.Size();
+	}
+
+	//-----------------------------------------------
+	
+	public function clear_all_registered_events() : void
+	{
+		on_herb_reset_registrations.Clear();
+		on_herb_looted_registrations.Clear();
+		on_herb_looted_registrations_hg.Clear();
+		on_herb_clear_except_registrations_hg.Clear();	
+		on_harvesting_ground_update_registrations.Clear();
 	}
 	
 	//-----------------------------------------------
@@ -26,8 +39,6 @@ class Botanist_EventHandler
 	public function send_event( data : botanist_event_data ) : void
 	{
 		var Idx : int;
-		
-		var temp : array< BT_Herb >;
 		var temp_hg : array< BT_Harvesting_Ground >;
 		
 		switch ( data.type )
@@ -64,7 +75,15 @@ class Botanist_EventHandler
 					temp_hg[Idx].On_clear_except( data._name );
 				}
 				break;				
-			}			
+			}
+			
+			case BT_HarvestingGrounds_Update:
+			{
+				for (Idx = 0; Idx < this.on_harvesting_ground_update_registrations.Size(); Idx += 1) 
+				{
+					this.on_harvesting_ground_update_registrations[Idx].update();
+				}			
+			}
 
 			default : 
 				break;
@@ -104,6 +123,14 @@ class Botanist_EventHandler
 				}
 				break;				
 			}
+
+			case BT_HarvestingGrounds_Update:
+			{
+				if ( data.harvesting_ground && !this.on_harvesting_ground_update_registrations.Contains(data.harvesting_ground) ) {
+					this.on_harvesting_ground_update_registrations.PushBack( data.harvesting_ground );
+				}			
+			}
+			
 			
 			default : break;
 		}
@@ -141,6 +168,13 @@ class Botanist_EventHandler
 					this.on_herb_clear_except_registrations_hg.Remove( data.harvesting_ground );
 				}
 				break;				
+			}
+
+			case BT_HarvestingGrounds_Update:
+			{
+				if ( data.harvesting_ground ) {
+					this.on_harvesting_ground_update_registrations.Remove( data.harvesting_ground );
+				}		
 			}
 			
 			default : break;

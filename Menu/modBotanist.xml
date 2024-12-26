@@ -58,7 +58,7 @@
 					<Option id="02" displayName="BT_DiscoveryMethod_02">	<Entry varId="Botanist_Discovery_Method" value="02"/></Option>
 				</OptionsArray>
 			</Var>	
-			<Var id="Botanist_Discovery_Range"  displayName="Botanist_Discovery_Range"  displayType="SLIDER;3;20;17"/>	
+			<Var id="Botanist_Discovery_Range"  displayName="Botanist_Discovery_Range"  displayType="SLIDER;3;30;27"/>	
 			
 			<Var id="Separator" 			   displayName="" 						  displayType="SUBTLE_SEPARATOR"/>
 			<Var id="Botanist_MapPins_Enabled" displayName="Botanist_MapPins_Enabled" displayType="TOGGLE"/>

@@ -55,7 +55,7 @@ state Focus in Botanist_FocusModeHandler
 	
 	entry function monitor_focus_mode() : void
 	{
-		var settings : Botanist_UserSettings = parent.master.BT_ConfigSettings.get_discovery_settings();
+		var settings : Botanist_UserSettings = BT_GetUserSettings(BT_Config_Discovery);
 		
 		var Idx : int;
 		var ents, cache : array<CGameplayEntity>;

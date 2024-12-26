@@ -6,7 +6,6 @@
 statemachine class Botanist_UIRenderLoop
 {	
 	public var master  : Botanist;
-	public var config  : Botanist_Config;
 	public var storage : Botanist_KnownEntityStorage;
 	
 	//---------------------------------------------------
@@ -14,13 +13,23 @@ statemachine class Botanist_UIRenderLoop
 	public function initialise(master: Botanist)
 	{
 		this.master  = master;
-		this.config  = master.BT_ConfigSettings;
 		this.storage = master.BT_PersistentStorage.BT_HerbStorage;
-
 		this.GotoState('on_tick');
 	}
 }
 
+//---------------------------------------------------
+//-- States -----------------------------------------
+//---------------------------------------------------
+
+state disabled in Botanist_UIRenderLoop 
+{	
+	event OnEnterState(previous_state_name: name) 
+	{
+		super.OnEnterState(previous_state_name);		
+	}
+}
+	
 //---------------------------------------------------
 //-- States -----------------------------------------
 //---------------------------------------------------
@@ -45,17 +54,10 @@ state on_tick in Botanist_UIRenderLoop
 		var new_herb_requirements : Botanist_HerbRequirements;
 		var old_herb_requirements : Botanist_HerbRequirements;
 		
-		var new_displayed_count : int;
-		var old_displayed_count : int;
-		
-		var new_discovery_count : int;
-		var old_discovery_count : int;
-		
 		var Idx              : int;
 		var stt              : float;
 		
 		var target_herb		 : name;
-		var target_quantity  : int;
 		
 		var changed_req, changed_set : bool;
 		
@@ -65,8 +67,9 @@ state on_tick in Botanist_UIRenderLoop
 			current_region = botanist_get_herb_enum_region();
 
 			//Generate a list of user settings.
-			new_usersettings = parent.config.get_user_settings();		
-			new_herb_requirements = this.get_herb_requirements(current_region, new_usersettings);
+			new_usersettings = BT_GetUserSettings(BT_Config_User);
+			new_herb_requirements = get_herb_requirements(current_region, new_usersettings);
+			//SleepOneFrame();
 			
 			//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to generate lists");
 			
@@ -75,24 +78,28 @@ state on_tick in Botanist_UIRenderLoop
 			
 			//Check for any changes to the required amount of herbs since the last iteration.
 			changed_req = requirements_have_changed(old_herb_requirements, new_herb_requirements, target_herb);
+			//SleepOneFrame();
 			//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to check requirements");
 			
 			//Check for any changes the user has made to the mods settings since the last iteration.
 			changed_set = settings_have_changed(old_usersettings, new_usersettings);
+			//SleepOneFrame();
 			//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to check settings");
 			
 			//If the user has changed any mod settings then update the existing harvesting grounds as the 3D markers are no longer held in temp display storage.
 			if ( changed_set )
 			{
-				this.update_harvesting_grounds_with_new_settings(new_usersettings, current_region);
+				this.update_harvesting_grounds_with_new_settings();
+				//SleepOneFrame();
 				//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to updated harvesting grounds");
 			}			
 
 			//If any changes are detected in the required ingredients or if the user has changed any mod settings then update the UI.
 			if ( changed_req || changed_set )
 			{
-				//Clear all existing UI data such as map pins and 3D Markers for the current region.
-				this.clear_existing_ui_data(current_region);
+				//Clear all existing UI data such as map pins and 3D Markers.
+				this.clear_existing_ui_data();
+				SleepOneFrame();
 				//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to clear existing UI data");
 				
 				//If the player is only wanting to display a specific herb and that herb is required for a recipe then only process that one list.
@@ -100,6 +107,7 @@ state on_tick in Botanist_UIRenderLoop
 				{
 					//if we are targetting a specific herb, remove all harvesting grounds not of this type.
 					this.remove_all_harvesting_grounds_except( target_herb );
+					SleepOneFrame();
 					
 					if ( new_herb_requirements.names.Contains( target_herb ) )
 					{
@@ -115,14 +123,13 @@ state on_tick in Botanist_UIRenderLoop
 						(new Botanist_UIDisplayCreator in this).create_and_set_variables( Botanist_DataTransferStruct(current_region, botanist_get_herb_enum_from_name(new_herb_requirements.names[Idx]), new_herb_requirements.quantities[Idx], new_usersettings, parent.storage) );
 					}
 				}
-
 			}
 				
 			//The UI is now updated, store the requirements and user settings in a seperate variable so we can compare them on the next iteration.
 			old_usersettings = new_usersettings;
 			old_herb_requirements = new_herb_requirements;
 			
-			//BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to run");
+			BT_Logger("UI Update Loop took: " + (theGame.GetLocalTimeAsMilliseconds() - stt) + " milliseconds to run");
 			Sleep(2);
 		}
 	}
@@ -131,11 +138,10 @@ state on_tick in Botanist_UIRenderLoop
 	
 	private function get_herb_requirements(current_region: BT_Herb_Region, new_usersettings: Botanist_UserSettings) : Botanist_HerbRequirements
 	{	
-		var output_data : Botanist_HerbRequirements;		
+		var output_data : Botanist_HerbRequirements;
 		var output_name : name;
-		var output_quan : int;
-		var Idx : int;
-		
+		var Idx, Edx, Rdx : int;
+
 		for( Idx = 1; Idx < EnumGetMax('BT_Herb_Enum')+1; Idx += 1 )
 		{
 			output_name = botanist_get_herb_name_from_enum( Idx );
@@ -151,9 +157,13 @@ state on_tick in Botanist_UIRenderLoop
 		
 		//Traverse output List.
 		for( Idx = output_data.names.Size()-1; Idx >= 0; Idx -= 1 )
-		{
+		{	
+			//get the amount of this herb in the players inventory.
+			Edx = thePlayer.inv.GetItemQuantityByName(output_data.names[Idx]);
+			Rdx = parent.storage.get_currently_displayed_count( botanist_get_herb_enum_region(), botanist_get_herb_enum_from_name( output_data.names[Idx] ) );
+
 			//Lower the quantity of the herbs needed for recipes by the amount the player already has in their inventory.
-			output_data.quantities[Idx] -= thePlayer.inv.GetItemQuantityByName(output_data.names[Idx]);
+			output_data.quantities[Idx] -= (Edx + Rdx);
 
 			if ( output_data.quantities[Idx] <= 0 )
 			{
@@ -162,29 +172,12 @@ state on_tick in Botanist_UIRenderLoop
 				output_data.quantities.EraseFast(Idx);
 			}
 		}
-
 		return output_data;
 	}
 	
 	//---------------------------------------------------
 	
-	private function update_harvesting_grounds_with_new_settings(new_usersettings: Botanist_UserSettings, current_region : BT_Herb_Region) : void
-	{
-		var Idx, Edx: int;
-
-		for( Idx = 0; Idx < parent.storage.botanist_displayed_harvesting_grounds[current_region].Size(); Idx += 1 )
-		{
-			for( Edx = 0; Edx < parent.storage.botanist_displayed_harvesting_grounds[current_region][Idx].Size(); Edx += 1 )
-			{
-				parent.storage.botanist_displayed_harvesting_grounds[current_region][Idx][Edx].update( new_usersettings );
-			}
-		}
-		
-	}
-	
-	//---------------------------------------------------
-	
-	private function clear_existing_ui_data(current_region : BT_Herb_Region) : void
+	private function clear_existing_ui_data() : void
 	{
 		parent.master.BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Reset ) );
 		
@@ -198,59 +191,67 @@ state on_tick in Botanist_UIRenderLoop
 	{
 		parent.master.BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_Herb_Clear_Except, , target_herb ) );
 	}
+
+	//---------------------------------------------------
+	
+	private function update_harvesting_grounds_with_new_settings() : void
+	{
+		parent.master.BT_PersistentStorage.BT_EventHandler.send_event( botanist_event_data( BT_HarvestingGrounds_Update ) );		
+	}
 	
 	//---------------------------------------------------
 
-	private function requirements_have_changed(old_data, new_data : Botanist_HerbRequirements, target_herb : name) : bool
-	{
-		var Idx, Edx : int;
+    private function requirements_have_changed(old_data: Botanist_HerbRequirements, new_data : Botanist_HerbRequirements, target_herb : name) : bool
+    {
+        var Idx, Edx, Rdx, Sdx : int;
 		
-		if ( target_herb != '' )
-		{
-			Edx = parent.storage.get_currently_displayed_count( botanist_get_herb_enum_region(), botanist_get_herb_enum_from_name( target_herb ) );
-			Idx = new_data.names.FindFirst( target_herb );
-			
-			if ( (new_data.quantities[Idx] - Edx) > 0 && parent.storage.has_harvestable_plants_in_region( target_herb ) )
-			{
-				return true;
-			}
-			
-			return false;
-		}
-		
-		if ( new_data.names.Size() != old_data.names.Size() )
-		{
-			return true;
-		}
-		
+        if ( target_herb != '' )
+        {
+            Edx = parent.storage.get_currently_displayed_count( botanist_get_herb_enum_region(), botanist_get_herb_enum_from_name( target_herb ) );
+            Idx = new_data.names.FindFirst( target_herb );
+            
+            if ( (new_data.quantities[Idx] - Edx) > 0 && parent.storage.has_harvestable_plants_in_region( target_herb ) )
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        if ( new_data.names.Size() != old_data.names.Size() )
+        {
+            return true;
+        }
+        
 		for( Idx = 0; Idx < new_data.names.Size(); Idx += 1 )
-		{
-			Edx = parent.storage.get_currently_displayed_count(botanist_get_herb_enum_region(), botanist_get_herb_enum_from_name(new_data.names[Idx]));
+        {
+            //Get array position of current herb in the data from the last iteration.
+            Sdx = old_data.names.FindFirst( new_data.names[Idx] );
 			
-			if ( (new_data.quantities[Idx] - Edx) > 0 && parent.storage.has_harvestable_plants_in_region(new_data.names[Idx]) )
-			{
-				return true;
-			}	
-		
-			if ( new_data.names[Idx] != old_data.names[Idx] )
-			{
-				return true;
-			}
-
-			if ( new_data.quantities[Idx] != old_data.quantities[Idx] )
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
+            //Check if the current herb is missing or unalligned.
+            if (Sdx != Idx) 
+            {
+                return true;
+            }
+            
+            //Get Required Herb Quantity.
+            Rdx = new_data.quantities[Idx];
+			
+			//Check if required quantity is greater than 0.
+			//Check that there are harvestable plants left in the region that are not currently displayed.
+			//Check that the quantity required does not match the old required quantity.
+            if ( (Rdx > 0 && parent.storage.has_harvestable_plants_in_region(new_data.names[Idx])) || Rdx != old_data.quantities[Sdx] )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 	
 	//---------------------------------------------------
 
 	private function settings_have_changed(old_data, new_data : Botanist_UserSettings) : bool
 	{
-		var Idx, Edx : int;
+		var Idx : int;
 		
 		for( Idx = 0; Idx < new_data.bools.Size(); Idx += 1 )
 		{

@@ -52,38 +52,34 @@ state Processing in Botanist_UIDisplayCreator
 
 	entry function Processing()
 	{
-		var herb_nodes   : array<CNode>;
-		var current_herb : BT_Herb;
 		var node 		 : CNode;
-		
-		var Pos  		 : Vector = thePlayer.GetWorldPosition();
 		var Idx, Edx	 : int;
-	
+		var known_nodes  : array<CNode>;
+		var known_herbs	 : array<BT_Herb> = parent.storage.botanist_known_herbs[parent.region][parent.type];
+
 		if ( parent.storage.get_currently_displayed_count(parent.region, parent.type) >= parent.quantity )
 		{
 			return;
 		}
 		
-		for( Idx = 0; Idx < parent.storage.botanist_known_herbs[parent.region][parent.type].Size(); Idx += 1 )
+		for( Idx = 0; Idx < known_herbs.Size(); Idx += 1 )
 		{
-			if ( parent.storage.botanist_known_herbs[parent.region][parent.type][Idx].is_eligible_for_normal_display() )
+			if ( known_herbs[Idx].is_eligible_for_normal_display() )
 			{
-				herb_nodes.PushBack( (CNode)parent.storage.botanist_known_herbs[parent.region][parent.type][Idx].herb_entity );
+				known_nodes.PushBack( (CNode)known_herbs[Idx].herb_entity );
 			}
 		}
 		
-		Edx = Min(herb_nodes.Size(), parent.quantity);
-
-		//Traverse and find the closest herb to the players position
-		for( Idx = 0; Idx < Edx; Idx += 1 )
+		SortNodesByDistance(thePlayer.GetWorldPosition(), known_nodes);
+		for( Idx = 0; Idx < Min(known_nodes.Size(), parent.quantity); Idx += 1 )
 		{
-			node = FindClosestNode(Pos, herb_nodes);
-			
-			if ( this.get_closest_herb(node, current_herb) != -1 && !current_herb.is_displayed() )
+			for ( Edx = 0; Edx < known_herbs.Size(); Edx += 1 )
 			{
-				current_herb.set_displayed( parent.user_settings );
+				if (known_nodes[Idx].GetWorldPosition() == known_herbs[Edx].herb_entity.GetWorldPosition())
+				{
+					known_herbs[Edx].set_displayed();
+				}
 			}
-			herb_nodes.Remove(node);
 		}
 		
 		if ( parent.user_settings.bools[BT_Config_Hgr_Enabled] )
@@ -92,20 +88,6 @@ state Processing in Botanist_UIDisplayCreator
 		}
 		
 		parent.GotoState('idle');
-	}
-
-	//---------------------------------------------------
-	
-	private function get_closest_herb(node: CNode, out current_herb : BT_Herb) : int
-	{		
-		var Idx : int = parent.storage.botanist_master_world.FindFirst(node.GetWorldPosition());
-
-		if (Idx != -1)
-		{
-			current_herb = parent.storage.botanist_master_herbs[Idx];
-		}
-		
-		return Idx;
 	}
 
 	//---------------------------------------------------
@@ -128,18 +110,18 @@ state Processing in Botanist_UIDisplayCreator
 		
 		if ( hg_displayed < hg_maxground && hg_all_nodes.Size() > 0 )
 		{
-			hg_result_01 = this.findHarvestingGround("1", user_settings, hg_all_nodes);
+			hg_result_01 = this.findHarvestingGround(user_settings, hg_all_nodes);
 			this.create_harvesting_grounds(region, type, user_settings, hg_result_01);
 			
 			if ( hg_displayed < hg_maxground && hg_maxground > 1 )
 			{
-				hg_result_02 = this.findHarvestingGround("3", user_settings, hg_result_01.filtered_nodes);
+				hg_result_02 = this.findHarvestingGround(user_settings, hg_result_01.filtered_nodes);
 				this.create_harvesting_grounds(region, type, user_settings, hg_result_02);			
 			}
 			
 			if ( hg_displayed < hg_maxground && hg_maxground > 2 )
 			{
-				hg_result_03 = this.findHarvestingGround("3", user_settings, hg_result_02.filtered_nodes);
+				hg_result_03 = this.findHarvestingGround(user_settings, hg_result_02.filtered_nodes);
 				this.create_harvesting_grounds(region, type, user_settings, hg_result_03);			
 			}
 		}
@@ -147,7 +129,7 @@ state Processing in Botanist_UIDisplayCreator
 	
 	//---------------------------------------------------
 	
-	private function findHarvestingGround(id : string, user_settings : Botanist_UserSettings, node_pairings: array<Botanist_NodePairing>) : Botanist_HarvestGroundResults
+	private function findHarvestingGround(user_settings : Botanist_UserSettings, node_pairings: array<Botanist_NodePairing>) : Botanist_HarvestGroundResults
 	{	
 		var output : Botanist_HarvestGroundResults;
 		var Edx    : int = RandRange(node_pairings.Size(), 0);

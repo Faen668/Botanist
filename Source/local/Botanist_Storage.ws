@@ -94,7 +94,6 @@ class Botanist_KnownEntityStorage
 	{	
 		this.master = master;	
 		this.attach_herb_pointers();
-		this.attach_shared_util_pointers();
 		
 		this.initialise_storage_arrays();
 		this.initialise_displayed_harvesting_grounds_arrays();
@@ -124,6 +123,29 @@ class Botanist_KnownEntityStorage
 		this.excluded_herbs.PushBack( -1606184739 );
 		this.excluded_herbs.PushBack( 963451185 );
 		this.excluded_herbs.PushBack( 1270212183 );
+	}
+	
+	function reset_ui() : void
+	{
+		var output: array<SU_Oneliner>;
+		
+		master.BT_RenderingLoop.GotoState('disabled');
+		
+		master.BT_PersistentStorage.BT_EventHandler.clear_all_registered_events();
+		
+		botanist_displayed_herbs.Clear();
+		botanist_displayed_herbs_guid_hashes.Clear();
+		
+		botanist_displayed_harvesting_grounds.Clear();
+		botanist_displayed_harvesting_grounds_guid_hashes.Clear();
+
+		predicate = new Botanist_RemoveAllMapPins in thePlayer;
+		SU_removeCustomPinByPredicate(predicate);
+
+		output = SUOL_getManager().deleteByTagPrefix("Botanist_");
+		GetWitcherPlayer().DisplayHudMessage("removed " + output.Size() + " Botanist Markers");
+		
+		master.BT_RenderingLoop.GotoState('on_tick');
 	}
 	
 	function reset_and_clerar() : void
@@ -161,13 +183,12 @@ class Botanist_KnownEntityStorage
 	{
 		var Idx, Edx : int;
 		var region   : BT_Herb_Region = botanist_get_herb_enum_region();
-		var settings : Botanist_UserSettings = this.master.BT_ConfigSettings.get_user_settings();
 		
 		for (Idx = 0; Idx < this.botanist_displayed_harvesting_grounds[region].Size(); Idx += 1) 
 		{
 			for (Edx = 0; Edx < this.botanist_displayed_harvesting_grounds[region][Idx].Size(); Edx += 1) 
 			{			
-				this.botanist_displayed_harvesting_grounds[region][Idx][Edx].load(settings);
+				this.botanist_displayed_harvesting_grounds[region][Idx][Edx].load();
 			}
 		}
 	}
@@ -369,6 +390,25 @@ class Botanist_KnownEntityStorage
 		
 		return false;
 	}	
+
+	//---------------------------------------------------
+	
+	function get_harvestable_plants_in_region_count(herb_name : name) : int
+	{
+		var region 		: BT_Herb_Region = botanist_get_herb_enum_region();
+		var type   		: BT_Herb_Enum = botanist_get_herb_enum_from_name(herb_name);
+		var Idx, Rdx	: int;
+		
+		for( Idx = 0; Idx < this.botanist_known_herbs[region][type].Size(); Idx += 1 )
+		{
+			if ( this.botanist_known_herbs[region][type][Idx].is_eligible_for_normal_display() )
+			{
+				Rdx += 1;
+			}
+		}
+		
+		return Rdx;
+	}	
 	
 	//---------------------------------------------------
 	
@@ -403,7 +443,7 @@ class Botanist_KnownEntityStorage
 			Edx = botanist_master_hashs.FindFirst(vspawned_herbs[Idx].GetGuidHash());
 			if (Edx != -1)
 			{
-				if (  botanist_master_herbs[Edx].reset_entity( vspawned_herbs[Idx] ) )
+				if (  botanist_master_herbs[Edx].reset_entity( vspawned_herbs[Idx], this.master ) )
 				{
 					Rdx += 1;
 					continue;
@@ -426,51 +466,5 @@ class Botanist_KnownEntityStorage
 		{
 			botanist_master_herbs[Idx].print_info();
 		}	
-	}
-
-	//---------------------------------------------------
-	//-- Shared Utils Re-Point Function -----------------
-	//---------------------------------------------------
-	
-	function attach_shared_util_pointers() : void
-	{
-		var Idx, Edx, Pdx, Rdx : int;
-		var marker_manager : SUOL_Manager = SUOL_getManager();
-		var mappin_manager : SUMP_Manager = SUMP_getManager();
-		
-		for (Idx = 0; Idx < this.botanist_master_herbs.Size(); Idx += 1) 
-		{	
-			if ( this.botanist_master_herbs[Idx].attach_shared_util_pointers( marker_manager, mappin_manager ) )
-			{
-				Rdx += 1;
-				continue;
-			}
-
-			Pdx += 1;
-		}
-		
-		BT_Logger("Re-attached Shared Util Pointers On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");		
-	}
-
-	//---------------------------------------------------
-	//-- Shared Utils Verification Function -------------
-	//---------------------------------------------------
-	
-	function verify_su_pointers() : void
-	{
-		var Idx, Edx, Pdx, Rdx : int;
-		
-		for (Idx = 0; Idx < this.botanist_master_herbs.Size(); Idx += 1) 
-		{	
-			if ( this.botanist_master_herbs[Idx].are_shared_util_pointers_attached() )
-			{
-				Rdx += 1;
-				continue;
-			}
-
-			Pdx += 1;
-		}
-		
-		GetWitcherPlayer().DisplayHudMessage("Shared Util Pointers Verified On [" + Rdx + " / " + get_known_herbs_count() + "] Known Herbs With [" + Pdx + "] Failures.");	
 	}
 }

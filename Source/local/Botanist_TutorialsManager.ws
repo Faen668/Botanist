@@ -2,14 +2,12 @@
 class Botanist_TutorialsSystem 
 {
 	var master : Botanist;
-	var config : Botanist_Config;
 	
 	//---------------------------------------------------
 	
-	function initialise(master : Botanist, config : Botanist_Config)
+	function initialise(master : Botanist)
 	{
 		this.master = master;
-		this.config = config;
 	}
 	
 	//---------------------------------------------------
@@ -52,9 +50,9 @@ class Botanist_TutorialsSystem
 	
 	function get_tutorial_data(tutorial_identifier : Botanist_Tutorial_Enum, out output : Botanist_Tutorial_Data) : bool
 	{
-		var settings : Botanist_UserSettings = this.config.get_tutorial_settings();
+		var config : Botanist_Config = thePlayer.GetBotanistConfig();
 		
-		if ( !settings.bools[tutorial_identifier] )
+		if ( !config.tutorial_settings.bools[tutorial_identifier] )
 		{	
 			return false;
 		}
@@ -62,26 +60,28 @@ class Botanist_TutorialsSystem
 		switch( tutorial_identifier )
 		{
 			case Botanist_Tutorial_Installation : { 
-				output.title = GetLocStringByKeyExt("BT_Tutorial_Installation_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_Installation_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				output.title = GetLocStringByKeyExt("BT_Tutorial_Installation_T"); 
+				output.body = GetLocStringByKeyExt("BT_Tutorial_Installation_B"); 
 				break; 
 			}
 			
 			case Botanist_Tutorial_Discovery : { 
-				output.title = GetLocStringByKeyExt("BT_Tutorial_Discovery_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_Discovery_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				output.title = GetLocStringByKeyExt("BT_Tutorial_Discovery_T"); 
+				output.body = GetLocStringByKeyExt("BT_Tutorial_Discovery_B"); 
 				break; 
 			}
 
 			case Botanist_Tutorial_HarvestingGrounds : { 
-				output.title = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_T"); output.body = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_B"); output.variable = this.config.get_config_tutorial_name( tutorial_identifier );
+				output.title = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_T"); 
+				output.body = GetLocStringByKeyExt("BT_Tutorial_HarvestingGounds_B"); 
 				break; 
 			}			
-			
-			
-			
+
 			default : 
 				break;
 		}
 		
+		output.variable = config.get_config_tutorial_name( tutorial_identifier );
 		return true;
 	}
 }

@@ -2,16 +2,13 @@
 //-- Botanist Main Class ----------------------------
 //---------------------------------------------------
 
-statemachine class Botanist extends SU_BaseBootstrappedMod 
+statemachine class Botanist 
 {
 	public saved var BT_PersistentStorage : Botanist_Storage;
-	public var BT_ConfigSettings          : Botanist_Config;
 	public var BT_RenderingLoop           : Botanist_UIRenderLoop;
 	public var BT_TutorialsSystem         : Botanist_TutorialsSystem;
 	public var BT_FocusModeHander         : Botanist_FocusModeHandler;
 	
-	default tag                           = 'Botanist_BootStrapper';
-
 	//-----------------------------------------------
 
 	public function start() : void
@@ -22,7 +19,6 @@ statemachine class Botanist extends SU_BaseBootstrappedMod
 			return;
 		}
 		
-		this.BT_ConfigSettings  = new Botanist_Config in this;
 		this.BT_RenderingLoop   = new Botanist_UIRenderLoop in this;
 		this.BT_TutorialsSystem = new Botanist_TutorialsSystem in this;
 		this.BT_FocusModeHander = new Botanist_FocusModeHandler in this;
@@ -110,19 +106,19 @@ state Initialising in Botanist
 	{	
 		var Idx: int;
 
-		while (theGame.IsLoadingScreenVideoPlaying()) 
+		while (BT_Mod_Not_Ready()) 
 		{
-		  Sleep(1);
+		  Sleep(5);
 		}
-	  
+		
+		thePlayer.InitBotanistSettings();
 		BT_LoadStorageCollection(parent);
 		
 		this.SetModVersion();
 		
-		parent.BT_ConfigSettings 	.initialise(parent);
 		parent.BT_RenderingLoop		.initialise(parent);
 		parent.BT_FocusModeHander 	.initialise(parent);
-		parent.BT_TutorialsSystem   .initialise(parent, parent.BT_ConfigSettings);
+		parent.BT_TutorialsSystem   .initialise(parent);
 		parent.GotoState('Idle');
 	}
 	
